@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Kinsu - Verificar Correo</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode:"class",
+    theme:{ extend:{
+      colors:{
+        "background":"#f9f9ff","surface-container":"#e8edff",
+        "surface-container-low":"#f1f3ff","surface-container-high":"#e0e8ff",
+        "surface-container-highest":"#d7e2ff","surface-container-lowest":"#ffffff",
+        "on-surface":"#0b1b35","on-surface-variant":"#424751",
+        "primary":"#1565c0","primary-container":"#004d99","on-primary":"#ffffff",
+        "tertiary-fixed":"#a6f86d","on-tertiary-fixed-variant":"#245100",
+        "outline":"#727782","outline-variant":"#c2c6d3","error":"#ba1a1a",
+      },
+      borderRadius:{ DEFAULT:"1rem",lg:"2rem",xl:"3rem",full:"9999px" },
+      fontFamily:{ headline:["Inter"],body:["Inter"],label:["Inter"] }
+    }}
+  }
+</script>
+<style>
+  body { font-family:'Inter',sans-serif; }
+  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
+  .otp-input {
+    width:44px; height:56px; text-align:center;
+    font-size:20px; font-weight:700;
+    background:#d7e2ff; border:none; border-radius:12px;
+    color:#0b1b35; outline:none; transition:all .15s;
+  }
+  .otp-input:focus { background:#fff; box-shadow:0 0 0 2px #1565c0; }
+  .otp-input.filled { background:#e8f0fe; }
+  .otp-input.error-inp { background:#fff8f8; box-shadow:0 0 0 2px #ef4444; }
+  #resend-btn:disabled { opacity:.45; cursor:not-allowed; }
+</style>
+</head>
+
+<body class="bg-background text-on-surface min-h-screen flex flex-col items-center">
+
+  <!-- HEADER -->
+  <header class="w-full max-w-[400px] flex items-center justify-between px-6 py-8">
+    <button onclick="window.location.href='registro.html'"
+      class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-colors active:scale-95">
+      <span class="material-symbols-outlined text-primary">arrow_back</span>
+    </button>
+    <span class="text-2xl font-black text-primary tracking-tight">Kinsu</span>
+    <div class="w-10"></div>
+  </header>
+
+  <main class="w-full max-w-[400px] px-6">
+
+    <!-- Paso indicator -->
+    <div class="mb-8">
+      <div class="flex justify-between items-end mb-2">
+        <span class="text-xs font-bold text-primary uppercase tracking-wider">Paso 2 de 2</span>
+        <span class="text-xs font-semibold text-primary">Verificación</span>
+      </div>
+      <div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+        <div class="h-full w-full bg-primary rounded-full"></div>
+      </div>
+    </div>
+
+    <!-- Card OTP -->
+    <div class="bg-surface-container-lowest rounded-[24px] p-8 shadow-[0_20px_40px_rgba(11,27,53,0.06)] flex flex-col">
+      <h1 class="text-[24px] font-[800] text-on-surface leading-tight mb-3">Revisa tu correo</h1>
+      <p class="text-on-surface-variant leading-relaxed mb-8">
+        Enviamos un código de 6 dígitos a
+        <span class="font-semibold text-on-surface" id="otp-email">tu correo</span>.
+        <br><span class="text-xs text-on-surface-variant/70">Demo: usa el código <strong>123456</strong></span>
+      </p>
+
+      <!-- Error banner -->
+      <div id="otp-error" class="hidden mb-4 bg-red-50 border border-red-200 rounded-xl px-4 py-3 flex items-center gap-2">
+        <span class="material-symbols-outlined text-[#ef4444] text-[16px]">error</span>
+        <p class="text-sm text-[#b91c1c] font-medium">Código incorrecto. Intenta de nuevo.</p>
+      </div>
+
+      <!-- 6 inputs OTP -->
+      <div class="flex justify-between gap-2 mb-8" id="otp-container">
+        <input class="otp-input" maxlength="1" type="text" inputmode="numeric">
+        <input class="otp-input" maxlength="1" type="text" inputmode="numeric">
+        <input class="otp-input" maxlength="1" type="text" inputmode="numeric">
+        <input class="otp-input" maxlength="1" type="text" inputmode="numeric">
+        <input class="otp-input" maxlength="1" type="text" inputmode="numeric">
+        <input class="otp-input" maxlength="1" type="text" inputmode="numeric">
+      </div>
+
+      <!-- Reenviar -->
+      <div class="text-center mb-8">
+        <button id="resend-btn" onclick="startCountdown()" disabled
+          class="text-sm font-semibold text-primary hover:underline transition-all">
+          Reenviar código (<span id="countdown">60</span>s)
+        </button>
+        <p class="text-xs text-on-surface-variant mt-2">¿No recibiste nada? Revisa tu carpeta de spam.</p>
+      </div>
+
+      <!-- CTA -->
+      <button id="verify-btn" onclick="verifyOTP()"
+        class="w-full py-4 px-6 bg-primary text-on-primary rounded-full font-bold text-base
+               shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center gap-2">
+        <span id="verify-txt">Verificar y entrar</span>
+        <span class="material-symbols-outlined text-[18px]" id="verify-ico">arrow_forward</span>
+      </button>
+    </div>
+
+    <!-- Badge seguridad -->
+    <div class="mt-8 flex justify-center">
+      <div class="flex items-center gap-2 text-on-tertiary-fixed-variant bg-tertiary-fixed px-4 py-1.5 rounded-full">
+        <span class="material-symbols-outlined text-[18px]"
+          style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">verified_user</span>
+        <span class="text-xs font-bold uppercase tracking-wide">Conexión Segura</span>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="mt-auto py-8 text-center">
+    <p class="text-[11px] font-medium uppercase tracking-[.2em] text-on-surface-variant/40">
+      Seguridad Kinsu © 2024
+    </p>
+  </footer>
+
+<script>
+// Leer email de sessionStorage
+const regEmail = sessionStorage.getItem('reg-email') || 'tu correo';
+const regName  = sessionStorage.getItem('reg-name')  || 'Kinsurer';
+document.getElementById('otp-email').textContent = regEmail;
+
+// ── Auto-avance OTP ──
+const inputs = Array.from(document.querySelectorAll('.otp-input'));
+
+inputs.forEach((inp, i) => {
+  inp.addEventListener('input', e => {
+    // Solo números
+    inp.value = inp.value.replace(/[^0-9]/g,'').slice(-1);
+    inp.classList.toggle('filled', inp.value !== '');
+    // Avanzar al siguiente
+    if (inp.value && i < inputs.length - 1) inputs[i+1].focus();
+    // Auto-verificar al completar los 6
+    const code = inputs.map(el => el.value).join('');
+    if (code.length === 6) verifyOTP();
+  });
+
+  inp.addEventListener('keydown', e => {
+    // Retroceder al borrar
+    if (e.key === 'Backspace' && !inp.value && i > 0) inputs[i-1].focus();
+  });
+
+  inp.addEventListener('paste', e => {
+    e.preventDefault();
+    const paste = (e.clipboardData || window.clipboardData)
+                  .getData('text').replace(/[^0-9]/g,'');
+    paste.split('').forEach((ch, j) => {
+      if (inputs[i+j]) {
+        inputs[i+j].value = ch;
+        inputs[i+j].classList.add('filled');
+      }
+    });
+    const next = inputs[Math.min(i + paste.length, inputs.length-1)];
+    next.focus();
+  });
+});
+
+// ── Verificar OTP ──
+function verifyOTP() {
+  const code  = inputs.map(el => el.value).join('');
+  const errEl = document.getElementById('otp-error');
+  const btn   = document.getElementById('verify-btn');
+
+  errEl.classList.add('hidden');
+  inputs.forEach(el => el.classList.remove('error-inp'));
+
+  if (code.length < 6) return;
+
+  // Loading
+  btn.disabled = true;
+  document.getElementById('verify-txt').textContent = 'Verificando...';
+  document.getElementById('verify-ico').textContent = 'hourglass_empty';
+
+  setTimeout(() => {
+    if (code === '123456') {
+      // Guardar usuario en sessionStorage
+      const initials = regName.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+      sessionStorage.setItem('user', JSON.stringify({
+        nombre: regName, email: regEmail, initials
+      }));
+      window.location.href = 'login-exitoso.html';
+    } else {
+      // Error
+      btn.disabled = false;
+      document.getElementById('verify-txt').textContent = 'Verificar y entrar';
+      document.getElementById('verify-ico').textContent = 'arrow_forward';
+      errEl.classList.remove('hidden');
+      inputs.forEach(el => { el.value = ''; el.classList.remove('filled'); el.classList.add('error-inp'); });
+      inputs[0].focus();
+      setTimeout(() => inputs.forEach(el => el.classList.remove('error-inp')), 2500);
+    }
+  }, 800);
+}
+
+// ── Countdown reenvío ──
+let cdTimer = null;
+function startCountdown() {
+  const btn = document.getElementById('resend-btn');
+  const cd  = document.getElementById('countdown');
+  if (cdTimer) clearInterval(cdTimer);
+  let secs = 60;
+  btn.disabled = true;
+  cd.textContent = secs;
+  cdTimer = setInterval(() => {
+    secs--;
+    cd.textContent = secs;
+    if (secs <= 0) {
+      clearInterval(cdTimer);
+      btn.disabled = false;
+      cd.textContent = '60';
+    }
+  }, 1000);
+}
+startCountdown();
+</script>
+</body>
+</html>

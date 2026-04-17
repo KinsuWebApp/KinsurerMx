@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Kinsu - Bienvenido</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode:"class",
+    theme:{ extend:{
+      colors:{
+        "background":"#f9f9ff","surface-container":"#e8edff",
+        "surface-container-low":"#f1f3ff","surface-container-highest":"#d7e2ff",
+        "surface-container-lowest":"#ffffff","on-surface":"#0b1b35",
+        "on-surface-variant":"#424751","primary":"#1565c0",
+        "primary-container":"#004d99","on-primary":"#ffffff",
+        "tertiary-fixed":"#a6f86d","tertiary-fixed-dim":"#8bdb54",
+        "on-tertiary-fixed-variant":"#245100","on-tertiary-fixed":"#0a2000",
+        "tertiary":"#1b3f00","secondary":"#005db7",
+      },
+      borderRadius:{ DEFAULT:"1rem",lg:"2rem",xl:"3rem",full:"9999px" },
+      fontFamily:{ headline:["Inter"],body:["Inter"],label:["Inter"] }
+    }}
+  }
+</script>
+<style>
+  body { font-family:'Inter',sans-serif; }
+  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
+  @keyframes ringIn  { 0%{transform:scale(0);opacity:0} 70%{transform:scale(1.08)} 100%{transform:scale(1);opacity:1} }
+  @keyframes checkIn { 0%{transform:scale(0) rotate(-20deg);opacity:0} 100%{transform:scale(1) rotate(0);opacity:1} }
+  @keyframes fadeUp  { 0%{transform:translateY(14px);opacity:0} 100%{transform:translateY(0);opacity:1} }
+  .anim-ring  { animation:ringIn  .45s cubic-bezier(.36,.07,.19,.97) both; }
+  .anim-check { animation:checkIn .3s .5s ease both; }
+  .anim-fade1 { animation:fadeUp  .4s .65s ease both; }
+  .anim-fade2 { animation:fadeUp  .4s .8s  ease both; }
+  .anim-fade3 { animation:fadeUp  .4s .95s ease both; }
+</style>
+</head>
+
+<body class="bg-background text-on-surface min-h-screen flex flex-col items-center justify-between overflow-x-hidden">
+
+  <!-- Header minimal -->
+  <header class="w-full flex justify-between items-center px-8 py-6 max-w-7xl mx-auto">
+    <span class="text-2xl font-black text-primary tracking-tight">Kinsu</span>
+  </header>
+
+  <main class="flex-grow flex flex-col items-center justify-center w-full max-w-lg px-6 py-12 text-center">
+
+    <!-- Checkmark animado -->
+    <div class="mb-10 relative anim-ring">
+      <div class="w-32 h-32 rounded-full bg-tertiary-fixed flex items-center justify-center shadow-lg">
+        <span class="material-symbols-outlined anim-check text-on-tertiary-fixed-variant"
+          style="font-size:64px;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">
+          check_circle
+        </span>
+      </div>
+      <!-- Dot decorativo -->
+      <div class="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-surface-container-lowest flex items-center justify-center shadow-sm">
+        <div class="w-3 h-3 bg-tertiary-fixed rounded-full animate-pulse"></div>
+      </div>
+    </div>
+
+    <!-- Texto de éxito -->
+    <div class="space-y-3 mb-10 anim-fade1">
+      <h1 class="text-[32px] font-[900] text-on-surface leading-tight tracking-tight"
+          id="welcome-title">¡Bienvenida de vuelta!</h1>
+      <p class="text-on-surface-variant text-lg font-medium">
+        Tu sesión ha sido iniciada con éxito.
+      </p>
+    </div>
+
+    <!-- Card de usuario -->
+    <div class="w-full bg-surface-container-lowest rounded-xl p-8 mb-8
+                shadow-[0_20px_40px_rgba(11,27,53,0.06)]
+                flex flex-col items-center relative overflow-hidden anim-fade2">
+
+      <!-- Acento lateral azul -->
+      <div class="absolute top-0 left-0 w-2 h-full bg-primary rounded-l-xl"></div>
+
+      <!-- Avatar con iniciales -->
+      <div class="relative mb-5">
+        <div class="w-24 h-24 rounded-full bg-surface-container flex items-center justify-center">
+          <span id="user-initials"
+            class="text-[32px] font-[900] text-primary tracking-tighter">JR</span>
+        </div>
+        <!-- Badge Kinsurer -->
+        <div class="absolute -bottom-2 right-0 bg-tertiary-fixed text-on-tertiary-fixed
+                    px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm">
+          Kinsurer
+        </div>
+      </div>
+
+      <!-- Datos del usuario -->
+      <div class="space-y-1 mb-5">
+        <h2 class="text-xl font-bold text-on-surface" id="user-name">Jimena Ríos</h2>
+        <p class="text-on-surface-variant text-sm" id="user-email">kinsurer@kinsu.mx</p>
+      </div>
+
+      <!-- Pill estado -->
+      <div class="flex items-center gap-2 bg-surface-container-low px-4 py-2 rounded-full">
+        <span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim border border-tertiary"></span>
+        <span class="text-xs font-semibold text-on-surface-variant">Estado: Activo</span>
+      </div>
+    </div>
+
+    <!-- CTA + countdown -->
+    <div class="w-full space-y-4 anim-fade3">
+      <button onclick="goToDashboard()"
+        class="w-full h-14 bg-primary text-on-primary font-bold rounded-full text-lg
+               shadow-lg hover:bg-primary-container active:scale-[0.98] transition-all">
+        Ir a mi dashboard
+      </button>
+      <p class="text-sm text-on-surface-variant/60 font-medium italic" id="redirect-msg">
+        Redirigiendo automáticamente en 5 segundos...
+      </p>
+    </div>
+
+  </main>
+
+  <!-- Footer minimalista -->
+  <footer class="py-8">
+    <span class="text-xl font-black text-primary/25 tracking-tighter">Kinsu</span>
+  </footer>
+
+<script>
+// ── Leer usuario de sessionStorage ──
+const user = JSON.parse(
+  sessionStorage.getItem('user') ||
+  '{"nombre":"Jimena Ríos","email":"kinsurer@kinsu.mx","initials":"JR"}'
+);
+
+document.getElementById('user-name').textContent     = user.nombre   || 'Jimena Ríos';
+document.getElementById('user-email').textContent    = user.email    || 'kinsurer@kinsu.mx';
+document.getElementById('user-initials').textContent = user.initials || 'JR';
+
+// Ajustar saludo según género (heurística simple por inicial del nombre)
+const titulo = document.getElementById('welcome-title');
+titulo.textContent = '¡Bienvenid' +
+  (user.nombre && ['a','e','i'].includes(user.nombre.slice(-1).toLowerCase()) ? 'a' : 'o') +
+  ' de vuelta!';
+
+// ── Auto-redirect con countdown ──
+let secs = 5;
+const msg   = document.getElementById('redirect-msg');
+const timer = setInterval(() => {
+  secs--;
+  msg.textContent = secs > 0
+    ? `Redirigiendo automáticamente en ${secs} segundo${secs !== 1 ? 's' : ''}...`
+    : 'Redirigiendo...';
+  if (secs <= 0) { clearInterval(timer); goToDashboard(); }
+}, 1000);
+
+function goToDashboard() {
+  clearInterval(timer);
+  window.location.href = 'dashboard.html';
+}
+</script>
+</body>
+</html>

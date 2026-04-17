@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Kinsu - Recuperar Contraseña</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "background":               "#f9f9ff",
+          "surface-container":        "#e8edff",
+          "surface-container-low":    "#f1f3ff",
+          "surface-container-high":   "#e0e8ff",
+          "surface-container-highest":"#d7e2ff",
+          "surface-container-lowest": "#ffffff",
+          "on-surface":               "#0b1b35",
+          "on-surface-variant":       "#424751",
+          "primary":                  "#1565c0",
+          "primary-container":        "#004d99",
+          "on-primary":               "#ffffff",
+          "tertiary-fixed":           "#a6f86d",
+          "on-tertiary-fixed-variant":"#245100",
+          "outline":                  "#727782",
+          "outline-variant":          "#c2c6d3",
+          "error":                    "#ba1a1a",
+        },
+        borderRadius: { DEFAULT:"1rem", lg:"2rem", xl:"3rem", full:"9999px" },
+        fontFamily:   { headline:["Inter"], body:["Inter"], label:["Inter"] }
+      }
+    }
+  }
+</script>
+<style>
+  body { font-family:'Inter',sans-serif; }
+  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
+  .hidden-state { display:none !important; }
+  #resend-btn:disabled { opacity:.45; cursor:not-allowed; }
+</style>
+</head>
+
+<body class="bg-background text-on-surface min-h-screen flex items-center justify-center p-4">
+<main class="w-full max-w-[480px] space-y-8">
+
+  <!-- HEADER -->
+  <header class="flex justify-between items-center">
+    <span class="text-2xl font-black text-primary tracking-tight">Kinsu</span>
+    <button onclick="window.location.href='index.html'"
+      class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-colors">
+      <span class="material-symbols-outlined text-on-surface-variant">close</span>
+    </button>
+  </header>
+
+  <!-- PASO 1: Ingreso de correo -->
+  <section id="step-1" class="flex flex-col gap-8">
+
+    <div class="space-y-3">
+      <h1 class="text-[32px] font-bold leading-tight tracking-tight">¿Olvidaste tu contraseña?</h1>
+      <p class="text-on-surface-variant leading-relaxed">
+        Ingresa tu correo electrónico y te enviaremos las instrucciones para restablecerla.
+      </p>
+    </div>
+
+    <!-- Error banner -->
+    <div id="step1-error" class="hidden bg-red-50 border border-red-200 rounded-xl px-4 py-3 flex items-center gap-3">
+      <span class="material-symbols-outlined text-[#ef4444] text-[18px] flex-shrink-0">error</span>
+      <p class="text-sm text-[#b91c1c] font-medium">Ingresa un correo electrónico válido.</p>
+    </div>
+
+    <div class="space-y-5">
+      <div class="relative group">
+        <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+          <span class="material-symbols-outlined text-on-surface-variant group-focus-within:text-primary transition-colors">mail</span>
+        </div>
+        <input id="recovery-email" type="email" placeholder="Correo electrónico"
+          autocomplete="email"
+          class="w-full h-16 bg-surface-container-highest rounded-xl border-none
+                 focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest
+                 pl-[50px] pr-6 text-on-surface placeholder:text-on-surface-variant/60
+                 transition-all font-medium text-sm">
+      </div>
+
+      <button id="send-btn" onclick="sendRecovery()"
+        class="w-full h-14 bg-primary text-on-primary font-bold rounded-full shadow-lg
+               hover:bg-primary-container active:scale-[0.98] transition-all
+               flex items-center justify-center gap-2">
+        <span id="send-txt">Enviar instrucciones</span>
+        <span class="material-symbols-outlined text-[18px]" id="send-ico">arrow_forward</span>
+      </button>
+
+      <div class="text-center">
+        <button onclick="window.location.href='index.html'"
+          class="text-sm font-semibold text-primary hover:underline">
+          Volver al inicio de sesión
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PASO 2: Confirmación -->
+  <section id="step-2" class="hidden-state flex flex-col items-center text-center gap-8">
+
+    <div class="w-[200px] h-[200px] bg-surface-container-low rounded-[2rem] flex items-center justify-center">
+      <span class="material-symbols-outlined text-[80px] text-primary"
+        style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">mark_email_read</span>
+    </div>
+
+    <div class="space-y-3">
+      <h2 class="text-3xl font-bold">Revisa tu correo</h2>
+      <p class="text-on-surface-variant max-w-xs mx-auto leading-relaxed">
+        Enviamos un enlace de recuperación a
+        <span class="font-semibold text-on-surface" id="sent-to">tu correo</span>.
+      </p>
+    </div>
+
+    <div class="w-full bg-tertiary-fixed/30 p-5 rounded-xl flex gap-4 items-start text-left">
+      <span class="material-symbols-outlined text-on-tertiary-fixed-variant flex-shrink-0"
+        style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">info</span>
+      <p class="text-sm font-medium text-on-tertiary-fixed-variant leading-relaxed">
+        Si no recibes el correo en unos minutos, revisa tu carpeta de spam o solicita un nuevo enlace.
+      </p>
+    </div>
+
+    <div class="w-full space-y-4">
+      <button id="resend-btn" onclick="startCountdown()" disabled
+        class="w-full h-14 bg-surface-container-highest text-primary font-semibold
+               rounded-full hover:bg-surface-container-high transition-all">
+        Reenviar enlace (<span id="countdown">60</span>s)
+      </button>
+      <button onclick="window.location.href='index.html'"
+        class="w-full h-14 bg-primary text-on-primary font-bold rounded-full
+               shadow-md hover:bg-primary-container active:scale-[0.98] transition-all">
+        Volver al inicio de sesión
+      </button>
+    </div>
+  </section>
+
+</main>
+
+<script>
+function sendRecovery() {
+  const email  = document.getElementById('recovery-email').value.trim();
+  const errEl  = document.getElementById('step1-error');
+  const btn    = document.getElementById('send-btn');
+
+  errEl.classList.add('hidden');
+
+  if (!email || !email.includes('@') || !email.includes('.')) {
+    errEl.classList.remove('hidden');
+    document.getElementById('recovery-email').focus();
+    return;
+  }
+
+  btn.disabled = true;
+  btn.classList.add('opacity-75');
+  document.getElementById('send-txt').textContent = 'Enviando...';
+  document.getElementById('send-ico').textContent = 'hourglass_empty';
+
+  setTimeout(() => {
+    document.getElementById('sent-to').textContent = email;
+    document.getElementById('step-1').classList.add('hidden-state');
+    document.getElementById('step-2').classList.remove('hidden-state');
+    startCountdown();
+  }, 1200);
+}
+
+let cdTimer = null;
+function startCountdown() {
+  const btn = document.getElementById('resend-btn');
+  const cd  = document.getElementById('countdown');
+  if (cdTimer) clearInterval(cdTimer);
+  let secs = 60;
+  btn.disabled = true;
+  cd.textContent = secs;
+  cdTimer = setInterval(() => {
+    secs--;
+    cd.textContent = secs;
+    if (secs <= 0) {
+      clearInterval(cdTimer);
+      btn.disabled = false;
+      cd.textContent = '60';
+    }
+  }, 1000);
+}
+
+document.getElementById('recovery-email')
+  .addEventListener('keydown', e => { if (e.key === 'Enter') sendRecovery(); });
+</script>
+</body>
+</html>
