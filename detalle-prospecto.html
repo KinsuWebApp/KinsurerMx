@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Kinsu - Detalle de Prospecto</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<style>
+  body { font-family:'Inter',sans-serif; background:#f9f9ff; }
+  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
+  .filled { font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24; }
+</style>
+</head>
+
+<body class="min-h-screen text-[#0d1c2e]">
+
+<!-- Sidebar Desktop -->
+<aside class="fixed left-0 top-0 h-screen w-[200px] hidden lg:flex flex-col bg-[#f8fafc] border-r border-slate-200 z-50">
+  <div class="px-6 py-8">
+    <div class="text-[24px] font-[900] text-[#1d4ed8] leading-none">Kinsu</div>
+    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-1">DASHBOARD</div>
+  </div>
+  <nav class="flex-1">
+    <a href="dashboard.html"       class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">home</span>Inicio</a>
+    <a href="prospectos.html"      class="flex items-center gap-3 px-4 py-3 text-blue-700 border-l-4 border-blue-700 bg-blue-50/50 font-semibold text-sm"><span class="material-symbols-outlined filled">group</span>Prospectos</a>
+    <a href="formacion.html"       class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">school</span>Formación</a>
+    <a href="nuevo-prospecto.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">add_box</span>Nuevo</a>
+    <a href="ganancias.html"       class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">payments</span>Ganancias</a>
+    <a href="perfil.html"          class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">person</span>Perfil</a>
+  </nav>
+</aside>
+
+<!-- Main -->
+<main class="lg:ml-[200px] min-h-screen pb-28">
+
+  <!-- Hero header azul -->
+  <div class="relative bg-[#1565c0] pt-6 pb-16 px-6 lg:px-12 overflow-hidden">
+    <!-- Fondo decorativo -->
+    <div class="absolute inset-0 pointer-events-none" style="background:linear-gradient(135deg,#1565c0 0%,#0d1c2e 100%);opacity:.7;"></div>
+    <div class="absolute top-0 right-0 w-96 h-96 rounded-full pointer-events-none" style="background:radial-gradient(circle,rgba(255,255,255,0.06) 0%,transparent 70%);"></div>
+
+    <!-- Topbar dentro del hero -->
+    <div class="relative z-10 flex items-center justify-between mb-8">
+      <button onclick="window.location.href='prospectos.html'"
+        class="flex items-center gap-2 text-white/80 hover:text-white transition-colors">
+        <span class="material-symbols-outlined">arrow_back</span>
+        <span class="text-sm font-semibold uppercase tracking-wide hidden lg:block">Prospectos</span>
+      </button>
+      <span class="lg:hidden text-xl font-black text-white">Kinsu</span>
+      <button onclick="window.location.href='perfil.html'"
+        class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center font-bold text-white text-xs"
+        id="topbar-av">JR</button>
+    </div>
+
+    <!-- Info prospecto -->
+    <div class="relative z-10 flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+      <div>
+        <span class="inline-block px-3 py-1 bg-white/15 backdrop-blur-md rounded-full text-[10px] font-bold text-white uppercase tracking-widest mb-3"
+          id="hero-folio">Folio #A20240001</span>
+        <h1 class="text-3xl lg:text-5xl font-black text-white tracking-tight leading-none mb-3"
+          id="hero-nombre">Juan López</h1>
+        <div class="flex items-center gap-2 text-white/80">
+          <span class="material-symbols-outlined text-sm" id="hero-icon">directions_car</span>
+          <span class="text-sm font-medium" id="hero-meta">Auto · Folio #A20240001</span>
+        </div>
+      </div>
+      <!-- Card comisión desktop -->
+      <div class="hidden lg:block bg-white/10 backdrop-blur-xl border border-white/15 rounded-2xl px-8 py-5 text-center">
+        <p class="text-white/60 text-[10px] font-bold uppercase tracking-widest mb-1">Comisión Estimada</p>
+        <p class="text-white text-3xl font-black" id="hero-comision">$500 MXN</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenido principal -->
+  <div class="px-6 lg:px-12 -mt-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- Columna izquierda (8) -->
+      <div class="lg:col-span-8 space-y-6">
+
+        <!-- Card comisión mobile -->
+        <div class="lg:hidden bg-[#1565c0] rounded-2xl px-6 py-4 flex items-center justify-between text-white">
+          <p class="text-white/70 text-xs font-bold uppercase tracking-wider">Comisión Estimada</p>
+          <p class="text-2xl font-black" id="hero-comision-mobile">$500 MXN</p>
+        </div>
+
+        <!-- Info de contacto -->
+        <div class="bg-white rounded-2xl p-6 lg:p-8 shadow-sm border border-slate-100">
+          <h3 class="text-xs font-black text-slate-400 uppercase tracking-[.2em] mb-6">Información de Contacto</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl bg-[#e8f0fe] flex items-center justify-center flex-shrink-0">
+                <span class="material-symbols-outlined text-[#1565c0] text-[20px]">call</span>
+              </div>
+              <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Teléfono</p>
+                <p class="font-semibold text-[#0d1c2e]" id="info-tel">+52 55 1234 5678</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl bg-[#e8f0fe] flex items-center justify-center flex-shrink-0">
+                <span class="material-symbols-outlined text-[#1565c0] text-[20px]">mail</span>
+              </div>
+              <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Correo</p>
+                <p class="font-semibold text-[#0d1c2e]" id="info-email">juan@ejemplo.com</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl bg-[#e8f0fe] flex items-center justify-center flex-shrink-0">
+                <span class="material-symbols-outlined text-[#1565c0] text-[20px]">location_on</span>
+              </div>
+              <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Ciudad</p>
+                <p class="font-semibold text-[#0d1c2e]" id="info-ciudad">CDMX, México</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-10 h-10 rounded-xl bg-[#e8f0fe] flex items-center justify-center flex-shrink-0">
+                <span class="material-symbols-outlined text-[#1565c0] text-[20px]">calendar_today</span>
+              </div>
+              <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Fecha de Registro</p>
+                <p class="font-semibold text-[#0d1c2e]" id="info-fecha">Hoy</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cards de ganancia + puntos -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-[#e1f5ee] rounded-2xl p-6 border border-[#0f6e56]/10">
+            <div class="w-12 h-12 bg-[#d4f0a0] rounded-full flex items-center justify-center mb-4">
+              <span class="material-symbols-outlined text-[#1a3a0a] filled">monetization_on</span>
+            </div>
+            <h4 class="text-xs font-bold text-[#0f6e56] uppercase tracking-widest mb-1">Potencial de Ganancia</h4>
+            <div class="text-3xl font-black text-[#0f6e56]" id="card-comision">$500 <span class="text-base font-medium">MXN</span></div>
+          </div>
+          <div class="bg-[#e8f0fe] rounded-2xl p-6 border border-[#1565c0]/10">
+            <div class="w-12 h-12 bg-[#d7e2ff] rounded-full flex items-center justify-center mb-4">
+              <span class="material-symbols-outlined text-[#1565c0] filled">stars</span>
+            </div>
+            <h4 class="text-xs font-bold text-[#1565c0] uppercase tracking-widest mb-1">Puntos Kinsu</h4>
+            <div class="text-3xl font-black text-[#1565c0]">45 <span class="text-base font-medium">PTS</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna derecha (4) -->
+      <div class="lg:col-span-4 space-y-5">
+
+        <!-- Botón WhatsApp -->
+        <a id="btn-whatsapp" href="#"
+          class="flex items-center justify-center gap-3 w-full py-5 px-6 rounded-2xl font-bold text-white shadow-lg active:scale-95 transition-all"
+          style="background:#25d366;">
+          <svg class="w-6 h-6 fill-current flex-shrink-0" viewBox="0 0 24 24">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+          </svg>
+          <span>Contactar por WhatsApp</span>
+        </a>
+
+        <!-- Timeline de estado -->
+        <div class="bg-white rounded-2xl p-6 lg:p-7 shadow-sm border border-slate-100">
+          <h3 class="text-xs font-black text-slate-400 uppercase tracking-[.2em] mb-6">Estado de la Solicitud</h3>
+          <div class="relative">
+            <!-- Línea vertical -->
+            <div class="absolute left-4 top-2 bottom-2 w-0.5 bg-slate-100 rounded-full"></div>
+
+            <div class="space-y-0" id="timeline"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Bottom Nav Mobile -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full h-16 bg-white/85 backdrop-blur-xl flex justify-around items-center px-2 z-50 border-t border-slate-100 shadow-sm rounded-t-2xl">
+  <a href="dashboard.html" class="flex flex-col items-center justify-center text-slate-400">
+    <span class="material-symbols-outlined">home</span>
+    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Inicio</span>
+  </a>
+  <a href="prospectos.html" class="flex flex-col items-center justify-center text-[#1565c0]">
+    <span class="material-symbols-outlined filled">group</span>
+    <span class="text-[10px] font-bold uppercase tracking-wider mt-0.5">Prospectos</span>
+  </a>
+  <div class="flex flex-col items-center -mt-8">
+    <a href="nuevo-prospecto.html"
+      class="w-14 h-14 bg-[#1565c0] text-white rounded-xl shadow-lg flex items-center justify-center active:scale-95 transition-transform">
+      <span class="material-symbols-outlined text-3xl">add</span>
+    </a>
+  </div>
+  <a href="ganancias.html" class="flex flex-col items-center justify-center text-slate-400">
+    <span class="material-symbols-outlined">payments</span>
+    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Ganancias</span>
+  </a>
+  <a href="perfil.html" class="flex flex-col items-center justify-center text-slate-400">
+    <span class="material-symbols-outlined">person</span>
+    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Perfil</span>
+  </a>
+</nav>
+
+<script>
+// ── Usuario ──
+const user = JSON.parse(sessionStorage.getItem('user') || '{"initials":"JR"}');
+document.getElementById('topbar-av').textContent = user.initials || 'JR';
+
+// ── Datos del prospecto ──
+// Intenta leer desde sessionStorage (viene del flujo chat)
+// Si no hay, usa datos demo
+const p = JSON.parse(sessionStorage.getItem('prospecto') || 'null');
+
+const DEMO = {
+  nombre:   'Juan López',
+  tipo:     'auto',
+  folio:    'A20240001',
+  tel:      '+52 55 1234 5678',
+  correo:   'juan@ejemplo.com',
+  comision: '$500 MXN',
+  estatus:  'En Emisión',
+};
+
+const data = {
+  nombre:   p?.nombre   || DEMO.nombre,
+  tipo:     p?.tipo     || DEMO.tipo,
+  folio:    p?.folio    || DEMO.folio,
+  tel:      p?.tel      || DEMO.tel,
+  correo:   p?.correo   || DEMO.correo,
+  comision: p?.comision || DEMO.comision,
+  estatus:  'En Emisión',
+};
+
+const TIPO_ICON = { salud:'health_and_safety', auto:'directions_car', viaje:'flight' };
+const TIPO_COMISION = { salud:'$1,000 MXN', auto:'$500 MXN', viaje:'$300 MXN' };
+
+const comision = TIPO_COMISION[data.tipo] || data.comision;
+const icon = TIPO_ICON[data.tipo] || 'shield';
+const tipoCap = data.tipo.charAt(0).toUpperCase() + data.tipo.slice(1);
+
+// ── Poblar UI ──
+document.getElementById('hero-folio').textContent    = `Folio #${data.folio}`;
+document.getElementById('hero-nombre').textContent   = data.nombre;
+document.getElementById('hero-icon').textContent     = icon;
+document.getElementById('hero-meta').textContent     = `${tipoCap} · Folio #${data.folio}`;
+document.getElementById('hero-comision').textContent = comision;
+document.getElementById('hero-comision-mobile').textContent = comision;
+document.getElementById('card-comision').innerHTML   = `${comision.split(' ')[0]} <span class="text-base font-medium">${comision.split(' ')[1]||''}</span>`;
+document.getElementById('info-tel').textContent      = data.tel;
+document.getElementById('info-email').textContent    = data.correo;
+document.getElementById('info-ciudad').textContent   = data.datos?.ciudad || 'CDMX, México';
+document.getElementById('info-fecha').textContent    = new Date().toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});
+
+// ── WhatsApp link real ──
+const waMsg = encodeURIComponent(
+  `Hola ${data.nombre} 👋\n\n` +
+  `Te contacto de parte de Kinsu. Acabo de iniciar tu proceso para el seguro de *${tipoCap}* — sin compromiso.\n\n` +
+  `Ya tengo tu información registrada. Un asesor de Kinsu te enviará las mejores opciones en breve.\n\n` +
+  `Tu número de seguimiento es *#${data.folio}*. Con él puedes rastrear tu cotización.\n\n` +
+  `¿Alguna duda? Aquí estoy 😊`
+);
+const tel = data.tel.replace(/\D/g,'');
+document.getElementById('btn-whatsapp').href = `https://wa.me/52${tel}?text=${waMsg}`;
+
+// ── Timeline ──
+const PASOS = [
+  { label:'Enviado',       fecha:'Completado', done:true },
+  { label:'En Cotización', fecha:'Completado', done:true },
+  { label:'En Emisión',    fecha:'Estado actual', current:true },
+  { label:'Completado',    fecha:'Pendiente',  done:false },
+];
+
+const timeline = document.getElementById('timeline');
+PASOS.forEach((paso, i) => {
+  const isLast = i === PASOS.length - 1;
+  let dotStyle, titleStyle, badgeHtml = '';
+
+  if (paso.current) {
+    dotStyle = 'background:#1565c0;box-shadow:0 0 0 4px rgba(21,101,192,0.15);';
+    titleStyle = 'font-size:18px;font-weight:900;color:#1565c0;';
+    badgeHtml = `<span class="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-bold"
+      style="background:#e8f0fe;color:#1565c0;">Estado actual</span>`;
+  } else if (paso.done) {
+    dotStyle = 'background:#82d14b;';
+    titleStyle = 'font-size:16px;font-weight:700;color:#0d1c2e;';
+  } else {
+    dotStyle = 'background:#d7e2ff;opacity:.5;';
+    titleStyle = 'font-size:16px;font-weight:700;color:#8899bb;';
+  }
+
+  timeline.innerHTML += `
+  <div class="relative flex gap-5 ${isLast ? '' : 'pb-8'}">
+    <div class="z-10 mt-1 flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style="${dotStyle}">
+      ${paso.done && !paso.current
+        ? '<span class="material-symbols-outlined text-white text-[16px] filled" style="font-variation-settings:\'FILL\' 1,\'wght\' 400,\'GRAD\' 0,\'opsz\' 24;">check</span>'
+        : paso.current
+          ? '<div style="width:10px;height:10px;border-radius:50%;background:#fff;animation:pulse 1.5s infinite;"></div>'
+          : '<span class="material-symbols-outlined text-[#8899bb] text-[16px]">hourglass_empty</span>'
+      }
+    </div>
+    <div class="flex-1">
+      <p class="text-[10px] font-bold uppercase tracking-wider mb-0.5"
+        style="color:${paso.current ? '#1565c0' : paso.done ? '#8899bb' : '#c0cad8'};">
+        ${paso.fecha}
+      </p>
+      <h5 style="${titleStyle}">${paso.label}</h5>
+      ${badgeHtml}
+    </div>
+  </div>`;
+});
+
+// Pulse animation
+const style = document.createElement('style');
+style.textContent = '@keyframes pulse { 0%,100%{opacity:.5;transform:scale(.8)} 50%{opacity:1;transform:scale(1)} }';
+document.head.appendChild(style);
+</script>
+</body>
+</html>
