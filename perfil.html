@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Kinsu - Perfil</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<style>
+  body { font-family:'Inter',sans-serif; background:#f9f9ff; }
+  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
+  .filled { font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24; }
+</style>
+</head>
+
+<body class="min-h-screen text-[#0d1c2e]">
+
+<!-- Sidebar Desktop -->
+<aside class="fixed left-0 top-0 h-screen w-[200px] hidden lg:flex flex-col bg-[#f8fafc] border-r border-slate-200 z-50">
+  <div class="px-6 py-8">
+    <div class="text-[24px] font-[900] text-[#1d4ed8] leading-none">Kinsu</div>
+    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-1">DASHBOARD</div>
+  </div>
+  <nav class="flex-1">
+    <a href="dashboard.html"       class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">home</span>Inicio</a>
+    <a href="prospectos.html"      class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">group</span>Prospectos</a>
+    <a href="formacion.html"       class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">school</span>Formación</a>
+    <a href="nuevo-prospecto.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">add_box</span>Nuevo</a>
+    <a href="ganancias.html"       class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">payments</span>Ganancias</a>
+    <a href="perfil.html"          class="flex items-center gap-3 px-4 py-3 text-blue-700 border-l-4 border-blue-700 bg-blue-50/50 font-semibold text-sm"><span class="material-symbols-outlined filled">person</span>Perfil</a>
+  </nav>
+  <!-- Cerrar sesión solo en desktop sidebar -->
+  <div class="px-3 pb-6">
+    <button onclick="doLogout()"
+      class="w-full flex items-center gap-3 px-4 py-3 text-[#ba1a1a] font-semibold hover:bg-red-50 rounded-xl transition-colors text-sm">
+      <span class="material-symbols-outlined">logout</span>
+      Cerrar sesión
+    </button>
+  </div>
+</aside>
+
+<!-- Topbar -->
+<header class="fixed top-0 right-0 left-0 lg:left-[200px] h-16 bg-white/85 backdrop-blur-md flex items-center justify-between px-6 z-40 shadow-sm">
+  <div class="flex items-center gap-3">
+    <span class="lg:hidden text-xl font-black text-[#1d4ed8]">Kinsu</span>
+    <div class="hidden lg:flex items-center gap-2">
+      <h1 class="text-base font-bold text-slate-800">Mi Perfil</h1>
+      <span class="px-3 py-1 bg-[#a6f86d] text-[#1a3a0a] rounded-full text-xs font-bold flex items-center gap-1">
+        <span class="w-1.5 h-1.5 bg-[#1a3a0a] rounded-full"></span>
+        Certificado
+      </span>
+    </div>
+  </div>
+  <div class="flex items-center gap-3">
+    <button class="text-slate-500 hover:text-blue-600 transition-colors">
+      <span class="material-symbols-outlined">notifications</span>
+    </button>
+    <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-700 text-xs"
+      id="topbar-av">JR</div>
+  </div>
+</header>
+
+<!-- Main -->
+<main class="pt-20 pb-28 lg:pl-[200px] px-6 min-h-screen">
+  <div class="max-w-5xl mx-auto mt-4">
+
+    <!-- Header sección -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+      <div>
+        <h2 class="text-3xl lg:text-[40px] font-[900] text-[#0d1c2e] tracking-tight">Mi Perfil</h2>
+        <p class="text-slate-500 text-base mt-1">Gestiona tu identidad y configura tus preferencias.</p>
+      </div>
+      <!-- Nivel badge desktop -->
+      <div class="hidden lg:flex items-center gap-3 bg-[#d4f0a0]/30 border border-[#d4f0a0]/50 rounded-2xl px-5 py-3">
+        <div class="w-10 h-10 bg-[#285900] rounded-xl flex items-center justify-center">
+          <span class="material-symbols-outlined text-white filled text-[18px]">verified</span>
+        </div>
+        <div>
+          <p class="text-[10px] text-[#1a3a0a] uppercase font-black tracking-wider">Nivel</p>
+          <p class="text-base font-black text-[#1a3a0a]">Kinsurer Certificado</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bento grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- Card identidad (col 4) -->
+      <div class="lg:col-span-4 bg-white rounded-3xl p-8 shadow-sm border border-slate-100 flex flex-col items-center text-center">
+
+        <!-- Avatar -->
+        <div class="relative mb-5">
+          <div class="w-28 h-28 rounded-full bg-[#e8f0fe] flex items-center justify-center border-4 border-white shadow-lg">
+            <span class="text-[28px] font-black text-[#1565c0]" id="avatar-initials">JR</span>
+          </div>
+          <!-- Badge nivel mobile -->
+          <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-[#a6f86d] text-[#1a3a0a] px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider whitespace-nowrap shadow">
+            Kinsurer
+          </div>
+        </div>
+
+        <h3 class="text-xl font-bold text-[#0d1c2e] mt-4" id="perfil-nombre">Jimena Ríos</h3>
+        <p class="text-xs text-slate-400 font-semibold mt-1 mb-1" id="perfil-id">ID: KIN-8829-XP</p>
+
+        <div class="w-full h-px bg-slate-100 my-5"></div>
+
+        <!-- Datos -->
+        <div class="w-full space-y-4 text-left">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-[#f1f3ff] flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-slate-500 text-[18px]">mail</span>
+            </div>
+            <div>
+              <p class="text-[10px] text-slate-400 uppercase tracking-wider font-bold">Email</p>
+              <p class="text-sm font-semibold text-[#0d1c2e]" id="perfil-email">kinsurer@kinsu.mx</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-[#f1f3ff] flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-slate-500 text-[18px]">smartphone</span>
+            </div>
+            <div>
+              <p class="text-[10px] text-slate-400 uppercase tracking-wider font-bold">Teléfono</p>
+              <p class="text-sm font-semibold text-[#0d1c2e]">+52 55 1234 5678</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Columna derecha (col 8) -->
+      <div class="lg:col-span-8 flex flex-col gap-5">
+
+        <!-- Card CLABE -->
+        <div class="bg-white rounded-3xl p-6 lg:p-8 shadow-sm border border-slate-100">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-5">
+            <div class="flex items-center gap-5">
+              <div class="w-14 h-14 rounded-2xl bg-[#f1f3ff] flex items-center justify-center flex-shrink-0">
+                <span class="material-symbols-outlined text-[#1565c0] text-[28px]">account_balance</span>
+              </div>
+              <div>
+                <h4 class="text-base font-bold text-[#0d1c2e]">Cuenta Bancaria</h4>
+                <p class="text-slate-400 text-sm">BBVA México</p>
+                <p class="font-mono text-sm font-bold text-[#1565c0] tracking-widest mt-1">**** **** **** 0921</p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <button class="px-6 py-2.5 bg-[#1565c0] text-white rounded-full font-bold text-sm
+                             hover:bg-[#1255a8] active:scale-95 transition-all">
+                Actualizar
+              </button>
+              <button onclick="window.location.href='ganancias.html'"
+                class="px-6 py-2.5 border border-[#d4dcf5] text-[#1565c0] rounded-full font-bold text-sm
+                       hover:bg-[#f0f4ff] active:scale-95 transition-all">
+                Ver historial
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mini grid configuración -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+          <div class="bg-[#f1f3ff] rounded-2xl p-5 hover:bg-[#e8f0fe] transition-colors cursor-pointer group">
+            <div class="w-11 h-11 rounded-full bg-white flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-[#1565c0] filled">verified_user</span>
+            </div>
+            <h5 class="font-bold text-[#0d1c2e] mb-1">Seguridad</h5>
+            <p class="text-xs text-[#1a3a0a] bg-[#a6f86d] px-2 py-0.5 rounded-md inline-block font-bold">2FA Activo</p>
+          </div>
+
+          <div class="bg-[#f1f3ff] rounded-2xl p-5 hover:bg-[#e8f0fe] transition-colors cursor-pointer group">
+            <div class="w-11 h-11 rounded-full bg-white flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-slate-500">language</span>
+            </div>
+            <h5 class="font-bold text-[#0d1c2e] mb-1">Idioma</h5>
+            <p class="text-xs text-slate-500 font-semibold">Español (MX)</p>
+          </div>
+
+          <div class="bg-[#f1f3ff] rounded-2xl p-5 hover:bg-[#dcfce7] transition-colors cursor-pointer group">
+            <div class="w-11 h-11 rounded-full bg-white flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="#25d366">
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+              </svg>
+            </div>
+            <h5 class="font-bold text-[#0d1c2e] mb-1">Soporte</h5>
+            <p class="text-xs text-[#25d366] font-bold flex items-center gap-1">
+              WhatsApp <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Card saldo disponible -->
+        <div class="bg-[#0d1c2e] rounded-3xl p-6 lg:p-8 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+          <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-[#1565c0] rounded-full blur-3xl opacity-20 pointer-events-none"></div>
+          <div class="absolute -left-10 -top-10 w-48 h-48 bg-[#005db7] rounded-full blur-3xl opacity-10 pointer-events-none"></div>
+          <div class="relative z-10 text-center md:text-left">
+            <p class="text-white/50 text-[10px] font-black uppercase tracking-[.2em] mb-2">Saldo Disponible</p>
+            <h2 class="text-3xl lg:text-4xl font-black text-white tracking-tighter">$4,513.00</h2>
+            <p class="text-[#a6f86d] text-xs font-bold mt-2 flex items-center gap-1 justify-center md:justify-start">
+              <span class="material-symbols-outlined text-[14px]">trending_up</span>
+              +12% vs semana anterior
+            </p>
+          </div>
+          <button onclick="window.location.href='ganancias.html'"
+            class="relative z-10 px-6 py-3 bg-white text-[#1565c0] rounded-full font-black text-sm
+                   hover:bg-blue-50 active:scale-95 transition-all shadow-lg whitespace-nowrap">
+            Retirar Fondos
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Botón cerrar sesión SOLO mobile -->
+    <div class="lg:hidden mt-6">
+      <button onclick="doLogout()"
+        class="w-full flex items-center justify-center gap-3 py-4 bg-[#fff0f0] border border-[#fca5a5]/20
+               text-[#ba1a1a] font-bold rounded-2xl active:scale-95 transition-all text-sm">
+        <span class="material-symbols-outlined">logout</span>
+        Cerrar sesión
+      </button>
+    </div>
+
+  </div>
+</main>
+
+<!-- Bottom Nav Mobile -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full h-16 bg-white/85 backdrop-blur-xl flex justify-around items-center px-2 z-50 border-t border-slate-100 shadow-sm rounded-t-2xl">
+  <a href="dashboard.html" class="flex flex-col items-center justify-center text-slate-400">
+    <span class="material-symbols-outlined">home</span>
+    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Inicio</span>
+  </a>
+  <a href="prospectos.html" class="flex flex-col items-center justify-center text-slate-400">
+    <span class="material-symbols-outlined">group</span>
+    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Prospectos</span>
+  </a>
+  <div class="flex flex-col items-center -mt-8">
+    <a href="nuevo-prospecto.html"
+      class="w-14 h-14 bg-[#1565c0] text-white rounded-xl shadow-lg flex items-center justify-center active:scale-95 transition-transform">
+      <span class="material-symbols-outlined text-3xl">add</span>
+    </a>
+  </div>
+  <a href="ganancias.html" class="flex flex-col items-center justify-center text-slate-400">
+    <span class="material-symbols-outlined">payments</span>
+    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Ganancias</span>
+  </a>
+  <a href="perfil.html" class="flex flex-col items-center justify-center text-[#1565c0]">
+    <span class="material-symbols-outlined filled">person</span>
+    <span class="text-[10px] font-bold uppercase tracking-wider mt-0.5">Perfil</span>
+  </a>
+</nav>
+
+<script>
+// ── Usuario desde sessionStorage ──
+const user = JSON.parse(
+  sessionStorage.getItem('user') ||
+  '{"nombre":"Jimena Ríos","email":"kinsurer@kinsu.mx","initials":"JR"}'
+);
+
+document.getElementById('topbar-av').textContent      = user.initials || 'JR';
+document.getElementById('avatar-initials').textContent = user.initials || 'JR';
+document.getElementById('perfil-nombre').textContent  = user.nombre   || 'Jimena Ríos';
+document.getElementById('perfil-email').textContent   = user.email    || 'kinsurer@kinsu.mx';
+
+// ID visual basado en email
+const id = 'KIN-' + (user.email || 'kinsurer@kinsu.mx').toUpperCase().slice(0,4) + '-XP';
+document.getElementById('perfil-id').textContent = 'ID: ' + id;
+
+// ── Cerrar sesión ──
+function doLogout() {
+  sessionStorage.clear();
+  window.location.href = 'index.html';
+}
+</script>
+</body>
+</html>
