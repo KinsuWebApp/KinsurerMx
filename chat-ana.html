@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Kinsu - Chat con Ana</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<style>
+  body { font-family:'Inter',sans-serif; background:#eef2f9; }
+  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
+
+  .ana-bubble  { border-radius:16px 16px 16px 4px; }
+  .user-bubble { border-radius:16px 16px 4px 16px; }
+
+  .no-scrollbar::-webkit-scrollbar { display:none; }
+  .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
+
+  /* Typing dots */
+  .dot { width:6px; height:6px; border-radius:50%; background:#1565c0; display:inline-block; animation:blink 1.2s infinite; }
+  .dot:nth-child(2) { animation-delay:.2s; }
+  .dot:nth-child(3) { animation-delay:.4s; }
+  @keyframes blink { 0%,100%{opacity:.3;transform:scale(.8)} 50%{opacity:1;transform:scale(1)} }
+
+  /* Quiz options */
+  .quiz-opt {
+    cursor:pointer; transition:all .15s;
+    padding:10px 16px; border-radius:12px;
+    border:1.5px solid #e2e8f5;
+    background:#f1f3ff; font-size:13px;
+    font-weight:500; color:#0d1c2e;
+    text-align:left; width:100%;
+  }
+  .quiz-opt:hover { border-color:#1565c0; background:#e8f0fe; color:#1565c0; }
+  .quiz-opt.correct { background:#d4f0a0; border-color:#82d14b; color:#1a3a0a; pointer-events:none; }
+  .quiz-opt.wrong   { background:#fff0f0; border-color:#ef4444; color:#a32d2d; pointer-events:none; }
+
+  /* Quick reply chips */
+  .qr-chip { flex-shrink:0; padding:8px 18px; border-radius:99px; font-size:13px; font-weight:600; cursor:pointer; transition:all .15s; white-space:nowrap; }
+  .qr-primary   { background:#1565c0; color:#fff; }
+  .qr-primary:hover { background:#1255a8; }
+  .qr-secondary { background:#fff; color:#1565c0; border:1.5px solid rgba(21,101,192,.2); }
+  .qr-secondary:hover { background:#e8f0fe; }
+</style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+<!-- TOPBAR -->
+<header class="bg-white/90 backdrop-blur-md fixed top-0 w-full z-50 border-b border-[#e8f0fe]">
+  <div class="flex items-center justify-between px-4 h-16 max-w-2xl mx-auto">
+    <div class="flex items-center gap-3">
+      <button onclick="window.location.href='formacion.html'"
+        class="text-[#1565c0] hover:bg-slate-100 p-2 rounded-full transition-all">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </button>
+      <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 relative"
+        style="background:linear-gradient(135deg,#1565c0 0%,#82d14b 100%);">
+        <span class="text-white font-black text-base">A</span>
+        <div class="absolute bottom-0 right-0 w-3 h-3 bg-[#82d14b] border-2 border-white rounded-full"></div>
+      </div>
+      <div>
+        <p class="text-[13px] font-bold text-[#0d1c2e]">Ana de Kinsu</p>
+        <div class="flex items-center gap-1">
+          <span class="w-1.5 h-1.5 bg-[#82d14b] rounded-full"></span>
+          <span class="text-[10px] text-slate-500 font-medium uppercase tracking-wider">Experta Kinsu</span>
+        </div>
+      </div>
+    </div>
+    <button class="text-slate-400 hover:bg-slate-100 p-2 rounded-full">
+      <span class="material-symbols-outlined">info</span>
+    </button>
+  </div>
+</header>
+
+<!-- MISSION BANNER -->
+<div class="bg-[#e8f0fe] border-b border-[#d4dcf5] fixed top-16 w-full z-40">
+  <div class="flex items-center justify-between px-4 py-2.5 max-w-2xl mx-auto">
+    <div class="flex items-center gap-2">
+      <span class="material-symbols-outlined text-[#1565c0] text-[18px]">school</span>
+      <span class="text-[13px] text-[#1565c0] font-semibold">Misión: Bienvenida a Kinsu · Nivel 1</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="text-[11px] text-[#1565c0] font-bold" id="progress-pct">0%</span>
+      <div class="w-20 h-1 bg-[#c2c6d4]/30 rounded-full overflow-hidden">
+        <div class="h-full bg-[#1565c0] rounded-full transition-all duration-500" id="progress-bar" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT AREA -->
+<main class="flex-1 w-full max-w-2xl mx-auto pt-36 pb-48 px-4 flex flex-col gap-4 no-scrollbar overflow-y-auto"
+  id="chat-area"></main>
+
+<!-- QUICK REPLIES -->
+<div class="fixed w-full max-w-2xl left-1/2 -translate-x-1/2 px-4 z-40"
+  id="quick-replies-container" style="bottom:100px;"></div>
+
+<!-- INPUT BAR -->
+<div class="fixed bottom-0 left-0 w-full z-50">
+  <div class="max-w-2xl mx-auto px-4 pb-6 pt-2">
+    <div class="bg-white/90 backdrop-blur-xl rounded-3xl p-2 shadow-lg flex items-center gap-2 border border-white">
+      <input id="chat-input" type="text" placeholder="Escribe tu respuesta..."
+        class="flex-1 bg-transparent border-none focus:ring-0 text-[14px] text-[#0d1c2e]
+               placeholder:text-slate-400 px-2 outline-none">
+      <button onclick="sendMessage()" id="send-btn"
+        class="w-10 h-10 bg-[#1565c0] text-white rounded-full flex items-center justify-center
+               shadow active:scale-90 transition-transform flex-shrink-0 disabled:opacity-50">
+        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">arrow_upward</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Sistema de mensajes ──
+const user = JSON.parse(sessionStorage.getItem('user') || '{"nombre":"Kinsurer","initials":"JR"}');
+const userName = user.nombre?.split(' ')[0] || 'Kinsurer';
+
+// Historial de conversación para la API
+let conversationHistory = [];
+let quizStep = 0;
+let quizScore = 0;
+let inQuiz = false;
+let totalMessages = 0;
+const TOTAL_STEPS = 10; // aprox mensajes hasta completar
+
+// ── SISTEMA PROMPT DE ANA ──
+const ANA_SYSTEM = `Eres Ana de Kinsu, una experta y guía de formación para Kinsurers (agentes informales de seguros en México). Tu objetivo es ayudar a ${userName} a entender cómo funciona Kinsu y cómo puede ganar dinero recomendando seguros.
+
+PERSONALIDAD:
+- Cálida, motivadora y cercana. Usas emojis con moderación.
+- Explicas con ejemplos cotidianos del mercado mexicano.
+- Nunca das respuestas directas a las preguntas del quiz — haces que el Kinsurer piense.
+- Cuando el usuario comete un error, lo corriges amablemente y explicas por qué.
+
+SOBRE KINSU:
+- Kinsu es una plataforma donde personas normales (Kinsurers) recomiendan seguros a sus contactos y ganan comisiones.
+- No necesitan ser agentes ni tener experiencia en seguros.
+- Tipos de seguro: Salud ($1,000 MXN), Auto ($500 MXN), Viaje ($300 MXN).
+- Proceso: El Kinsurer registra un prospecto → Kinsu contacta al prospecto → Si compra, el Kinsurer gana su comisión.
+- Niveles: Certificado ($200 fijos), Pro (15%), Elite (20%), Embajador (25% + bono de red).
+
+FLUJO DE LA CONVERSACIÓN:
+1. Primero saluda y pregunta qué sabe el usuario sobre Kinsu.
+2. Explica el concepto con un ejemplo simple y concreto.
+3. Pregunta si entendió y responde sus dudas.
+4. Cuando el usuario demuestre que entendió, indícale que harás el quiz.
+5. El quiz tiene 3 preguntas de opción múltiple sobre lo aprendido.
+6. Al terminar el quiz, felicita al usuario y dile que ha desbloqueado su insignia de Kinsurer Certificado.
+
+IMPORTANTE:
+- Responde SIEMPRE en español mexicano.
+- Mantén respuestas cortas (máximo 3-4 oraciones por mensaje).
+- Si el usuario pregunta algo fuera de tema, redirige amablemente a la formación.
+- Cuando presentes el quiz, formato tu respuesta así:
+  QUIZ: [pregunta]
+  A) [opción]
+  B) [opción]
+  C) [opción]
+  CORRECTA: [letra]`;
+
+// ── UI Helpers ──
+function scrollBottom() {
+  setTimeout(() => {
+    const area = document.getElementById('chat-area');
+    area.scrollTo({ top: area.scrollHeight, behavior:'smooth' });
+  }, 80);
+}
+
+function updateProgress(step) {
+  const pct = Math.min(100, Math.round((step / TOTAL_STEPS) * 100));
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-bar').style.width = pct + '%';
+}
+
+function addBubble(text, side = 'ana', extraClass = '') {
+  const area = document.getElementById('chat-area');
+  const processedText = text.replace(/\n/g, '<br>');
+
+  if (side === 'ana') {
+    area.innerHTML += `
+    <div class="flex items-end gap-2 max-w-[88%] ${extraClass}">
+      <div class="w-8 h-8 rounded-full flex-shrink-0 self-start mt-1 flex items-center justify-center"
+        style="background:linear-gradient(135deg,#1565c0 0%,#82d14b 100%);">
+        <span class="text-white font-bold text-[11px]">A</span>
+      </div>
+      <div class="bg-white ana-bubble border border-[#b5d4f4] px-4 py-3 text-[14px] text-[#0d1c2e] leading-relaxed shadow-sm">
+        ${processedText}
+      </div>
+    </div>`;
+  } else {
+    area.innerHTML += `
+    <div class="flex justify-end ${extraClass}">
+      <div class="bg-[#1565c0] text-white px-4 py-3 text-[14px] leading-relaxed max-w-[80%] shadow-md user-bubble">
+        ${processedText}
+      </div>
+    </div>`;
+  }
+  scrollBottom();
+}
+
+function showTyping() {
+  const area = document.getElementById('chat-area');
+  area.innerHTML += `
+  <div class="flex items-end gap-2" id="typing-ind">
+    <div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center"
+      style="background:linear-gradient(135deg,rgba(21,101,192,.15) 0%,rgba(130,209,75,.15) 100%);">
+      <span class="text-[#1565c0] font-bold text-[11px]">A</span>
+    </div>
+    <div class="bg-white px-4 py-3 shadow-sm border border-[#b5d4f4]/40 ana-bubble">
+      <div style="display:flex;gap:4px;align-items:center;">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      </div>
+    </div>
+  </div>`;
+  scrollBottom();
+}
+
+function removeTyping() {
+  document.getElementById('typing-ind')?.remove();
+}
+
+function setQuickReplies(replies) {
+  const c = document.getElementById('quick-replies-container');
+  if (!replies?.length) { c.innerHTML = ''; return; }
+  c.innerHTML = `<div class="flex gap-2 overflow-x-auto no-scrollbar py-2">
+    ${replies.map((r, i) =>
+      `<button class="qr-chip ${i===0?'qr-primary':'qr-secondary'}"
+        onclick="onQuickReply('${r.replace(/'/g,"\\'")}')">
+        ${r}
+      </button>`
+    ).join('')}
+  </div>`;
+}
+
+function clearQuickReplies() {
+  document.getElementById('quick-replies-container').innerHTML = '';
+}
+
+// ── Quiz renderer ──
+function renderQuiz(text) {
+  // Parsear formato QUIZ:
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  const quizIdx = lines.findIndex(l => l.startsWith('QUIZ:'));
+  if (quizIdx === -1) return false;
+
+  const question = lines[quizIdx].replace('QUIZ:', '').trim();
+  const options   = lines.filter(l => /^[A-C]\)/.test(l));
+  const correct   = (lines.find(l => l.startsWith('CORRECTA:')) || '')
+                    .replace('CORRECTA:', '').trim().toUpperCase();
+
+  if (!question || options.length < 2) return false;
+
+  const area = document.getElementById('chat-area');
+  const id   = 'quiz-' + Date.now();
+
+  area.innerHTML += `
+  <div class="flex items-end gap-2 max-w-[92%]">
+    <div class="w-8 h-8 rounded-full flex-shrink-0 self-start mt-1 flex items-center justify-center"
+      style="background:linear-gradient(135deg,#1565c0 0%,#82d14b 100%);">
+      <span class="text-white font-bold text-[11px]">A</span>
+    </div>
+    <div class="bg-white ana-bubble border border-[#b5d4f4] px-4 py-4 shadow-sm flex-1">
+      <p class="text-[10px] font-black text-[#1565c0] uppercase tracking-wider mb-3">
+        Pregunta ${quizStep + 1} de 3
+      </p>
+      <p class="text-[14px] font-bold text-[#0d1c2e] mb-4">${question}</p>
+      <div class="space-y-2" id="${id}">
+        ${options.map(opt => {
+          const letter = opt[0];
+          const label  = opt.slice(3).trim();
+          return `<button class="quiz-opt" onclick="answerQuiz('${id}','${letter}','${correct}','${label}')">
+            <span class="font-black text-[#1565c0] mr-2">${letter}</span>${label}
+          </button>`;
+        }).join('')}
+      </div>
+    </div>
+  </div>`;
+
+  scrollBottom();
+  return true;
+}
+
+function answerQuiz(containerId, selected, correct, label) {
+  const btns = document.querySelectorAll(`#${containerId} .quiz-opt`);
+  btns.forEach(b => {
+    const letter = b.textContent.trim()[0];
+    if (letter === correct) b.classList.add('correct');
+    else b.classList.add('wrong');
+  });
+
+  const isCorrect = selected === correct;
+  if (isCorrect) quizScore++;
+  quizStep++;
+
+  totalMessages++;
+  updateProgress(totalMessages);
+  clearQuickReplies();
+
+  const userText = isCorrect
+    ? `${selected}) ${label} ✓`
+    : `${selected}) ${label}`;
+  addBubble(userText, 'user');
+
+  const feedback = isCorrect
+    ? '¡Correcto! 🎉'
+    : `No exactamente — la respuesta correcta es ${correct}.`;
+
+  conversationHistory.push({
+    role:'user',
+    content: `Mi respuesta al quiz fue: ${selected}) ${label}. ${isCorrect ? 'Estaba en lo correcto.' : 'Estaba equivocado.'}`
+  });
+
+  callAna(feedback + ' ' + (quizStep < 3 ? 'Siguiente pregunta:' : `Terminaste el quiz con ${quizScore}/3 respuestas correctas.`));
+}
+
+// ── API de Ana ──
+async function callAna(userMessage) {
+  setInputDisabled(true);
+  clearQuickReplies();
+  showTyping();
+
+  conversationHistory.push({ role:'user', content: userMessage });
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 600,
+        system: ANA_SYSTEM,
+        messages: conversationHistory
+      })
+    });
+
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || 'Lo siento, hubo un error. ¿Puedes intentarlo de nuevo?';
+
+    removeTyping();
+    conversationHistory.push({ role:'assistant', content: reply });
+
+    totalMessages++;
+    updateProgress(totalMessages);
+
+    // Verificar si es quiz
+    const isQuiz = renderQuiz(reply);
+
+    if (!isQuiz) {
+      addBubble(reply);
+
+      // Quick replies contextuales
+      if (reply.toLowerCase().includes('quiz') || reply.toLowerCase().includes('pregunta')) {
+        setQuickReplies(['¡Estoy listo!', 'Explícame más primero']);
+      } else if (reply.toLowerCase().includes('insignia') || reply.toLowerCase().includes('certificado')) {
+        // Misión completada
+        updateProgress(TOTAL_STEPS);
+        setTimeout(() => showCompletionCard(), 800);
+      } else if (totalMessages < 4) {
+        setQuickReplies(['Cuéntame más', '¿Cómo gano dinero?', 'Tengo una duda']);
+      } else {
+        setQuickReplies(['Entendí, ¿qué sigue?', 'Tengo una pregunta']);
+      }
+    }
+
+  } catch (err) {
+    removeTyping();
+    addBubble('Tuve un problema de conexión. ¿Puedes intentarlo de nuevo? 🙏');
+    console.error(err);
+  } finally {
+    setInputDisabled(false);
+  }
+}
+
+function showCompletionCard() {
+  const area = document.getElementById('chat-area');
+  area.innerHTML += `
+  <div class="flex justify-center my-4">
+    <div class="bg-[#d4f0a0] rounded-3xl p-6 text-center max-w-xs shadow-lg border border-[#82d14b]/30">
+      <div class="w-16 h-16 bg-[#82d14b] rounded-full flex items-center justify-center mx-auto mb-4">
+        <span class="material-symbols-outlined text-white text-[32px]" style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">military_tech</span>
+      </div>
+      <h3 class="text-lg font-black text-[#1a3a0a] mb-2">¡Insignia desbloqueada! 🎉</h3>
+      <p class="text-sm text-[#285900] font-semibold mb-1">Kinsurer Certificado</p>
+      <p class="text-xs text-[#285900]/70 mb-4">Puntaje: ${quizScore}/3 respuestas correctas</p>
+      <a href="formacion.html"
+        class="inline-flex items-center gap-2 px-6 py-3 bg-[#1565c0] text-white rounded-full font-bold text-sm
+               hover:bg-[#1255a8] active:scale-95 transition-all">
+        Ver mi progreso
+        <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+      </a>
+    </div>
+  </div>`;
+  scrollBottom();
+
+  // Deshabilitar input
+  document.getElementById('chat-input').disabled = true;
+  document.getElementById('send-btn').disabled   = true;
+  clearQuickReplies();
+}
+
+// ── Input handlers ──
+function setInputDisabled(val) {
+  document.getElementById('chat-input').disabled = val;
+  document.getElementById('send-btn').disabled   = val;
+}
+
+function sendMessage() {
+  const inp = document.getElementById('chat-input');
+  const msg = inp.value.trim();
+  if (!msg) return;
+  inp.value = '';
+  clearQuickReplies();
+  addBubble(msg, 'user');
+  callAna(msg);
+}
+
+function onQuickReply(val) {
+  document.getElementById('chat-input').value = '';
+  clearQuickReplies();
+  addBubble(val, 'user');
+  callAna(val);
+}
+
+document.getElementById('chat-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+});
+
+// ── Inicio ──
+setTimeout(() => {
+  callAna(`Hola Ana, soy ${userName}. Acabo de registrarme en Kinsu y quiero aprender cómo funciona para ganar mis primeras comisiones.`);
+}, 500);
+</script>
+</body>
+</html>
