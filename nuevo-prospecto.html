@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Kinsu - Nuevo Prospecto</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode:"class",
+    theme:{ extend:{
+      colors:{
+        "background":"#f9f9ff","surface-container":"#e8edff",
+        "surface-container-low":"#f1f3ff","surface-container-high":"#e0e8ff",
+        "surface-container-highest":"#d7e2ff","surface-container-lowest":"#ffffff",
+        "on-surface":"#0b1b35","on-surface-variant":"#424751",
+        "primary":"#1565c0","primary-container":"#004d99","on-primary":"#ffffff",
+        "tertiary-fixed":"#a6f86d","on-tertiary-fixed-variant":"#245100",
+        "tertiary":"#1b3f00","outline":"#727782","outline-variant":"#c2c6d3",
+        "error":"#ba1a1a",
+      },
+      borderRadius:{ DEFAULT:"1rem",lg:"2rem",xl:"3rem",full:"9999px" },
+      fontFamily:{ headline:["Inter"],body:["Inter"],label:["Inter"] }
+    }}
+  }
+</script>
+<style>
+  body { font-family:'Inter',sans-serif; }
+  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
+
+  /* Chips */
+  .chip { transition:all .15s; }
+  .chip.active {
+    background:#1565c0 !important;
+    border-color:#1565c0 !important;
+    color:#fff !important;
+    box-shadow:0 4px 12px rgba(21,101,192,0.25);
+  }
+  .chip.active .chip-icon { color:#fff !important; }
+
+  /* Field error */
+  .field-err { box-shadow:0 0 0 2px #ef4444 !important; background:#fff8f8 !important; }
+  .err-msg { font-size:12px; color:#ef4444; font-weight:500; margin-top:4px; }
+</style>
+</head>
+
+<body class="bg-background text-on-surface min-h-screen">
+
+<!-- Sidebar Desktop -->
+<aside class="fixed left-0 top-0 h-full w-[200px] hidden lg:flex flex-col bg-slate-50 border-r border-slate-200 z-50">
+  <div class="px-6 py-8">
+    <span class="text-2xl font-black text-[#1d4ed8] tracking-tight">Kinsu</span>
+    <p class="text-[10px] uppercase tracking-widest text-slate-400 mt-1 font-bold">DASHBOARD</p>
+  </div>
+  <nav class="flex-1">
+    <a href="dashboard.html"     class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">home</span>Inicio</a>
+    <a href="prospectos.html"    class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">group</span>Prospectos</a>
+    <a href="formacion.html"     class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">school</span>Formación</a>
+    <a href="nuevo-prospecto.html" class="flex items-center gap-3 px-4 py-3 text-blue-700 border-l-4 border-blue-700 bg-blue-50/50 font-semibold text-sm"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">add_box</span>Nuevo</a>
+    <a href="ganancias.html"     class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">payments</span>Ganancias</a>
+    <a href="perfil.html"        class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">person</span>Perfil</a>
+  </nav>
+</aside>
+
+<!-- Topbar -->
+<header class="fixed top-0 right-0 left-0 lg:left-[200px] h-16 bg-white/85 backdrop-blur-md flex items-center justify-between px-6 z-40 shadow-sm">
+  <div class="flex items-center gap-3">
+    <span class="lg:hidden text-xl font-black text-[#1d4ed8]">Kinsu</span>
+    <h1 class="hidden lg:block text-base font-bold text-slate-800">Nuevo Prospecto</h1>
+  </div>
+  <div class="flex items-center gap-3">
+    <button class="text-slate-500 hover:text-blue-600 transition-colors">
+      <span class="material-symbols-outlined">notifications</span>
+    </button>
+    <button onclick="window.location.href='perfil.html'"
+      class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-700 text-xs"
+      id="topbar-av">JR</button>
+  </div>
+</header>
+
+<!-- Main -->
+<main class="pt-20 pb-24 lg:pl-[200px] px-6 min-h-screen">
+  <div class="max-w-6xl mx-auto">
+
+    <!-- Header -->
+    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10">
+      <div class="max-w-2xl">
+        <span class="text-[#1565c0] font-black uppercase tracking-[.25em] text-xs mb-2 block">Referir Cliente</span>
+        <h2 class="text-3xl lg:text-[40px] font-black text-[#0d1c2e] leading-tight tracking-tight">Crea una nueva oportunidad</h2>
+        <p class="text-on-surface-variant text-base mt-2 font-medium opacity-70">Ingresa los datos de tu referido y comienza el proceso de cotización.</p>
+      </div>
+      <!-- Comisión card -->
+      <div class="bg-[#d4f0a0] rounded-2xl p-6 min-w-[220px] shadow-sm">
+        <span class="text-[#1a3a0a] text-xs font-black uppercase tracking-widest opacity-60">Potencial Comisión</span>
+        <div class="mt-3 flex items-baseline gap-2">
+          <span class="text-3xl lg:text-[32px] font-black text-[#1a3a0a]" id="comision-display">$0</span>
+          <span class="text-sm font-bold text-[#1a3a0a] opacity-80 uppercase">MXN</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error banner global -->
+    <div id="global-error" class="hidden mb-6 bg-red-50 border border-red-200 rounded-xl px-4 py-3 flex items-center gap-2">
+      <span class="material-symbols-outlined text-[#ef4444] text-[16px] flex-shrink-0">error</span>
+      <p class="text-sm text-[#b91c1c] font-medium">Corrige los campos marcados para continuar.</p>
+    </div>
+
+    <!-- Grid 8/4 -->
+    <div class="grid grid-cols-12 gap-8">
+
+      <!-- Formulario (col 8) -->
+      <div class="col-span-12 lg:col-span-8">
+        <div class="bg-surface-container-lowest rounded-3xl p-6 lg:p-10">
+          <div class="space-y-7">
+
+            <!-- Nombre -->
+            <div>
+              <label class="block text-xs font-black text-on-surface uppercase tracking-widest mb-2">Nombre Completo</label>
+              <input id="f-nombre" type="text" placeholder="Ej. Juan Pérez García"
+                class="w-full h-14 bg-surface-container-highest border-none rounded-2xl px-6
+                       focus:ring-2 focus:ring-primary focus:bg-white transition-all
+                       text-on-surface font-medium text-sm outline-none">
+              <p class="err-msg hidden" id="err-nombre">Este campo es obligatorio</p>
+            </div>
+
+            <!-- Tel + Email -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-xs font-black text-on-surface uppercase tracking-widest mb-2">Teléfono</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 w-[50px] flex items-center justify-center text-on-surface-variant pointer-events-none">
+                    <span class="material-symbols-outlined text-[20px]">call</span>
+                  </div>
+                  <input id="f-tel" type="tel" placeholder="55 0000 0000"
+                    style="padding-left:50px !important;"
+                    class="w-full h-14 bg-[#d7e2ff] border-none rounded-2xl pr-4
+                           focus:ring-2 focus:ring-primary focus:bg-white transition-all
+                           text-on-surface font-medium text-sm outline-none">
+                </div>
+                <p class="err-msg hidden" id="err-tel">Ingresa un teléfono válido</p>
+              </div>
+              <div>
+                <label class="block text-xs font-black text-on-surface uppercase tracking-widest mb-2">Correo Electrónico</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 w-[50px] flex items-center justify-center text-on-surface-variant pointer-events-none">
+                    <span class="material-symbols-outlined text-[20px]">mail</span>
+                  </div>
+                  <input id="f-email" type="email" placeholder="juan@ejemplo.com"
+                    style="padding-left:50px !important;"
+                    class="w-full h-14 bg-[#d7e2ff] border-none rounded-2xl pr-4
+                           focus:ring-2 focus:ring-primary focus:bg-white transition-all
+                           text-on-surface font-medium text-sm outline-none">
+                </div>
+                <p class="err-msg hidden" id="err-email">Ingresa un correo válido</p>
+              </div>
+            </div>
+
+            <!-- Tipo de seguro — chips -->
+            <div>
+              <label class="block text-[10px] font-bold text-[#8899bb] uppercase tracking-widest mb-3">
+                Seguro en el que está interesado tu referido
+              </label>
+              <div class="flex flex-wrap gap-3">
+                <button type="button" data-tipo="salud" data-comision="$1,000"
+                  onclick="selectChip(this)"
+                  class="chip flex items-center gap-2 h-[52px] px-5 rounded-full
+                         bg-[#f1f3ff] border-[1.5px] border-[#e2e8f5]
+                         text-[#8899bb] font-semibold text-sm
+                         hover:border-[#1565c0] hover:bg-[#e8f0fe] hover:text-[#1565c0]">
+                  <span class="material-symbols-outlined chip-icon text-[20px]">health_and_safety</span>
+                  Salud
+                </button>
+                <button type="button" data-tipo="auto" data-comision="$500"
+                  onclick="selectChip(this)"
+                  class="chip flex items-center gap-2 h-[52px] px-5 rounded-full
+                         bg-[#f1f3ff] border-[1.5px] border-[#e2e8f5]
+                         text-[#8899bb] font-semibold text-sm
+                         hover:border-[#1565c0] hover:bg-[#e8f0fe] hover:text-[#1565c0]">
+                  <span class="material-symbols-outlined chip-icon text-[20px]">directions_car</span>
+                  Auto
+                </button>
+                <button type="button" data-tipo="viaje" data-comision="$300"
+                  onclick="selectChip(this)"
+                  class="chip flex items-center gap-2 h-[52px] px-5 rounded-full
+                         bg-[#f1f3ff] border-[1.5px] border-[#e2e8f5]
+                         text-[#8899bb] font-semibold text-sm
+                         hover:border-[#1565c0] hover:bg-[#e8f0fe] hover:text-[#1565c0]">
+                  <span class="material-symbols-outlined chip-icon text-[20px]">flight</span>
+                  Viaje
+                </button>
+              </div>
+              <p class="err-msg hidden" id="err-tipo">Selecciona un tipo de seguro</p>
+            </div>
+
+            <!-- CTA -->
+            <div class="pt-2">
+              <button id="btn-enviar" onclick="enviarProspecto()"
+                class="w-full lg:w-auto px-12 h-14 bg-[#1565c0] text-white rounded-full
+                       font-bold text-base shadow-md hover:bg-[#1255a8]
+                       active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                <span id="btn-txt">Enviar Referencia</span>
+                <span class="material-symbols-outlined text-[18px]" id="btn-ico">arrow_forward</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Info lateral (col 4) -->
+      <aside class="col-span-12 lg:col-span-4 space-y-6">
+        <!-- ¿Qué sigue? -->
+        <div class="bg-[#f1f3ff] rounded-3xl p-7">
+          <h3 class="text-base font-bold text-blue-900 mb-5">¿Qué sigue?</h3>
+          <div class="space-y-5">
+            <div class="flex gap-4">
+              <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-black text-sm">1</div>
+              <div>
+                <p class="font-bold text-on-surface text-sm">Validación Kinsu</p>
+                <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">Nuestro equipo revisará la viabilidad del prospecto en menos de 24h.</p>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-black text-sm">2</div>
+              <div>
+                <p class="font-bold text-on-surface text-sm">Contacto Inicial</p>
+                <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">Un especialista Kinsu contactará a tu referido para ofrecerle la mejor opción.</p>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-black text-sm">3</div>
+              <div>
+                <p class="font-bold text-on-surface text-sm">Comisión Lista</p>
+                <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">En cuanto el cliente realice su primer pago, verás reflejada tu comisión.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card Confianza Kinsu -->
+        <div class="bg-gradient-to-br from-[#1565c0] to-[#0d1c2e] rounded-3xl p-7 text-white relative overflow-hidden h-[200px] flex flex-col justify-end">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-3xl pointer-events-none"></div>
+          <div class="relative z-10">
+            <span class="text-[#a6f86d] font-black text-xs uppercase tracking-widest mb-2 block">Confianza Kinsu</span>
+            <p class="text-lg font-bold leading-tight">Garantizamos la mejor atención para tus amigos y clientes.</p>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+</main>
+
+<!-- Bottom Nav Mobile -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full h-16 bg-white/85 backdrop-blur-xl flex justify-around items-center px-2 z-50 border-t border-slate-100 shadow-sm rounded-t-2xl">
+  <a href="dashboard.html" class="flex flex-col items-center justify-center text-slate-400">
+    <span class="material-symbols-outlined">home</span>
+    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Inicio</span>
+  </a>
+  <a href="prospectos.html" class="flex flex-col items-center justify-center text-slate-400">
+    <span class="material-symbols-outlined">group</span>
+    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Prospectos</span>
+  </a>
+  <div class="flex flex-col items-center -mt-8">
+    <a href="nuevo-prospecto.html"
+      class="w-14 h-14 bg-[#1565c0] text-white rounded-xl shadow-lg flex items-center justify-center active:scale-95 transition-transform">
+      <span class="material-symbols-outlined text-3xl" style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">add</span>
+    </a>
+  </div>
+  <a href="ganancias.html" class="flex flex-col items-center justify-center text-slate-400">
+    <span class="material-symbols-outlined">payments</span>
+    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Ganancias</span>
+  </a>
+  <a href="perfil.html" class="flex flex-col items-center justify-center text-slate-400">
+    <span class="material-symbols-outlined">person</span>
+    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Perfil</span>
+  </a>
+</nav>
+
+<script>
+// ── Usuario ──
+const user = JSON.parse(
+  sessionStorage.getItem('user') ||
+  '{"nombre":"Jimena Ríos","initials":"JR"}'
+);
+document.getElementById('topbar-av').textContent = user.initials || 'JR';
+
+// ── Chips de seguro ──
+let tipoSeleccionado = '';
+
+function selectChip(btn) {
+  document.querySelectorAll('.chip').forEach(c => {
+    c.classList.remove('active');
+    c.style.background = '';
+    c.style.borderColor = '';
+    c.style.color = '';
+    c.style.boxShadow = '';
+  });
+  btn.classList.add('active');
+  tipoSeleccionado = btn.dataset.tipo;
+
+  // Actualizar card comisión
+  document.getElementById('comision-display').textContent = btn.dataset.comision;
+
+  // Quitar error
+  document.getElementById('err-tipo').classList.add('hidden');
+}
+
+// ── Validación y envío ──
+function setError(fieldId, errId, show) {
+  const el  = document.getElementById(fieldId);
+  const err = document.getElementById(errId);
+  if (show) { el.classList.add('field-err');    err.classList.remove('hidden'); }
+  else       { el.classList.remove('field-err'); err.classList.add('hidden'); }
+}
+
+function enviarProspecto() {
+  const nombre = document.getElementById('f-nombre').value.trim();
+  const tel    = document.getElementById('f-tel').value.trim();
+  const email  = document.getElementById('f-email').value.trim();
+  const errG   = document.getElementById('global-error');
+  const btn    = document.getElementById('btn-enviar');
+
+  // Reset
+  errG.classList.add('hidden');
+  ['f-nombre','f-tel','f-email'].forEach(id => document.getElementById(id).classList.remove('field-err'));
+  ['err-nombre','err-tel','err-email','err-tipo'].forEach(id => document.getElementById(id).classList.add('hidden'));
+
+  let valid = true;
+  if (nombre.length < 2)                            { setError('f-nombre','err-nombre',true); valid=false; }
+  if (tel.length < 8)                               { setError('f-tel','err-tel',true);       valid=false; }
+  if (!email.includes('@') || !email.includes('.')) { setError('f-email','err-email',true);   valid=false; }
+  if (!tipoSeleccionado) {
+    document.getElementById('err-tipo').classList.remove('hidden');
+    valid = false;
+  }
+
+  if (!valid) { errG.classList.remove('hidden'); return; }
+
+  // Loading
+  btn.disabled = true;
+  btn.classList.add('opacity-75');
+  document.getElementById('btn-txt').textContent = 'Registrando...';
+  document.getElementById('btn-ico').textContent = 'hourglass_empty';
+
+  // Guardar en sessionStorage
+  sessionStorage.setItem('form-nombre',  nombre);
+  sessionStorage.setItem('form-tipo',    tipoSeleccionado);
+  sessionStorage.setItem('form-telefono',tel);
+  sessionStorage.setItem('form-correo',  email);
+
+  setTimeout(() => {
+    window.location.href = `chat-de-registro.html?nombre=${encodeURIComponent(nombre)}&tipo=${encodeURIComponent(tipoSeleccionado)}`;
+  }, 600);
+}
+</script>
+</body>
+</html>
