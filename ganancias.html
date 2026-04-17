@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Kinsu - Ganancias</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<style>
+  body { font-family:'Inter',sans-serif; background:#f9f9ff; }
+  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
+  .filled { font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24; }
+
+  /* Modal */
+  #modal-overlay {
+    opacity:0; pointer-events:none;
+    transition: opacity .25s ease;
+  }
+  #modal-overlay.open {
+    opacity:1; pointer-events:all;
+  }
+  #modal-card {
+    transform: translateY(24px) scale(.97);
+    transition: transform .25s ease;
+  }
+  #modal-overlay.open #modal-card {
+    transform: translateY(0) scale(1);
+  }
+
+  /* Barras del gráfico */
+  .bar { transition: height .6s cubic-bezier(.34,1.56,.64,1); border-radius:8px 8px 0 0; }
+</style>
+</head>
+
+<body class="min-h-screen text-[#0d1c2e]">
+
+<!-- Sidebar Desktop -->
+<aside class="fixed left-0 top-0 h-screen w-[200px] hidden lg:flex flex-col bg-[#f8fafc] border-r border-slate-200 z-50">
+  <div class="px-6 py-8">
+    <div class="text-[24px] font-[900] text-[#1d4ed8] leading-none">Kinsu</div>
+    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-1">DASHBOARD</div>
+  </div>
+  <nav class="flex-1">
+    <a href="dashboard.html"       class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">home</span>Inicio</a>
+    <a href="prospectos.html"      class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">group</span>Prospectos</a>
+    <a href="formacion.html"       class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">school</span>Formación</a>
+    <a href="nuevo-prospecto.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">add_box</span>Nuevo</a>
+    <a href="ganancias.html"       class="flex items-center gap-3 px-4 py-3 text-blue-700 border-l-4 border-blue-700 bg-blue-50/50 font-semibold text-sm"><span class="material-symbols-outlined filled">payments</span>Ganancias</a>
+    <a href="perfil.html"          class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">person</span>Perfil</a>
+  </nav>
+</aside>
+
+<!-- Topbar -->
+<header class="fixed top-0 right-0 left-0 lg:left-[200px] h-16 bg-white/85 backdrop-blur-md flex items-center justify-between px-6 z-40 shadow-sm">
+  <div class="flex items-center gap-3">
+    <span class="lg:hidden text-xl font-black text-[#1d4ed8]">Kinsu</span>
+    <h1 class="hidden lg:block text-base font-bold text-slate-800">Ganancias</h1>
+  </div>
+  <div class="flex items-center gap-3">
+    <button class="text-slate-500 hover:text-blue-600 transition-colors">
+      <span class="material-symbols-outlined">notifications</span>
+    </button>
+    <button onclick="window.location.href='perfil.html'"
+      class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-700 text-xs"
+      id="topbar-av">JR</button>
+  </div>
+</header>
+
+<!-- Main -->
+<main class="pt-20 pb-28 lg:pl-[200px] px-6 min-h-screen">
+  <div class="max-w-5xl mx-auto">
+
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 mt-4">
+      <div>
+        <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Resumen de Cuenta</p>
+        <h2 class="text-4xl lg:text-6xl font-black text-[#0d1c2e] tracking-tighter leading-none">$24,850.00</h2>
+        <div class="flex items-center gap-2 mt-3">
+          <span class="bg-[#d4f0a0] text-[#1a3a0a] px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+            <span class="material-symbols-outlined text-[14px] filled">trending_up</span>
+            +12.5% este mes
+          </span>
+          <span class="text-sm text-slate-400">Ganancias totales acumuladas</span>
+        </div>
+      </div>
+      <button onclick="openModal()"
+        class="flex items-center gap-2 px-8 py-4 bg-[#1565c0] text-white rounded-full font-bold
+               shadow-lg hover:bg-[#1255a8] active:scale-95 transition-all w-fit">
+        <span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+        Retirar Fondos
+      </button>
+    </div>
+
+    <!-- Bento grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+
+      <!-- Gráfica (col-span-2) -->
+      <div class="lg:col-span-2 bg-white rounded-2xl p-6 lg:p-8 shadow-sm border border-slate-100">
+        <div class="flex items-center justify-between mb-8">
+          <h3 class="text-lg font-bold text-[#0d1c2e]">Crecimiento Mensual</h3>
+          <div class="flex gap-1 bg-[#f1f3ff] rounded-xl p-1">
+            <button class="px-3 py-1.5 rounded-lg bg-white shadow text-[11px] font-bold text-[#0d1c2e]">6M</button>
+            <button class="px-3 py-1.5 rounded-lg text-[11px] font-bold text-slate-400">1A</button>
+            <button class="px-3 py-1.5 rounded-lg text-[11px] font-bold text-slate-400">Todo</button>
+          </div>
+        </div>
+        <!-- Barras -->
+        <div class="flex items-end justify-between gap-2 lg:gap-4 h-48">
+          <div class="flex-1 flex flex-col items-center gap-2">
+            <div class="bar w-full bg-[#d7e2ff]" style="height:40%;"></div>
+            <span class="text-[10px] font-bold text-slate-400">ENE</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center gap-2">
+            <div class="bar w-full bg-[#d7e2ff]" style="height:60%;"></div>
+            <span class="text-[10px] font-bold text-slate-400">FEB</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center gap-2">
+            <div class="bar w-full bg-[#d7e2ff]" style="height:55%;"></div>
+            <span class="text-[10px] font-bold text-slate-400">MAR</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center gap-2">
+            <div class="bar w-full bg-[#d7e2ff]" style="height:80%;"></div>
+            <span class="text-[10px] font-bold text-slate-400">ABR</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center gap-2">
+            <div class="bar w-full bg-[#d7e2ff]" style="height:70%;"></div>
+            <span class="text-[10px] font-bold text-slate-400">MAY</span>
+          </div>
+          <div class="flex-1 flex flex-col items-center gap-2 group relative">
+            <div class="bar w-full bg-[#285900]" style="height:100%;">
+              <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#0d1c2e] text-white
+                           text-[10px] py-1 px-2 rounded-lg font-bold whitespace-nowrap">
+                $8,420
+              </div>
+            </div>
+            <span class="text-[10px] font-black text-[#0d1c2e]">JUN</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats col-span-1 -->
+      <div class="flex flex-col gap-4">
+        <!-- Promedio por venta -->
+        <div class="bg-[#f1f3ff] rounded-2xl p-6 border border-[#e2e8f5] flex-1">
+          <div class="w-12 h-12 bg-[#d4f0a0] rounded-xl flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-[#285900] filled">payments</span>
+          </div>
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Promedio por Venta</p>
+          <h4 class="text-2xl font-black text-[#0d1c2e]">$1,240.00</h4>
+        </div>
+
+        <!-- Nivel PRO -->
+        <div class="bg-[#0d1c2e] rounded-2xl p-6 flex-1 relative overflow-hidden">
+          <div class="absolute -right-6 -top-6 w-24 h-24 bg-white/5 rounded-full blur-2xl pointer-events-none"></div>
+          <div class="relative z-10">
+            <span class="material-symbols-outlined text-[#a6f86d] text-3xl filled mb-3 block">verified</span>
+            <p class="text-[10px] text-white/50 uppercase tracking-widest mb-1">Nivel Kinsurer Pro</p>
+            <h4 class="text-2xl font-black text-white">15.5%</h4>
+            <p class="text-xs text-white/50 mt-1">Tasa de comisión</p>
+            <div class="mt-4 w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
+              <div class="h-full bg-[#a6f86d] rounded-full" style="width:72%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Transacciones recientes -->
+    <div>
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-[#0d1c2e]">Transacciones Recientes</h3>
+        <button class="text-[#1565c0] font-bold text-sm flex items-center gap-1 hover:gap-2 transition-all">
+          Ver todo <span class="material-symbols-outlined text-sm">arrow_forward</span>
+        </button>
+      </div>
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+
+        <!-- Row 1 -->
+        <div class="flex items-center justify-between p-5 lg:p-6 hover:bg-[#f1f3ff] transition-colors group border-b border-slate-50">
+          <div class="flex items-center gap-4 lg:gap-5">
+            <div class="w-12 h-12 lg:w-14 lg:h-14 rounded-2xl bg-red-50 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
+              <span class="material-symbols-outlined text-red-600 text-2xl">health_and_safety</span>
+            </div>
+            <div>
+              <h5 class="font-bold text-[#0d1c2e]">Seguro de Salud</h5>
+              <p class="text-xs text-slate-400">Juan López · Póliza #S20240001</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <p class="text-lg font-black text-[#285900]">+$1,000.00</p>
+            <p class="text-xs text-slate-400">12 Jun, 2024</p>
+          </div>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="flex items-center justify-between p-5 lg:p-6 hover:bg-[#f1f3ff] transition-colors group border-b border-slate-50">
+          <div class="flex items-center gap-4 lg:gap-5">
+            <div class="w-12 h-12 lg:w-14 lg:h-14 rounded-2xl bg-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
+              <span class="material-symbols-outlined text-blue-600 text-2xl">directions_car</span>
+            </div>
+            <div>
+              <h5 class="font-bold text-[#0d1c2e]">Seguro de Auto</h5>
+              <p class="text-xs text-slate-400">Roberto Vega · Póliza #A20240005</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <p class="text-lg font-black text-[#285900]">+$500.00</p>
+            <p class="text-xs text-slate-400">1 Jun, 2024</p>
+          </div>
+        </div>
+
+        <!-- Row 3 -->
+        <div class="flex items-center justify-between p-5 lg:p-6 hover:bg-[#f1f3ff] transition-colors group">
+          <div class="flex items-center gap-4 lg:gap-5">
+            <div class="w-12 h-12 lg:w-14 lg:h-14 rounded-2xl bg-[#d4f0a0] flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
+              <span class="material-symbols-outlined text-[#1b3f00] text-2xl">flight</span>
+            </div>
+            <div>
+              <h5 class="font-bold text-[#0d1c2e]">Seguro de Viaje</h5>
+              <p class="text-xs text-slate-400">Carlos Ríos · Póliza #V20240003</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <p class="text-lg font-black text-[#285900]">+$300.00</p>
+            <p class="text-xs text-slate-400">25 May, 2024</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- Bottom Nav Mobile -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full h-16 bg-white/85 backdrop-blur-xl flex justify-around items-center px-2 z-50 border-t border-slate-100 shadow-sm rounded-t-2xl">
+  <a href="dashboard.html" class="flex flex-col items-center justify-center text-slate-400">
+    <span class="material-symbols-outlined">home</span>
+    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Inicio</span>
+  </a>
+  <a href="prospectos.html" class="flex flex-col items-center justify-center text-slate-400">
+    <span class="material-symbols-outlined">group</span>
+    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Prospectos</span>
+  </a>
+  <div class="flex flex-col items-center -mt-8">
+    <a href="nuevo-prospecto.html"
+      class="w-14 h-14 bg-[#1565c0] text-white rounded-xl shadow-lg flex items-center justify-center active:scale-95 transition-transform">
+      <span class="material-symbols-outlined text-3xl">add</span>
+    </a>
+  </div>
+  <a href="ganancias.html" class="flex flex-col items-center justify-center text-[#1565c0]">
+    <span class="material-symbols-outlined filled">payments</span>
+    <span class="text-[10px] font-bold uppercase tracking-wider mt-0.5">Ganancias</span>
+  </a>
+  <a href="perfil.html" class="flex flex-col items-center justify-center text-slate-400">
+    <span class="material-symbols-outlined">person</span>
+    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Perfil</span>
+  </a>
+</nav>
+
+<!-- Modal Retirar Fondos -->
+<div id="modal-overlay"
+  class="fixed inset-0 z-50 flex items-center justify-center px-4"
+  style="background:rgba(11,27,53,0.45);">
+  <div id="modal-card" class="bg-white w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl">
+    <div class="p-8 text-center">
+
+      <!-- Ícono -->
+      <div class="w-20 h-20 bg-[#d4f0a0] rounded-full flex items-center justify-center mx-auto mb-6 relative">
+        <span class="material-symbols-outlined text-[#1a3a0a] text-[44px] filled">check_circle</span>
+        <div class="absolute inset-0 rounded-full border-4 border-[#d4f0a0] animate-ping opacity-20"></div>
+      </div>
+
+      <h3 class="text-2xl font-black text-[#0d1c2e] mb-2">Retiro solicitado</h3>
+      <p class="text-sm text-slate-500 max-w-xs mx-auto mb-6 leading-relaxed">
+        Tu comisión se deposita automáticamente en 2 días hábiles a la cuenta bancaria registrada.
+      </p>
+
+      <!-- Detalles -->
+      <div class="bg-[#f1f3ff] rounded-2xl p-5 text-left space-y-4 mb-6">
+        <div class="flex justify-between items-center">
+          <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Saldo Disponible</span>
+          <span class="text-xl font-black text-[#1565c0]">$24,850.00</span>
+        </div>
+        <div class="h-px bg-slate-200"></div>
+        <div class="flex justify-between items-center">
+          <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">CLABE Destino</span>
+          <span class="text-sm font-mono font-bold text-[#0d1c2e]">**** **** **** 0921</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Referencia</span>
+          <span class="text-sm font-bold text-[#0d1c2e]">KS-992031</span>
+        </div>
+      </div>
+
+      <button onclick="closeModal()"
+        class="w-full py-4 bg-[#1565c0] text-white rounded-full font-black text-sm uppercase tracking-widest
+               hover:bg-[#1255a8] active:scale-95 transition-all">
+        Entendido
+      </button>
+    </div>
+
+    <div class="bg-[#f1f3ff] px-6 py-4 text-center">
+      <p class="text-[11px] text-slate-400">
+        ¿Necesitas ayuda?
+        <a href="#" class="text-[#1565c0] font-bold">Contactar Soporte</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Usuario ──
+const user = JSON.parse(sessionStorage.getItem('user') || '{"initials":"JR"}');
+document.getElementById('topbar-av').textContent = user.initials || 'JR';
+
+// ── Modal ──
+function openModal()  { document.getElementById('modal-overlay').classList.add('open'); }
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
+
+// Cerrar al click fuera del card
+document.getElementById('modal-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+</script>
+</body>
+</html>
