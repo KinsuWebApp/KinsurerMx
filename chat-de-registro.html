@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Kinsu - Chat de Registro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<style>
+  body { font-family:'Inter',sans-serif; background:#eef2f9; }
+  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; vertical-align:middle; }
+  .ana-bubble  { border-radius:16px 16px 16px 4px; }
+  .user-bubble { border-radius:16px 16px 4px 16px; }
+  .no-scrollbar::-webkit-scrollbar { display:none; }
+  .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
+
+  /* Typing dots */
+  .dot { width:6px; height:6px; border-radius:50%; background:#1565c0; display:inline-block; animation:blink 1.2s infinite; }
+  .dot:nth-child(2) { animation-delay:.2s; }
+  .dot:nth-child(3) { animation-delay:.4s; }
+  @keyframes blink { 0%,100%{ opacity:.3; transform:scale(.8); } 50%{ opacity:1; transform:scale(1); } }
+
+  /* Quick reply chips */
+  .qr-chip {
+    flex-shrink:0; padding:8px 18px; border-radius:99px;
+    font-size:13px; font-weight:600; cursor:pointer;
+    transition:all .15s; white-space:nowrap;
+  }
+  .qr-primary { background:#1565c0; color:#fff; box-shadow:0 4px 12px rgba(21,101,192,.25); }
+  .qr-primary:hover { background:#1255a8; }
+  .qr-secondary { background:#fff; color:#1565c0; border:1.5px solid rgba(21,101,192,.2); }
+  .qr-secondary:hover { background:#e8f0fe; }
+</style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+<!-- TOPBAR -->
+<header class="bg-white/90 backdrop-blur-md fixed top-0 w-full z-50 border-b border-[#e8f0fe]">
+  <div class="flex items-center justify-between px-4 h-16 max-w-2xl mx-auto">
+    <div class="flex items-center gap-3">
+      <button onclick="history.back()" class="text-[#1565c0] hover:bg-slate-100 p-2 rounded-full transition-all">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </button>
+      <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
+        style="background:linear-gradient(135deg,#1565c0 0%,#82d14b 100%);">
+        <span class="text-white font-bold text-sm">K</span>
+      </div>
+      <div>
+        <p id="chat-title" class="text-[13px] font-bold text-[#0d1c2e]">Chat de Registro</p>
+        <div class="flex items-center gap-1">
+          <span class="w-2 h-2 bg-[#82d14b] rounded-full"></span>
+          <span class="text-[10px] text-slate-500 font-medium uppercase tracking-wider">En línea</span>
+        </div>
+      </div>
+    </div>
+    <button class="text-slate-400 hover:bg-slate-100 p-2 rounded-full">
+      <span class="material-symbols-outlined">info</span>
+    </button>
+  </div>
+</header>
+
+<!-- PROGRESS BANNER -->
+<div class="bg-[#e8f0fe] border-b border-[#d4dcf5] fixed top-16 w-full z-40">
+  <div class="flex items-center justify-between px-4 py-2.5 max-w-2xl mx-auto">
+    <div class="flex items-center gap-2">
+      <span class="material-symbols-outlined text-[#1565c0] text-[18px]">chat</span>
+      <span class="text-[13px] text-[#1565c0] font-semibold" id="progress-label">Pregunta 1 de 4</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="text-[11px] text-[#1565c0] font-bold" id="progress-pct">25%</span>
+      <div class="w-24 h-1.5 bg-[#c2d4f0]/40 rounded-full overflow-hidden">
+        <div class="h-full bg-[#1565c0] rounded-full transition-all duration-500" id="progress-bar" style="width:25%"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT AREA -->
+<main class="flex-1 max-w-2xl w-full mx-auto pt-32 pb-48 px-4 flex flex-col gap-4 no-scrollbar overflow-y-auto" id="chat-area"></main>
+
+<!-- QUICK REPLIES -->
+<div class="fixed w-full max-w-2xl left-1/2 -translate-x-1/2 px-4 z-40" id="quick-replies-container" style="bottom:100px;"></div>
+
+<!-- INPUT BAR -->
+<div class="fixed bottom-0 left-0 w-full z-50">
+  <div class="max-w-2xl mx-auto px-4 pb-6 pt-2">
+    <div class="bg-white/90 backdrop-blur-xl rounded-3xl p-2 shadow-lg flex items-center gap-2 border border-white">
+      <input id="chat-input" type="text" placeholder="Escribe tu respuesta..."
+        class="flex-1 bg-transparent border-none focus:ring-0 text-[14px] text-[#0d1c2e] placeholder:text-slate-400 px-2 outline-none">
+      <button onclick="sendUserMessage()" id="send-btn"
+        class="w-10 h-10 bg-[#1565c0] text-white rounded-full flex items-center justify-center shadow active:scale-90 transition-transform flex-shrink-0">
+        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">arrow_upward</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Leer params ──
+const params  = new URLSearchParams(location.search);
+const nombre  = params.get('nombre') || sessionStorage.getItem('form-nombre') || 'tu referido';
+const tipo    = (params.get('tipo')  || sessionStorage.getItem('form-tipo')   || 'salud').toLowerCase();
+const tel     = sessionStorage.getItem('form-telefono') || '';
+const correo  = sessionStorage.getItem('form-correo')   || '';
+
+// Actualizar título
+document.getElementById('chat-title').textContent =
+  `${tipo.charAt(0).toUpperCase()+tipo.slice(1)} · ${nombre}`;
+
+// ── Flows de preguntas por tipo ──
+const FLOWS = {
+  salud: [
+    {
+      q: `¡Hola! Ya tengo los datos de ${nombre} 👌 Solo necesito unos detalles más para el seguro de Salud.\n\n¿Cuántos años tiene ${nombre}?`,
+      key:'edad', placeholder:'Ej. 35 años',
+      replies:['Menos de 30','30 a 45','46 a 60','Más de 60']
+    },
+    {
+      q:`¿${nombre} tiene alguna condición médica preexistente que debamos considerar?`,
+      key:'condicion', placeholder:'Ej. Diabetes, hipertensión...',
+      replies:['No, ninguna','Sí, diabetes','Sí, hipertensión','Otra condición']
+    },
+    {
+      q:`¿Cuántas personas cubrirá el seguro? ¿Solo ${nombre} o también su familia?`,
+      key:'cobertura', placeholder:'Ej. Solo yo, o yo y mi familia',
+      replies:['Solo yo','Pareja','Familia (hijos)','Familia completa']
+    },
+    {
+      q:`¿En qué ciudad o estado vive ${nombre}?`,
+      key:'ciudad', placeholder:'Ej. CDMX, Monterrey...',
+      replies:['CDMX','Monterrey','Guadalajara','Otra ciudad']
+    }
+  ],
+  auto: [
+    {
+      q:`¡Hola! Ya tengo los datos básicos de ${nombre} 👌 Necesito algunos detalles del vehículo.\n\n¿Cuál es la marca, modelo y año del auto?`,
+      key:'vehiculo', placeholder:'Ej. Nissan Versa 2021',
+      replies:['Nissan Versa 2021','Toyota Corolla 2022','Volkswagen Jetta 2020','Otro modelo']
+    },
+    {
+      q:`¿En qué ciudad o estado circula habitualmente el vehículo?`,
+      key:'ciudad', placeholder:'Ej. CDMX, Monterrey...',
+      replies:['CDMX','Monterrey','Guadalajara','Otra ciudad']
+    },
+    {
+      q:`¿${nombre} ha tenido algún siniestro o accidente en los últimos 2 años?`,
+      key:'siniestro', placeholder:'Sí o no',
+      replies:['No, ninguno','Sí, 1 accidente','Sí, más de 1','Prefiero no decir']
+    },
+    {
+      q:`¿Qué tipo de cobertura le interesa a ${nombre}?`,
+      key:'cobertura', placeholder:'Ej. Daños a terceros, amplia...',
+      replies:['Responsabilidad civil','Daños a terceros','Cobertura amplia','No lo sé aún']
+    }
+  ],
+  viaje: [
+    {
+      q:`¡Hola! Ya tengo los datos de ${nombre} 👌 Cuéntame sobre el viaje.\n\n¿A qué país o región va a viajar?`,
+      key:'destino', placeholder:'Ej. Europa, EUA, Caribe...',
+      replies:['Europa','Estados Unidos','Caribe','América Latina']
+    },
+    {
+      q:`¿Cuántos días durará el viaje de ${nombre}?`,
+      key:'duracion', placeholder:'Ej. 10 días',
+      replies:['Menos de 7 días','7 a 15 días','15 a 30 días','Más de 30 días']
+    },
+    {
+      q:`¿Cuántas personas van a viajar?`,
+      key:'personas', placeholder:'Ej. 2 personas',
+      replies:['Solo yo','2 personas','3 a 4 personas','Más de 4']
+    },
+    {
+      q:`¿El viaje es de turismo o por negocios?`,
+      key:'motivo', placeholder:'Turismo o negocios',
+      replies:['Turismo','Negocios','Turismo y negocios','Estudio o trabajo']
+    }
+  ]
+};
+
+const flow    = FLOWS[tipo] || FLOWS.salud;
+const COMISIONS = { salud:'$1,000 MXN', auto:'$500 MXN', viaje:'$300 MXN' };
+let step      = 0;
+let answers   = {};
+let typing    = false;
+let folio     = '';
+
+// ── Helpers de UI ──
+function scrollBottom() {
+  const area = document.getElementById('chat-area');
+  setTimeout(() => area.scrollTo({ top:area.scrollHeight, behavior:'smooth' }), 80);
+}
+
+function addBubble(html, side='ana') {
+  const area = document.getElementById('chat-area');
+  if (side === 'ana') {
+    area.innerHTML += `
+    <div class="flex items-end gap-2 max-w-[88%]">
+      <div class="w-8 h-8 rounded-full flex-shrink-0 self-start mt-1 flex items-center justify-center"
+        style="background:linear-gradient(135deg,#1565c0 0%,#82d14b 100%);">
+        <span class="text-white font-bold text-[11px]">K</span>
+      </div>
+      <div class="bg-white ana-bubble border border-[#b5d4f4] px-4 py-3 text-[14px] text-[#0d1c2e] leading-relaxed shadow-sm"
+        style="border-radius:16px 16px 16px 4px;">
+        ${html}
+      </div>
+    </div>`;
+  } else {
+    area.innerHTML += `
+    <div class="flex justify-end">
+      <div class="bg-[#1565c0] text-white px-4 py-3 text-[14px] leading-relaxed max-w-[80%]"
+        style="border-radius:16px 16px 4px 16px;">
+        ${html}
+      </div>
+    </div>`;
+  }
+  scrollBottom();
+}
+
+function showTyping() {
+  const area = document.getElementById('chat-area');
+  area.innerHTML += `
+  <div class="flex items-end gap-2" id="typing-indicator">
+    <div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center"
+      style="background:linear-gradient(135deg,#1565c020 0%,#82d14b20 100%);">
+      <span class="text-[#1565c0] font-bold text-[11px]">K</span>
+    </div>
+    <div class="bg-white px-4 py-3 shadow-sm border border-[#b5d4f4]/40"
+      style="border-radius:16px 16px 16px 4px;">
+      <div style="display:flex;gap:4px;align-items:center;">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      </div>
+    </div>
+  </div>`;
+  scrollBottom();
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing-indicator');
+  if (t) t.remove();
+}
+
+function setQuickReplies(replies) {
+  const c = document.getElementById('quick-replies-container');
+  if (!replies || !replies.length) { c.innerHTML=''; return; }
+  c.innerHTML = `<div class="flex gap-2 overflow-x-auto no-scrollbar py-2">${
+    replies.map((r,i) =>
+      `<button class="qr-chip ${i===0?'qr-primary':'qr-secondary'}" onclick="onQuickReply('${r.replace(/'/g,"\\'")}')">
+        ${r}
+      </button>`
+    ).join('')
+  }</div>`;
+}
+
+function clearQuickReplies() {
+  document.getElementById('quick-replies-container').innerHTML='';
+}
+
+function updateProgress() {
+  const pct = Math.round(((step) / flow.length) * 100);
+  document.getElementById('progress-pct').textContent = pct+'%';
+  document.getElementById('progress-bar').style.width = pct+'%';
+  document.getElementById('progress-label').textContent =
+    step < flow.length ? `Pregunta ${step+1} de ${flow.length}` : 'Completado ✓';
+}
+
+// ── Flujo principal ──
+function askStep(s) {
+  if (s >= flow.length) { finishFlow(); return; }
+  step = s;
+  updateProgress();
+  typing = true;
+  showTyping();
+  setTimeout(() => {
+    removeTyping();
+    typing = false;
+    const q = flow[s];
+    // Convertir saltos de línea en <br>
+    const html = q.q.replace(/\n/g,'<br>');
+    addBubble(html);
+    setQuickReplies(q.replies);
+    document.getElementById('chat-input').placeholder = q.placeholder || 'Escribe tu respuesta...';
+    scrollBottom();
+  }, 1000 + Math.random()*400);
+}
+
+function handleAnswer(answer) {
+  if (typing) return;
+  if (!answer.trim()) return;
+  clearQuickReplies();
+  addBubble(answer, 'user');
+  answers[flow[step].key] = answer;
+  askStep(step + 1);
+}
+
+function sendUserMessage() {
+  const inp = document.getElementById('chat-input');
+  const val = inp.value.trim();
+  if (!val) return;
+  inp.value = '';
+  handleAnswer(val);
+}
+
+function onQuickReply(val) {
+  document.getElementById('chat-input').value = '';
+  handleAnswer(val);
+}
+
+// ── Enter en el input ──
+document.getElementById('chat-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') sendUserMessage();
+});
+
+// ── Finalizar flujo ──
+function finishFlow() {
+  updateProgress();
+  setQuickReplies([]);
+
+  // Generar folio único
+  const prefix = { salud:'S', auto:'A', viaje:'V' };
+  const num    = String(Math.floor(Math.random()*90000)+10000);
+  folio        = `${prefix[tipo]||'X'}${new Date().getFullYear()}${num}`;
+
+  typing = true;
+  showTyping();
+  setTimeout(() => {
+    removeTyping();
+    typing = false;
+    addBubble(`¡Perfecto! 🎉 Ya tengo toda la información necesaria para ${nombre}.<br><br>
+    Tu número de seguimiento es <strong>#${folio}</strong>.<br>
+    Ahora te preparo un mensaje para enviarle por WhatsApp.`);
+
+    // Guardar en sessionStorage
+    sessionStorage.setItem('prospecto', JSON.stringify({
+      nombre, tipo, folio, tel, correo,
+      datos: answers,
+      comision: COMISIONS[tipo] || '$0 MXN'
+    }));
+
+    // Botón de continuar
+    setTimeout(() => {
+      const area = document.getElementById('chat-area');
+      area.innerHTML += `
+      <div class="flex justify-center mt-4">
+        <button onclick="window.location.href='whatsapp-preview.html'"
+          class="bg-[#1565c0] text-white px-8 py-4 rounded-full font-bold text-base shadow-lg
+                 flex items-center gap-2 hover:bg-[#1255a8] active:scale-95 transition-all">
+          <span>Enviar por WhatsApp</span>
+          <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+        </button>
+      </div>`;
+      scrollBottom();
+      document.getElementById('chat-input').disabled = true;
+      document.getElementById('send-btn').disabled = true;
+    }, 800);
+  }, 1200);
+}
+
+// ── Iniciar ──
+updateProgress();
+setTimeout(() => askStep(0), 400);
+</script>
+</body>
+</html>
