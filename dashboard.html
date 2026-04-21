@@ -99,7 +99,7 @@
         <div>
           <label class="text-[11px] font-bold uppercase tracking-[.15em] text-gray-400">Resumen de Cuenta</label>
           <div class="flex items-baseline gap-4 mt-2">
-            <h3 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tighter">$24,850.00</h3>
+            <h3 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tighter" id="hero-ganancias">$24,850.00</h3>
             <div class="flex items-center bg-tertiary-fixed text-on-tertiary-fixed-variant px-3 py-1 rounded-full text-sm font-bold">
               <span class="material-symbols-outlined text-sm mr-1" style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">trending_up</span>
               +12.5%
@@ -120,7 +120,7 @@
     <div class="bg-on-background text-white rounded-3xl p-8 flex flex-col justify-between relative overflow-hidden">
       <div class="relative z-10">
         <span class="bg-secondary px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">KINSURER</span>
-        <h2 class="mt-4 text-2xl font-bold">Certificado</h2>
+        <h2 class="mt-4 text-2xl font-bold" id="nivel-nombre">Certificado</h2>
         <p class="mt-2 text-blue-200 text-sm">Faltan 5 pólizas para el próximo bono.</p>
       </div>
       <div class="mt-8 relative z-10">
@@ -166,19 +166,19 @@
         <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center text-blue-700">
           <span class="material-symbols-outlined">person_search</span>
         </div>
-        <div><p class="text-2xl font-black">50</p><p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Prospectos</p></div>
+        <div><p class="text-2xl font-black" id="stat-prospectos">50</p><p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Prospectos</p></div>
       </div>
       <div class="bg-white p-6 rounded-2xl border border-gray-100 flex items-center gap-4 shadow-sm">
         <div class="w-12 h-12 rounded-xl bg-tertiary-fixed flex items-center justify-center text-tertiary">
           <span class="material-symbols-outlined">verified</span>
         </div>
-        <div><p class="text-2xl font-black">25</p><p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Asegurados</p></div>
+        <div><p class="text-2xl font-black" id="stat-asegurados">25</p><p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Asegurados</p></div>
       </div>
       <div class="bg-white p-6 rounded-2xl border border-gray-100 flex items-center gap-4 shadow-sm">
         <div class="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center text-orange-700">
           <span class="material-symbols-outlined">pending_actions</span>
         </div>
-        <div><p class="text-2xl font-black">10</p><p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">En proceso</p></div>
+        <div><p class="text-2xl font-black" id="stat-proceso">10</p><p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">En proceso</p></div>
       </div>
       <div class="bg-white p-6 rounded-2xl border border-gray-100 flex items-center gap-4 shadow-sm">
         <div class="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center text-purple-700">
@@ -254,41 +254,109 @@
   </a>
 </nav>
 
+<script src="kinsu-config.js"></script>
 <script>
-// ── Usuario desde sessionStorage ──
+// ── Fallback data ──
+const FALLBACK = {
+  ganancias_total:    '$24,850.00',
+  prospectos_total:   50,
+  prospectos_activos: 10,
+  completados:        25,
+  nivel:              'Certificado',
+  prospectos_recientes: [
+    { initials:'MR', nombre:'Marco Rodríguez',  tipo:'Seguro de Vida',    comision:'$1,200.00', folio:'A20240001' },
+    { initials:'LC', nombre:'Laura Cifuentes',  tipo:'Seguro Automotriz', comision:'$450.00',   folio:'A20240002' },
+    { initials:'AM', nombre:'Andrés Morales',   tipo:'Gastos Médicos',    comision:'$2,800.00', folio:'S20240003' },
+  ]
+};
+
+// ── Usuario ──
 const user = JSON.parse(
   sessionStorage.getItem('user') ||
   '{"nombre":"Jimena Ríos","email":"kinsurer@kinsu.mx","initials":"JR"}'
 );
 document.getElementById('topbar-av').textContent = user.initials || 'JR';
 
-// ── Prospectos recientes ──
-const PROSPECTS = [
-  { initials:'MR', name:'Marco Rodríguez',  tipo:'Seguro de Vida',      comision:'$1,200.00', folio:'#A20240001' },
-  { initials:'LC', name:'Laura Cifuentes',   tipo:'Seguro Automotriz',   comision:'$450.00',   folio:'#A20240002' },
-  { initials:'AM', name:'Andrés Morales',    tipo:'Gastos Médicos',      comision:'$2,800.00', folio:'#S20240003' },
-];
+// ── Skeleton loader ──
+function showSkeleton() {
+  const skeletonPill = `<div class="h-8 w-28 bg-slate-200 rounded-full animate-pulse inline-block"></div>`;
+  const skeletonNum  = `<div class="h-10 w-20 bg-slate-200 rounded-xl animate-pulse"></div>`;
+  const skeletonRow  = `<div class="bg-white rounded-2xl border border-gray-100 p-5 flex items-center gap-4">
+    <div class="w-12 h-12 rounded-full bg-slate-200 animate-pulse flex-shrink-0"></div>
+    <div class="flex-1 space-y-2">
+      <div class="h-4 bg-slate-200 rounded animate-pulse w-3/4"></div>
+      <div class="h-3 bg-slate-200 rounded animate-pulse w-1/2"></div>
+    </div>
+  </div>`;
 
-const list = document.getElementById('recent-list');
-PROSPECTS.forEach(p => {
-  list.innerHTML += `
-  <a href="detalle-prospecto.html" class="bg-white rounded-2xl border border-gray-100 p-5 flex items-center justify-between group hover:shadow-md hover:translate-x-1 transition-all cursor-pointer block">
-    <div class="flex items-center gap-4">
-      <div class="w-12 h-12 rounded-full bg-[#e8f0fe] flex items-center justify-center font-bold text-[#1565c0]">${p.initials}</div>
-      <div>
-        <h4 class="font-bold text-on-background">${p.name}</h4>
-        <p class="text-xs text-slate-400 uppercase tracking-widest">${p.tipo}</p>
+  document.getElementById('hero-ganancias').innerHTML = skeletonPill;
+  document.getElementById('stat-prospectos').innerHTML = '<div class="h-8 w-8 bg-slate-200 rounded animate-pulse"></div>';
+  document.getElementById('stat-asegurados').innerHTML = '<div class="h-8 w-8 bg-slate-200 rounded animate-pulse"></div>';
+  document.getElementById('stat-proceso').innerHTML    = '<div class="h-8 w-8 bg-slate-200 rounded animate-pulse"></div>';
+  document.getElementById('recent-list').innerHTML = skeletonRow + skeletonRow + skeletonRow;
+}
+
+// ── Render con datos ──
+function renderDashboard(data) {
+  // Hero
+  document.getElementById('hero-ganancias').textContent = data.ganancias_total || FALLBACK.ganancias_total;
+  document.getElementById('nivel-nombre').textContent   = (data.kinsurer?.['Nivel'] || FALLBACK.nivel).replace('Kinsurer ','');
+
+  // Stats
+  document.getElementById('stat-prospectos').textContent = data.prospectos_total   || FALLBACK.prospectos_total;
+  document.getElementById('stat-asegurados').textContent = data.completados         || FALLBACK.completados;
+  document.getElementById('stat-proceso').textContent    = data.prospectos_activos  || FALLBACK.prospectos_activos;
+
+  // Prospectos recientes
+  const prospects = data.prospectos_recientes || FALLBACK.prospectos_recientes;
+  const list = document.getElementById('recent-list');
+  list.innerHTML = '';
+
+  prospects.slice(0, 3).forEach(p => {
+    const nombre  = p['Nombre Prospecto'] || p.nombre || 'Prospecto';
+    const tipo    = p['Tipo Seguro']       || p.tipo   || '—';
+    const folio   = p['Folio']             || p.folio  || '';
+    const comision= p['Comisión Estimada'] || p.comision || '—';
+    const ini     = nombre.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+
+    list.innerHTML += `
+    <a href="detalle-prospecto.html?folio=${folio}"
+      class="bg-white rounded-2xl border border-gray-100 p-5 flex items-center justify-between
+             group hover:shadow-md hover:translate-x-1 transition-all cursor-pointer block">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-full bg-[#e8f0fe] flex items-center justify-center font-bold text-[#1565c0]">${ini}</div>
+        <div>
+          <h4 class="font-bold text-on-background">${nombre}</h4>
+          <p class="text-xs text-slate-400 uppercase tracking-widest">${tipo}</p>
+        </div>
       </div>
-    </div>
-    <div class="flex items-center gap-6">
-      <div class="text-right hidden md:block">
-        <p class="text-sm font-semibold">${p.comision}</p>
-        <p class="text-xs text-slate-500">Comisión estimada</p>
+      <div class="flex items-center gap-6">
+        <div class="text-right hidden md:block">
+          <p class="text-sm font-semibold">${comision}</p>
+          <p class="text-xs text-slate-500">Comisión estimada</p>
+        </div>
+        <span class="material-symbols-outlined text-slate-300 group-hover:text-primary transition-colors">chevron_right</span>
       </div>
-      <span class="material-symbols-outlined text-slate-300 group-hover:text-primary transition-colors">chevron_right</span>
-    </div>
-  </a>`;
-});
+    </a>`;
+  });
+}
+
+// ── Cargar datos ──
+async function loadDashboard() {
+  showSkeleton();
+  try {
+    const data = await KinsuAPI.getDashboard();
+    if (data) {
+      renderDashboard(data);
+    } else {
+      renderDashboard(FALLBACK);
+    }
+  } catch(e) {
+    renderDashboard(FALLBACK);
+  }
+}
+
+loadDashboard();
 
 // ── Marquee aseguradoras ──
 const INSURERS = [
