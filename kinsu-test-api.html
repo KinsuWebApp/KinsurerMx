@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kinsu — Test API</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>body{font-family:'Inter',sans-serif;}</style>
+</head>
+<body class="bg-[#f9f9ff] min-h-screen p-8">
+
+<div class="max-w-2xl mx-auto">
+  <div class="mb-8">
+    <h1 class="text-3xl font-black text-[#0d1c2e] tracking-tight">Kinsu · Test API</h1>
+    <p class="text-slate-500 mt-1">Verifica la conexión con Google Sheets antes de integrar los HTMLs.</p>
+  </div>
+
+  <!-- URL Config -->
+  <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm mb-6">
+    <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">URL del Apps Script</p>
+    <p class="text-xs font-mono text-[#1565c0] break-all" id="url-display"></p>
+  </div>
+
+  <!-- Botones de prueba -->
+  <div class="grid grid-cols-2 gap-3 mb-6">
+    <button onclick="testEndpoint('getDashboard')"
+      class="px-4 py-3 bg-[#1565c0] text-white rounded-xl font-bold text-sm hover:bg-[#1255a8] active:scale-95 transition-all">
+      GET Dashboard
+    </button>
+    <button onclick="testEndpoint('getProspectos')"
+      class="px-4 py-3 bg-[#1565c0] text-white rounded-xl font-bold text-sm hover:bg-[#1255a8] active:scale-95 transition-all">
+      GET Prospectos
+    </button>
+    <button onclick="testEndpoint('getGanancias')"
+      class="px-4 py-3 bg-[#1565c0] text-white rounded-xl font-bold text-sm hover:bg-[#1255a8] active:scale-95 transition-all">
+      GET Ganancias
+    </button>
+    <button onclick="testEndpoint('getPerfil')"
+      class="px-4 py-3 bg-[#1565c0] text-white rounded-xl font-bold text-sm hover:bg-[#1255a8] active:scale-95 transition-all">
+      GET Perfil
+    </button>
+    <button onclick="testPost()"
+      class="col-span-2 px-4 py-3 bg-[#0d1c2e] text-white rounded-xl font-bold text-sm hover:bg-[#1565c0] active:scale-95 transition-all">
+      POST — Crear prospecto de prueba
+    </button>
+  </div>
+
+  <!-- Resultado -->
+  <div class="bg-[#0d1c2e] rounded-2xl p-6">
+    <div class="flex items-center justify-between mb-4">
+      <p class="text-xs font-black text-white/50 uppercase tracking-widest">Respuesta</p>
+      <div id="status-badge" class="px-3 py-1 rounded-full text-[11px] font-bold bg-white/10 text-white/50">
+        En espera...
+      </div>
+    </div>
+    <pre id="result"
+      class="text-[12px] text-[#a6f86d] font-mono whitespace-pre-wrap leading-relaxed overflow-auto max-h-96">
+Haz click en cualquier botón para probar la conexión.</pre>
+  </div>
+
+  <!-- Instrucciones -->
+  <div class="mt-6 bg-[#e8f0fe] rounded-2xl p-5 border border-[#d4dcf5]">
+    <p class="text-xs font-black text-[#1565c0] uppercase tracking-wider mb-3">Si ves un error de CORS</p>
+    <ol class="text-sm text-[#1565c0] space-y-2 list-decimal list-inside">
+      <li>Ve a Apps Script → Implementar → Administrar implementaciones</li>
+      <li>Click en el ícono de editar ✏️</li>
+      <li>Cambia "Quién tiene acceso" a <strong>Cualquier usuario</strong></li>
+      <li>Click <strong>Implementar</strong> (genera nueva URL)</li>
+      <li>Actualiza la URL en kinsu-config.js</li>
+    </ol>
+  </div>
+</div>
+
+<script>
+const API_URL = 'https://script.google.com/macros/s/AKfycbyj22qh-5SNLQxF9f2b7_4AWJQtjDGwLL_KtxTTKVyiQzojGVUOGODcf-0yxw98tpbbfw/exec';
+const KINSURER_ID = 'KIN-0001';
+
+document.getElementById('url-display').textContent = API_URL;
+
+function setStatus(ok, msg) {
+  const badge = document.getElementById('status-badge');
+  badge.textContent = msg;
+  badge.className = `px-3 py-1 rounded-full text-[11px] font-bold ${
+    ok ? 'bg-[#d4f0a0] text-[#1a3a0a]' : 'bg-red-900/40 text-red-300'
+  }`;
+}
+
+function showResult(data) {
+  document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+}
+
+async function testEndpoint(action) {
+  const result = document.getElementById('result');
+  result.textContent = `Llamando ${action}...`;
+  setStatus(null, 'Cargando...');
+
+  try {
+    const url = `${API_URL}?action=${action}&id=${KINSURER_ID}`;
+    const res  = await fetch(url);
+    const data = await res.json();
+
+    if (data.error) {
+      setStatus(false, '❌ Error del script');
+      showResult(data);
+    } else {
+      setStatus(true, '✅ Conexión exitosa');
+      showResult(data);
+    }
+  } catch (err) {
+    setStatus(false, '❌ Error de red / CORS');
+    showResult({ error: err.message, tip: 'Verifica que el Apps Script tenga acceso público y usa la URL /exec' });
+  }
+}
+
+async function testPost() {
+  const result = document.getElementById('result');
+  result.textContent = 'Enviando POST de prueba...';
+  setStatus(null, 'Cargando...');
+
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'createProspecto',
+        data: {
+          kinsurerID: KINSURER_ID,
+          nombre:   'Prueba Test',
+          telefono: '+52 55 0000 0000',
+          email:    'prueba@test.com',
+          tipo:     'auto',
+          ciudad:   'CDMX',
+          notas:    'Registro de prueba desde test-api.html'
+        }
+      })
+    });
+
+    const data = await res.json();
+    if (data.error) {
+      setStatus(false, '❌ Error del script');
+    } else {
+      setStatus(true, '✅ POST exitoso — folio: ' + (data.folio || '?'));
+    }
+    showResult(data);
+  } catch (err) {
+    setStatus(false, '❌ Error de red / CORS');
+    showResult({ error: err.message });
+  }
+}
+</script>
+</body>
+</html>
