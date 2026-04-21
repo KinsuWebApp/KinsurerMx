@@ -117,12 +117,15 @@ const KinsuAPI = {
 
   async _post(body) {
     try {
+      // Usamos text/plain para evitar el preflight CORS de Apps Script
+      // Apps Script no maneja OPTIONS requests con application/json
       const res  = await fetch(KINSU_CONFIG.APPS_SCRIPT_URL, {
         method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'text/plain' },
         body:    JSON.stringify(body),
       });
-      const data = await res.json();
+      const text = await res.text();
+      const data = JSON.parse(text);
       if (data.error) throw new Error(data.error);
       return data;
     } catch (err) {
