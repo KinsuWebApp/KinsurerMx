@@ -10,7 +10,7 @@
 
 const KINSU_CONFIG = {
   // ← PEGA AQUÍ tu URL de Apps Script después de implementar
-  APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbyj22qh-5SNLQxF9f2b7_4AWJQtjDGwLL_KtxTTKVyiQzojGVUOGODcf-0yxw98tpbbfw/exec',
+  APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbyEQcXcLxCbNXWTBiDTL0K-cd4KjPK0WcC-HyDDAHKa_p6d9M3jyUdsre7AfVBbb3h5_g/exec',
 
   // ID del Kinsurer demo (se reemplaza con el login real)
   DEFAULT_KINSURER_ID: 'KIN-0001',
