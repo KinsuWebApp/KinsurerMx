@@ -443,7 +443,7 @@ html, body { margin: 0; padding: 0; min-height: 100dvh; font-family: 'Inter', sa
     </div>
 
     <!-- Footer -->
-    <div class="l-bottom">© 2026 Kinsu · Insurance Referrals</div>
+    <div class="l-bottom">© 2024 Kinsu · Insurance Referrals</div>
   </div>
 
   <!-- ════ RIGHT PANEL ════ -->
@@ -561,7 +561,7 @@ function togglePass() {
   ico.textContent = isHidden ? 'visibility_off' : 'visibility';
 }
 
-function doLogin() {
+async function doLogin() {
   const email   = document.getElementById('email').value.trim();
   const pass    = document.getElementById('password').value.trim();
   const btn     = document.getElementById('btn-login');
@@ -569,44 +569,87 @@ function doLogin() {
   const emailEl = document.getElementById('email');
   const passEl  = document.getElementById('password');
 
-  // reset states
+  // Reset
   errBanner.classList.remove('show');
   emailEl.classList.remove('err');
   passEl.classList.remove('err');
 
-  // basic validation
+  // Validación básica
   if (!email) { emailEl.classList.add('err'); emailEl.focus(); return; }
   if (!pass)  { passEl.classList.add('err');  passEl.focus();  return; }
 
-  // loading state
+  // Loading
   btn.style.pointerEvents = 'none';
   btn.style.opacity = '.72';
   document.getElementById('btn-txt').textContent = 'Verificando...';
   document.getElementById('btn-ico').textContent = 'hourglass_empty';
 
-  setTimeout(() => {
+  function resetBtn() {
+    btn.style.pointerEvents = 'auto';
+    btn.style.opacity = '1';
+    document.getElementById('btn-txt').textContent = 'Iniciar sesión';
+    document.getElementById('btn-ico').textContent = 'arrow_forward';
+  }
+
+  function showError() {
+    resetBtn();
+    emailEl.classList.add('err');
+    passEl.classList.add('err');
+    errBanner.classList.add('show');
+    passEl.value = '';
+    passEl.focus();
+  }
+
+  try {
+    // 1. Intentar login con el sheet
+    const result = await KinsuAPI.login(email, pass);
+
+    if (result && result.success && result.kinsurer) {
+      const k        = result.kinsurer;
+      const nombre   = k['Nombre Completo'] || 'Kinsurer';
+      const initials = nombre.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
+
+      sessionStorage.setItem('user', JSON.stringify({
+        nombre,
+        email:       k['Email']        || email,
+        initials,
+        kinsurerID:  k['ID_Kinsurer']  || 'KIN-0001',
+        nivel:       k['Nivel']        || 'Kinsurer Certificado',
+        clabe:       k['CLABE Bancaria']|| '',
+        banco:       k['Banco']        || '',
+      }));
+      window.location.href = 'login-exitoso.html';
+
+    } else if (result && result.error) {
+      // Error específico del sheet (email no encontrado, contraseña incorrecta)
+      showError();
+
+    } else {
+      // API no respondió — fallback al login demo
+      if (email === 'kinsurer@kinsu.mx' && pass === '1234') {
+        sessionStorage.setItem('user', JSON.stringify({
+          nombre: 'Jimena Ríos', email, initials: 'JR',
+          kinsurerID: 'KIN-0001', nivel: 'Kinsurer Certificado'
+        }));
+        window.location.href = 'login-exitoso.html';
+      } else {
+        showError();
+      }
+    }
+  } catch(err) {
+    // Error de red — fallback demo
     if (email === 'kinsurer@kinsu.mx' && pass === '1234') {
       sessionStorage.setItem('user', JSON.stringify({
-        nombre: 'Jimena Ríos',
-        email: email,
-        initials: 'JR'
+        nombre: 'Jimena Ríos', email, initials: 'JR',
+        kinsurerID: 'KIN-0001', nivel: 'Kinsurer Certificado'
       }));
       window.location.href = 'login-exitoso.html';
     } else {
-      // restore button
-      btn.style.pointerEvents = 'auto';
-      btn.style.opacity = '1';
-      document.getElementById('btn-txt').textContent = 'Iniciar sesión';
-      document.getElementById('btn-ico').textContent = 'arrow_forward';
-      // show error
-      emailEl.classList.add('err');
-      passEl.classList.add('err');
-      errBanner.classList.add('show');
-      passEl.value = '';
-      passEl.focus();
+      showError();
     }
-  }, 1200);
+  }
 }
 </script>
+<script src="kinsu-config.js"></script>
 </body>
 </html>

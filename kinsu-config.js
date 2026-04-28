@@ -27,6 +27,13 @@ const KinsuAPI = {
     return user.kinsurerID || KINSU_CONFIG.DEFAULT_KINSURER_ID;
   },
 
+  // ── AUTH ─────────────────────────────────────────
+
+  async login(email, password) {
+    const url = `${KINSU_CONFIG.APPS_SCRIPT_URL}?action=login&email=${encodeURIComponent(email)}&pwd=${encodeURIComponent(password)}`;
+    return this._get(url);
+  },
+
   // ── GET ──────────────────────────────────────────
 
   async getDashboard() {
