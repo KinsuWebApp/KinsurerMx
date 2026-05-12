@@ -70,19 +70,18 @@
   </nav>
 </aside>
 
-<!-- TopAppBar -->
-<header class="bg-white/85 backdrop-blur-xl w-full lg:ml-[200px] lg:w-[calc(100%-200px)] fixed top-0 z-40 shadow-[0_20px_40px_rgba(11,27,53,0.06)] flex justify-between items-center px-6 h-16">
-  <div class="flex items-center gap-4">
-    <span class="lg:hidden text-xl font-black tracking-tight text-blue-900">Kinsu</span>
-    <h2 class="hidden lg:block font-bold text-slate-900">Dashboard</h2>
+<!-- Topbar — igual a todas las demás páginas -->
+<header class="fixed top-0 right-0 left-0 lg:left-[200px] h-16 bg-white/85 backdrop-blur-md flex items-center justify-between px-6 z-40 shadow-sm">
+  <div class="flex items-center gap-3">
+    <span class="lg:hidden text-xl font-black text-[#1d4ed8]">Kinsu</span>
+    <h1 class="hidden lg:block text-base font-bold text-slate-800">Dashboard</h1>
   </div>
-  <div class="flex items-center gap-4">
+  <div class="flex items-center gap-3">
     <button class="text-slate-500 hover:text-blue-600 transition-colors">
       <span class="material-symbols-outlined">notifications</span>
     </button>
-    <!-- Avatar con iniciales desde sessionStorage -->
     <button onclick="window.location.href='perfil.html'"
-      class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-700 text-xs cursor-pointer"
+      class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-700 text-xs"
       id="topbar-av">JR</button>
   </div>
 </header>
@@ -121,14 +120,15 @@
       <div class="relative z-10">
         <span class="bg-secondary px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">KINSURER</span>
         <h2 class="mt-4 text-2xl font-bold" id="nivel-nombre">Certificado</h2>
-        <p class="mt-2 text-blue-200 text-sm">Faltan 5 pólizas para el próximo bono.</p>
+        <p class="mt-2 text-blue-200 text-sm" id="nivel-faltan">Faltan 4 pólizas para el siguiente nivel</p>
       </div>
       <div class="mt-8 relative z-10">
         <div class="flex justify-between text-xs mb-2 text-blue-100">
-          <span>Progreso del mes</span><span>80%</span>
+          <span id="nivel-polizas-label">1 de 5 pólizas</span>
+          <span id="nivel-pct">20%</span>
         </div>
         <div class="h-2 w-full bg-blue-900/50 rounded-full overflow-hidden">
-          <div class="h-full bg-secondary-container rounded-full w-[80%]"></div>
+          <div class="h-full bg-secondary-container rounded-full transition-all duration-700" id="nivel-bar" style="width:20%"></div>
         </div>
       </div>
       <div class="absolute -right-12 -bottom-12 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -162,30 +162,47 @@
       </a>
     </div>
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      <div class="bg-white p-6 rounded-2xl border border-gray-100 flex items-center gap-4 shadow-sm">
-        <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center text-blue-700">
-          <span class="material-symbols-outlined">person_search</span>
+
+      <div class="bg-white p-4 lg:p-6 rounded-2xl border border-gray-100 flex flex-col gap-3 shadow-sm">
+        <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-blue-100 flex items-center justify-center text-blue-700 flex-shrink-0">
+          <span class="material-symbols-outlined text-[20px] lg:text-[24px]">person_search</span>
         </div>
-        <div><p class="text-2xl font-black" id="stat-prospectos">50</p><p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Prospectos</p></div>
-      </div>
-      <div class="bg-white p-6 rounded-2xl border border-gray-100 flex items-center gap-4 shadow-sm">
-        <div class="w-12 h-12 rounded-xl bg-tertiary-fixed flex items-center justify-center text-tertiary">
-          <span class="material-symbols-outlined">verified</span>
+        <div>
+          <p class="text-2xl font-black leading-none" id="stat-prospectos">0</p>
+          <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1">Prospectos</p>
         </div>
-        <div><p class="text-2xl font-black" id="stat-asegurados">25</p><p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Asegurados</p></div>
       </div>
-      <div class="bg-white p-6 rounded-2xl border border-gray-100 flex items-center gap-4 shadow-sm">
-        <div class="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center text-orange-700">
-          <span class="material-symbols-outlined">pending_actions</span>
+
+      <div class="bg-white p-4 lg:p-6 rounded-2xl border border-gray-100 flex flex-col gap-3 shadow-sm">
+        <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-[#d4f0a0] flex items-center justify-center text-[#1a3a0a] flex-shrink-0">
+          <span class="material-symbols-outlined text-[20px] lg:text-[24px]">verified</span>
         </div>
-        <div><p class="text-2xl font-black" id="stat-proceso">10</p><p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">En proceso</p></div>
-      </div>
-      <div class="bg-white p-6 rounded-2xl border border-gray-100 flex items-center gap-4 shadow-sm">
-        <div class="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center text-purple-700">
-          <span class="material-symbols-outlined">mail</span>
+        <div>
+          <p class="text-2xl font-black leading-none" id="stat-asegurados">0</p>
+          <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1">Asegurados</p>
         </div>
-        <div><p class="text-2xl font-black">50</p><p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Cotizaciones</p></div>
       </div>
+
+      <div class="bg-white p-4 lg:p-6 rounded-2xl border border-gray-100 flex flex-col gap-3 shadow-sm">
+        <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-orange-100 flex items-center justify-center text-orange-700 flex-shrink-0">
+          <span class="material-symbols-outlined text-[20px] lg:text-[24px]">pending_actions</span>
+        </div>
+        <div>
+          <p class="text-2xl font-black leading-none" id="stat-proceso">0</p>
+          <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1">En proceso</p>
+        </div>
+      </div>
+
+      <div class="bg-white p-4 lg:p-6 rounded-2xl border border-gray-100 flex flex-col gap-3 shadow-sm">
+        <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-purple-100 flex items-center justify-center text-purple-700 flex-shrink-0">
+          <span class="material-symbols-outlined text-[20px] lg:text-[24px]">mail</span>
+        </div>
+        <div>
+          <p class="text-2xl font-black leading-none" id="stat-enviados">0</p>
+          <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1">Cotizaciones</p>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -258,15 +275,15 @@
 <script>
 // ── Fallback data ──
 const FALLBACK = {
-  ganancias_total:    '$24,850.00',
-  prospectos_total:   50,
-  prospectos_activos: 10,
-  completados:        25,
-  nivel:              'Certificado',
+  ganancias_total:    '$500.00',
+  prospectos_total:   6,
+  prospectos_activos: 4,
+  completados:        1,
+  nivel:              'Kinsurer Certificado',
   prospectos_recientes: [
-    { initials:'MR', nombre:'Marco Rodríguez',  tipo:'Seguro de Vida',    comision:'$1,200.00', folio:'A20240001' },
-    { initials:'LC', nombre:'Laura Cifuentes',  tipo:'Seguro Automotriz', comision:'$450.00',   folio:'A20240002' },
-    { initials:'AM', nombre:'Andrés Morales',   tipo:'Gastos Médicos',    comision:'$2,800.00', folio:'S20240003' },
+    { 'Nombre Prospecto':'Juan López',   'Tipo Seguro':'Auto',  'Folio':'A20240001', 'Estatus':'En Emisión'    },
+    { 'Nombre Prospecto':'Ana Pérez',    'Tipo Seguro':'Salud', 'Folio':'S20240002', 'Estatus':'En Cotización' },
+    { 'Nombre Prospecto':'Carlos Ríos',  'Tipo Seguro':'Viaje', 'Folio':'V20240003', 'Estatus':'Enviado'       },
   ]
 };
 
@@ -297,27 +314,78 @@ function showSkeleton() {
 }
 
 // ── Render con datos ──
+// Configuración de niveles (espejo del Apps Script)
+const NIVELES = [
+  { id:0, nombre:'Kinsurer Nuevo',      min:0,  max:0  },
+  { id:1, nombre:'Kinsurer Certificado',min:1,  max:4  },
+  { id:2, nombre:'Kinsurer Pro',        min:5,  max:14 },
+  { id:3, nombre:'Kinsurer Elite',      min:15, max:29 },
+  { id:4, nombre:'Kinsurer Embajador',  min:30, max:999},
+];
+
 function renderDashboard(data) {
-  // Hero
+  // ── Ganancias ──
   document.getElementById('hero-ganancias').textContent = data.ganancias_total || FALLBACK.ganancias_total;
-  document.getElementById('nivel-nombre').textContent   = (data.kinsurer?.['Nivel'] || FALLBACK.nivel).replace('Kinsurer ','');
 
-  // Stats
-  document.getElementById('stat-prospectos').textContent = data.prospectos_total   || FALLBACK.prospectos_total;
-  document.getElementById('stat-asegurados').textContent = data.completados         || FALLBACK.completados;
-  document.getElementById('stat-proceso').textContent    = data.prospectos_activos  || FALLBACK.prospectos_activos;
+  // ── Nivel desde API ──
+  const nivelData = data.nivel;
+  if (nivelData) {
+    const nombre    = nivelData.actual?.nombre || 'Kinsurer Nuevo';
+    const siguiente = nivelData.siguiente;
+    const faltan    = nivelData.faltanParaSiguiente || 0;
+    const progreso  = nivelData.progresoEnNivel || 0;
+    const polizas   = nivelData.polizas || 0;
 
-  // Prospectos recientes
+    document.getElementById('nivel-nombre').textContent = nombre.replace('Kinsurer ', '');
+
+    if (siguiente) {
+      document.getElementById('nivel-faltan').textContent =
+        faltan === 0 ? '¡Listo para subir de nivel!' : `Faltan ${faltan} póliza${faltan===1?'':'s'} para el siguiente nivel`;
+      document.getElementById('nivel-polizas-label').textContent =
+        `${polizas} de ${siguiente.min} pólizas`;
+    } else {
+      document.getElementById('nivel-faltan').textContent = '¡Nivel máximo alcanzado! 🏆';
+      document.getElementById('nivel-polizas-label').textContent = `${polizas} pólizas emitidas`;
+    }
+
+    document.getElementById('nivel-pct').textContent = progreso + '%';
+    document.getElementById('nivel-bar').style.width  = progreso + '%';
+  } else {
+    // Fallback
+    document.getElementById('nivel-nombre').textContent  = FALLBACK.nivel.replace('Kinsurer ','');
+    document.getElementById('nivel-faltan').textContent  = 'Faltan 4 pólizas para el siguiente nivel';
+    document.getElementById('nivel-polizas-label').textContent = '1 de 5 pólizas';
+    document.getElementById('nivel-pct').textContent     = '20%';
+    document.getElementById('nivel-bar').style.width     = '20%';
+  }
+
+  // ── Stats de actividad (datos reales del sheet) ──
+  document.getElementById('stat-prospectos').textContent = data.prospectos_total          ?? FALLBACK.prospectos_total;
+  document.getElementById('stat-asegurados').textContent = data.prospectos_completados    ?? FALLBACK.completados;
+  document.getElementById('stat-proceso').textContent    = data.prospectos_en_proceso     ?? FALLBACK.prospectos_activos;
+  document.getElementById('stat-enviados').textContent   = data.prospectos_enviados       ?? 0;
+
+  // ── Prospectos recientes ──
   const prospects = data.prospectos_recientes || FALLBACK.prospectos_recientes;
   const list = document.getElementById('recent-list');
   list.innerHTML = '';
 
+  const BADGE = {
+    'Enviado':       { bg:'#e8f0fe', color:'#1565c0' },
+    'En Cotización': { bg:'#eeedfe', color:'#534ab7' },
+    'En Emisión':    { bg:'#e1f5ee', color:'#0f6e56' },
+    'En Cobranza':   { bg:'#fbeaf0', color:'#993556' },
+    'Completado':    { bg:'#d4f0a0', color:'#1a3a0a' },
+    'Cancelado':     { bg:'#f1efe8', color:'#888780' },
+  };
+
   prospects.slice(0, 3).forEach(p => {
-    const nombre  = p['Nombre Prospecto'] || p.nombre || 'Prospecto';
-    const tipo    = p['Tipo Seguro']       || p.tipo   || '—';
-    const folio   = p['Folio']             || p.folio  || '';
-    const comision= p['Comisión Estimada'] || p.comision || '—';
+    const nombre  = p['Nombre Prospecto'] || p.nombre   || 'Prospecto';
+    const tipo    = p['Tipo Seguro']       || p.tipo     || '—';
+    const folio   = p['Folio']             || p.folio    || '';
+    const estatus = p['Estatus']           || p.estatus  || '';
     const ini     = nombre.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+    const badge   = BADGE[estatus] || { bg:'#e8f0fe', color:'#1565c0' };
 
     list.innerHTML += `
     <a href="detalle-prospecto.html?folio=${folio}"
@@ -330,11 +398,9 @@ function renderDashboard(data) {
           <p class="text-xs text-slate-400 uppercase tracking-widest">${tipo}</p>
         </div>
       </div>
-      <div class="flex items-center gap-6">
-        <div class="text-right hidden md:block">
-          <p class="text-sm font-semibold">${comision}</p>
-          <p class="text-xs text-slate-500">Comisión estimada</p>
-        </div>
+      <div class="flex items-center gap-4">
+        <span class="hidden md:block px-3 py-1 rounded-full text-[10px] font-bold"
+          style="background:${badge.bg};color:${badge.color};">${estatus}</span>
         <span class="material-symbols-outlined text-slate-300 group-hover:text-primary transition-colors">chevron_right</span>
       </div>
     </a>`;
