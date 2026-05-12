@@ -11,6 +11,23 @@
   body { font-family:'Inter',sans-serif; background:#f9f9ff; }
   .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
   .filled { font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24; }
+  @keyframes float {
+    0%,100% { transform: translateY(0); }
+    50%     { transform: translateY(-8px); }
+  }
+  @keyframes orbit {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+  @keyframes grow {
+    from { width: 0%; }
+  }
+  .pulse-dot { animation: pulse-ring 2s infinite; }
+  @keyframes pulse-ring {
+    0%  { box-shadow: 0 0 0 0 rgba(21,101,192,0.4); }
+    70% { box-shadow: 0 0 0 8px rgba(21,101,192,0); }
+    100%{ box-shadow: 0 0 0 0 rgba(21,101,192,0); }
+  }
 
   @keyframes pulse-ring {
     0%   { box-shadow: 0 0 0 0 rgba(21,101,192,0.4); }
@@ -56,265 +73,88 @@
 </header>
 
 <!-- Main -->
-<main class="pt-16 pb-28 lg:pl-[200px] min-h-screen">
+<main class="pt-16 pb-28 lg:pl-[200px] min-h-screen flex flex-col">
 
   <!-- Hero header -->
   <div style="background:linear-gradient(135deg,#0d1c2e 0%,#1565c0 100%);" class="px-6 lg:px-12 py-10">
     <div class="max-w-5xl mx-auto">
-      <div>
-        <p class="text-[11px] font-black uppercase tracking-[.18em] text-white/60 mb-2">Centro de Formación</p>
-        <h1 class="text-3xl lg:text-5xl font-black text-white tracking-tighter leading-none mb-3">Tu camino Kinsu</h1>
-        <p class="text-white/70 text-base max-w-md">Completa misiones, sube de nivel y aumenta tus comisiones.</p>
+      <p class="text-[11px] font-black uppercase tracking-[.18em] text-white/60 mb-2">Centro de Formación</p>
+      <h1 class="text-3xl lg:text-5xl font-black text-white tracking-tighter leading-none mb-3">Tu camino Kinsu</h1>
+      <p class="text-white/70 text-base max-w-md">Completa misiones, sube de nivel y aumenta tus comisiones.</p>
+    </div>
+  </div>
+
+  <!-- Under construction -->
+  <div class="flex-1 flex items-center justify-center px-6 py-16">
+    <div class="max-w-lg w-full text-center">
+
+      <!-- Animated icon -->
+      <div class="relative w-32 h-32 mx-auto mb-8">
+        <div class="w-32 h-32 rounded-3xl flex items-center justify-center"
+          style="background:linear-gradient(135deg,#e8f0fe 0%,#d4f0a0 100%);">
+          <span class="material-symbols-outlined text-[56px] text-[#1565c0]"
+            style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;animation:float 3s ease-in-out infinite;">
+            construction
+          </span>
+        </div>
+        <!-- Orbiting dot -->
+        <div class="absolute inset-0" style="animation:orbit 4s linear infinite;">
+          <div class="w-4 h-4 bg-[#82d14b] rounded-full absolute -top-2 left-1/2 -translate-x-1/2 shadow-lg"></div>
+        </div>
       </div>
+
+      <h2 class="text-3xl font-black text-[#0d1c2e] tracking-tight mb-3">En construcción</h2>
+      <p class="text-slate-500 text-base leading-relaxed mb-8 max-w-sm mx-auto">
+        Estamos construyendo algo increíble para ti. El sistema de formación y misiones de Kinsu estará listo muy pronto.
+      </p>
+
+      <!-- Progress bar -->
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 mb-6 text-left">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-sm font-bold text-[#0d1c2e]">Progreso de desarrollo</span>
+          <span class="text-sm font-black text-[#1565c0]">72%</span>
+        </div>
+        <div class="w-full bg-[#f1f3ff] rounded-full h-2.5 overflow-hidden">
+          <div class="h-full bg-gradient-to-r from-[#1565c0] to-[#82d14b] rounded-full"
+            style="width:72%;animation:grow 1.5s ease-out forwards;"></div>
+        </div>
+        <div class="grid grid-cols-3 gap-3 mt-5">
+          <div class="text-center">
+            <div class="w-8 h-8 bg-[#d4f0a0] rounded-full flex items-center justify-center mx-auto mb-1">
+              <span class="material-symbols-outlined text-[#1a3a0a] text-[16px]" style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">check</span>
+            </div>
+            <p class="text-[10px] font-bold text-[#1a3a0a]">Diseño</p>
+          </div>
+          <div class="text-center">
+            <div class="w-8 h-8 bg-[#d4f0a0] rounded-full flex items-center justify-center mx-auto mb-1">
+              <span class="material-symbols-outlined text-[#1a3a0a] text-[16px]" style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">check</span>
+            </div>
+            <p class="text-[10px] font-bold text-[#1a3a0a]">Ana IA</p>
+          </div>
+          <div class="text-center">
+            <div class="w-8 h-8 bg-[#e8f0fe] rounded-full flex items-center justify-center mx-auto mb-1 pulse-dot">
+              <span class="material-symbols-outlined text-[#1565c0] text-[16px]">settings</span>
+            </div>
+            <p class="text-[10px] font-bold text-[#1565c0]">Misiones</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <a href="chat-ana.html"
+        class="inline-flex items-center gap-3 px-8 py-4 bg-[#0d1c2e] text-white rounded-2xl
+               font-bold text-sm hover:bg-[#1565c0] active:scale-95 transition-all shadow-lg">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center"
+          style="background:linear-gradient(135deg,#1565c0,#82d14b);">
+          <span class="text-white font-black text-sm">A</span>
+        </div>
+        Mientras tanto, habla con Ana
+      </a>
+      <p class="text-xs text-slate-400 mt-3">Ana puede responder todas tus dudas sobre Kinsu</p>
 
     </div>
   </div>
 
-  <!-- Contenido -->
-  <div class="px-6 lg:px-12 py-8 max-w-5xl mx-auto">
-    <div class="flex flex-col lg:flex-row gap-8">
-
-      <!-- Mapa de misiones -->
-      <div class="flex-1 space-y-6">
-
-        <!-- ── NIVEL 1: KINSURER CERTIFICADO ── -->
-        <div>
-          <p class="text-[10px] font-black uppercase tracking-[.18em] text-[#82d14b] mb-3">
-            NIVEL 1 · KINSURER CERTIFICADO
-          </p>
-          <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
-            <div class="flex items-center gap-4 mb-5">
-              <div class="w-12 h-12 rounded-full bg-[#d4f0a0] border-2 border-[#82d14b] flex items-center justify-center flex-shrink-0">
-                <span class="material-symbols-outlined text-[#1a3a0a] filled">verified</span>
-              </div>
-              <div>
-                <h3 class="font-black text-[#0d1c2e] text-lg">Kinsurer Certificado</h3>
-                <span class="text-[10px] font-black text-[#82d14b] uppercase tracking-wider">✓ Completado</span>
-              </div>
-            </div>
-            <!-- Misión completada -->
-            <div class="flex items-center gap-4 p-4 bg-[#f9f9ff] rounded-2xl border border-[#e2e8f5]">
-              <div class="w-10 h-10 rounded-full bg-[#82d14b] flex items-center justify-center flex-shrink-0">
-                <span class="material-symbols-outlined text-white text-[18px] filled">check</span>
-              </div>
-              <div class="flex-1">
-                <p class="font-bold text-[#0d1c2e] text-sm">Bienvenida a Kinsu</p>
-                <p class="text-[11px] text-[#1a3a0a] font-bold">Insignia desbloqueada ✓</p>
-              </div>
-              <span class="px-3 py-1 bg-[#d4f0a0] text-[#1a3a0a] rounded-full text-[10px] font-bold">Completada</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Conector -->
-        <div class="flex justify-center">
-          <div class="w-0.5 h-6 bg-gradient-to-b from-[#82d14b] to-[#1565c0] rounded-full"></div>
-        </div>
-
-        <!-- ── NIVEL 2: KINSURER PRO ── -->
-        <div>
-          <p class="text-[10px] font-black uppercase tracking-[.18em] text-[#1565c0] mb-3">
-            NIVEL 2 · KINSURER PRO — 15% de comisión
-          </p>
-          <div class="bg-white rounded-3xl p-6 shadow-sm border-2 border-[#1565c0]">
-            <div class="flex items-center gap-4 mb-5">
-              <div class="w-12 h-12 rounded-full bg-[#e8f0fe] border-2 border-dashed border-[#1565c0] flex items-center justify-center flex-shrink-0">
-                <span class="material-symbols-outlined text-[#1565c0]">military_tech</span>
-              </div>
-              <div>
-                <h3 class="font-black text-[#0d1c2e] text-lg">Kinsurer Pro</h3>
-                <span class="text-[10px] font-black text-[#1565c0] uppercase tracking-wider">En Progreso</span>
-              </div>
-            </div>
-
-            <!-- Misión activa -->
-            <div class="flex items-center gap-4 p-4 bg-[#e8f0fe]/50 rounded-2xl border border-[#1565c0]/20 mb-3">
-              <div class="w-10 h-10 rounded-full bg-[#1565c0] flex items-center justify-center flex-shrink-0 pulse">
-                <span class="material-symbols-outlined text-white text-[18px]">person_add</span>
-              </div>
-              <div class="flex-1">
-                <p class="font-bold text-[#0d1c2e] text-sm">Tu primer referido real</p>
-                <p class="text-[11px] text-[#8899bb]">Registra un prospecto que llegue a En Cotización</p>
-                <div class="mt-2 w-full bg-[#d7e2ff] rounded-full h-1 overflow-hidden">
-                  <div class="h-full bg-[#1565c0] rounded-full" style="width:0%;"></div>
-                </div>
-              </div>
-              <a href="nuevo-prospecto.html"
-                class="flex items-center gap-1 px-3 py-2 bg-[#1565c0] text-white rounded-full text-[11px] font-bold whitespace-nowrap hover:bg-[#1255a8] active:scale-95 transition-all">
-                Iniciar <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
-              </a>
-            </div>
-
-            <!-- Misión bloqueada -->
-            <div class="flex items-center gap-4 p-4 rounded-2xl opacity-50">
-              <div class="w-10 h-10 rounded-full bg-[#f1f3ff] flex items-center justify-center flex-shrink-0">
-                <span class="material-symbols-outlined text-[#c0cad8] text-[18px]">lock</span>
-              </div>
-              <div class="flex-1">
-                <p class="font-bold text-[#8899bb] text-sm">Especialista en Salud</p>
-                <p class="text-[11px] text-[#c0cad8]">Completa la misión anterior primero</p>
-              </div>
-              <span class="px-3 py-1 bg-[#f1f3ff] text-[#c0cad8] rounded-full text-[10px] font-bold">Bloqueada</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Conector -->
-        <div class="flex justify-center">
-          <div class="w-0.5 h-6 bg-[#e2e8f5] rounded-full"></div>
-        </div>
-
-        <!-- ── NIVEL 3: KINSURER ELITE ── -->
-        <div class="opacity-50">
-          <p class="text-[10px] font-black uppercase tracking-[.18em] text-[#854f0b] mb-3">
-            NIVEL 3 · KINSURER ELITE — 20% de comisión
-          </p>
-          <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
-            <div class="flex items-center gap-4 mb-5">
-              <div class="w-12 h-12 rounded-full bg-[#faeeda] border-2 border-dashed border-[#ef9f27] flex items-center justify-center flex-shrink-0">
-                <span class="material-symbols-outlined text-[#ef9f27]">workspace_premium</span>
-              </div>
-              <div>
-                <h3 class="font-black text-[#8899bb] text-lg">Kinsurer Elite</h3>
-                <span class="text-[10px] font-black text-[#c0cad8] uppercase tracking-wider">Bloqueado</span>
-              </div>
-            </div>
-            <div class="flex items-center gap-4 p-4 rounded-2xl">
-              <div class="w-10 h-10 rounded-full bg-[#f1f3ff] flex items-center justify-center flex-shrink-0">
-                <span class="material-symbols-outlined text-[#c0cad8] text-[18px]">lock</span>
-              </div>
-              <div>
-                <p class="font-bold text-[#8899bb] text-sm">Liderazgo y Equipos</p>
-                <p class="text-[11px] text-[#c0cad8]">Completa los niveles anteriores</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Conector -->
-        <div class="flex justify-center">
-          <div class="w-0.5 h-6 bg-[#e2e8f5] rounded-full"></div>
-        </div>
-
-        <!-- ── NIVEL 4: KINSURER EMBAJADOR ── -->
-        <div class="opacity-40">
-          <p class="text-[10px] font-black uppercase tracking-[.18em] text-slate-400 mb-3">
-            NIVEL 4 · KINSURER EMBAJADOR — 25% + bono red
-          </p>
-          <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
-            <div class="flex items-center gap-4 mb-5">
-              <div class="w-12 h-12 rounded-full bg-[#f1efe8] border-2 border-dashed border-[#888780] flex items-center justify-center flex-shrink-0">
-                <span class="material-symbols-outlined text-[#888780]">stars</span>
-              </div>
-              <div>
-                <h3 class="font-black text-[#888780] text-lg">Kinsurer Embajador</h3>
-                <span class="text-[10px] font-black text-[#c0cad8] uppercase tracking-wider">Bloqueado</span>
-              </div>
-            </div>
-            <div class="flex items-center gap-4 p-4 rounded-2xl">
-              <div class="w-10 h-10 rounded-full bg-[#f1f3ff] flex items-center justify-center flex-shrink-0">
-                <span class="material-symbols-outlined text-[#c0cad8] text-[18px]">lock</span>
-              </div>
-              <div>
-                <p class="font-bold text-[#8899bb] text-sm">Alianzas Estratégicas</p>
-                <p class="text-[11px] text-[#c0cad8]">Completa los niveles anteriores primero</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Panel derecho -->
-      <aside class="w-full lg:w-72 space-y-5 lg:flex-shrink-0">
-
-        <!-- Card nivel actual -->
-        <div class="bg-[#0d1c2e] text-white rounded-3xl p-6 shadow-xl border border-white/5">
-          <div class="flex items-center gap-3 mb-5">
-            <div class="w-11 h-11 bg-white/10 rounded-2xl flex items-center justify-center">
-              <span class="material-symbols-outlined text-[#a6f86d] text-2xl filled">military_tech</span>
-            </div>
-            <div>
-              <p class="text-base font-black">Kinsurer Certificado</p>
-              <p class="text-[11px] text-[#a6f86d] font-bold">$200 MXN fijos por referido</p>
-            </div>
-          </div>
-          <div class="space-y-2 mb-4">
-            <div class="flex justify-between text-[10px] font-bold uppercase tracking-wider text-white/50">
-              <span>Progreso</span><span>60%</span>
-            </div>
-            <div class="w-full bg-white/15 h-1.5 rounded-full overflow-hidden">
-              <div class="h-full bg-[#a6f86d] rounded-full" style="width:60%;"></div>
-            </div>
-          </div>
-          <p class="text-xs text-white/50 flex items-center gap-1">
-            <span class="material-symbols-outlined text-[14px]">info</span>
-            3 misiones para Kinsurer Pro
-          </p>
-        </div>
-
-        <!-- Card Ana -->
-        <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
-          <div class="flex items-center gap-3 mb-4">
-            <div class="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 relative"
-              style="background:linear-gradient(135deg,#1565c0 0%,#82d14b 100%);">
-              <span class="text-white font-black text-lg">A</span>
-              <div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-[#a6f86d] border-2 border-white rounded-full"></div>
-            </div>
-            <div>
-              <p class="font-black text-[#0d1c2e]">Hola, soy Ana 👋</p>
-              <p class="text-xs text-slate-400">Tu guía personal de formación</p>
-            </div>
-          </div>
-          <p class="text-sm text-slate-500 leading-relaxed mb-5">
-            Estoy aquí para ayudarte a entender todo sobre seguros y hacer crecer tus ingresos.
-          </p>
-          <a href="chat-ana.html"
-            class="flex items-center justify-center gap-2 w-full py-3 bg-[#0d1c2e] text-white
-                   rounded-2xl font-bold text-sm hover:bg-[#1565c0] active:scale-95 transition-all">
-            <span class="material-symbols-outlined text-[18px]">chat</span>
-            Hablar con Ana
-          </a>
-        </div>
-
-        <!-- Tabla de niveles -->
-        <div class="bg-[#f1f3ff] rounded-3xl p-6 border border-[#e2e8f5]">
-          <h4 class="text-sm font-black text-[#0d1c2e] mb-4">Beneficios por nivel</h4>
-          <div class="space-y-3">
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <div class="w-2 h-2 rounded-full bg-[#82d14b]"></div>
-                <span class="text-xs font-bold text-[#0d1c2e]">Certificado</span>
-              </div>
-              <span class="text-xs font-black text-[#285900]">$200 MXN fijos</span>
-            </div>
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <div class="w-2 h-2 rounded-full bg-[#1565c0]"></div>
-                <span class="text-xs font-bold text-[#8899bb]">Pro</span>
-              </div>
-              <span class="text-xs font-black text-[#8899bb]">15% comisión</span>
-            </div>
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <div class="w-2 h-2 rounded-full bg-[#ef9f27]"></div>
-                <span class="text-xs font-bold text-[#8899bb]">Elite</span>
-              </div>
-              <span class="text-xs font-black text-[#8899bb]">20% comisión</span>
-            </div>
-            <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2">
-                <div class="w-2 h-2 rounded-full bg-[#888780]"></div>
-                <span class="text-xs font-bold text-[#8899bb]">Embajador</span>
-              </div>
-              <span class="text-xs font-black text-[#8899bb]">25% + red</span>
-            </div>
-          </div>
-        </div>
-
-      </aside>
-    </div>
-  </div>
 </main>
 
 <!-- Bottom Nav Mobile -->
