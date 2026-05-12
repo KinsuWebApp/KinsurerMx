@@ -266,6 +266,7 @@ document.getElementById('perfil-nombre').textContent   = user.nombre   || 'Jimen
 document.getElementById('perfil-email').textContent    = user.email    || 'kinsurer@kinsu.mx';
 document.getElementById('perfil-clabe').textContent    = user.clabe    || '**** **** **** 0921';
 document.getElementById('perfil-banco').textContent    = user.banco    || 'BBVA México';
+document.getElementById('perfil-tel').textContent      = user.tel      || '+52 55 1234 5678';
 
 const nivel = user.nivel || 'Kinsurer Certificado';
 const nivelCorto = nivel.replace('Kinsurer ','');
@@ -289,7 +290,7 @@ async function loadPerfil() {
     const nivelAPI = data['Nivel']            || user.nivel || 'Kinsurer Certificado';
     const id       = data['ID_Kinsurer']      || user.kinsurerID || 'KIN-0001';
     const polizas  = data['Pólizas Emitidas'] || 0;
-    const tel      = data['Teléfono'] || user.tel || '';
+    const tel      = data['Tel'] || data['Teléfono'] || data['Telefono'] || user.tel || '';
 
     const initials = nombre.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
 
