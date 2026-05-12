@@ -122,7 +122,7 @@
             </div>
             <div>
               <p class="text-[10px] text-slate-400 uppercase tracking-wider font-bold">Teléfono</p>
-              <p class="text-sm font-semibold text-[#0d1c2e]">+52 55 1234 5678</p>
+              <p class="text-sm font-semibold text-[#0d1c2e]" id="perfil-tel">+52 55 1234 5678</p>
             </div>
           </div>
         </div>
@@ -289,6 +289,7 @@ async function loadPerfil() {
     const nivelAPI = data['Nivel']            || user.nivel || 'Kinsurer Certificado';
     const id       = data['ID_Kinsurer']      || user.kinsurerID || 'KIN-0001';
     const polizas  = data['Pólizas Emitidas'] || 0;
+    const tel      = data['Teléfono'] || user.tel || '';
 
     const initials = nombre.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
 
@@ -302,6 +303,7 @@ async function loadPerfil() {
     document.getElementById('perfil-id').textContent       = 'ID: ' + id;
     document.getElementById('topbar-nivel').textContent    = nivelAPI.replace('Kinsurer ','');
     document.getElementById('header-nivel').textContent    = nivelAPI;
+    if (tel) document.getElementById('perfil-tel').textContent = tel;
 
     // Calcular saldo desde ganancias
     const ganData = await KinsuAPI.getGanancias();
@@ -312,7 +314,7 @@ async function loadPerfil() {
     // Actualizar sessionStorage con datos frescos del sheet
     sessionStorage.setItem('user', JSON.stringify({
       ...user, nombre, email, initials, clabe, banco,
-      nivel: nivelAPI, kinsurerID: id
+      nivel: nivelAPI, kinsurerID: id, tel
     }));
 
   } catch(e) {
