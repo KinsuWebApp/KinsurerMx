@@ -200,7 +200,7 @@
                 class="w-full lg:w-auto px-12 h-14 bg-[#1565c0] text-white rounded-full
                        font-bold text-base shadow-md hover:bg-[#1255a8]
                        active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-                <span id="btn-txt">Enviar Referido</span>
+                <span id="btn-txt">Enviar Referencia</span>
                 <span class="material-symbols-outlined text-[18px]" id="btn-ico">arrow_forward</span>
               </button>
             </div>
@@ -279,6 +279,7 @@
   </a>
 </nav>
 
+<script src="kinsu-config.js"></script>
 <script>
 // ── Usuario ──
 const user = JSON.parse(
@@ -316,7 +317,7 @@ function setError(fieldId, errId, show) {
   else       { el.classList.remove('field-err'); err.classList.add('hidden'); }
 }
 
-function enviarProspecto() {
+async function enviarProspecto() {
   const nombre = document.getElementById('f-nombre').value.trim();
   const tel    = document.getElementById('f-tel').value.trim();
   const email  = document.getElementById('f-email').value.trim();
@@ -342,18 +343,33 @@ function enviarProspecto() {
   // Loading
   btn.disabled = true;
   btn.classList.add('opacity-75');
-  document.getElementById('btn-txt').textContent = 'Registrando...';
+  document.getElementById('btn-txt').textContent = 'Guardando...';
   document.getElementById('btn-ico').textContent = 'hourglass_empty';
 
-  // Guardar en sessionStorage
-  sessionStorage.setItem('form-nombre',  nombre);
-  sessionStorage.setItem('form-tipo',    tipoSeleccionado);
-  sessionStorage.setItem('form-telefono',tel);
-  sessionStorage.setItem('form-correo',  email);
+  // Guardar en sessionStorage (para el chat)
+  sessionStorage.setItem('form-nombre',   nombre);
+  sessionStorage.setItem('form-tipo',     tipoSeleccionado);
+  sessionStorage.setItem('form-telefono', tel);
+  sessionStorage.setItem('form-correo',   email);
 
-  setTimeout(() => {
-    window.location.href = `chat-de-registro.html?nombre=${encodeURIComponent(nombre)}&tipo=${encodeURIComponent(tipoSeleccionado)}`;
-  }, 600);
+  // Guardar en Google Sheet
+  try {
+    const result = await KinsuAPI.createProspecto({
+      nombre, telefono: tel, email,
+      tipo: tipoSeleccionado,
+      ciudad: '',
+    });
+
+    if (result?.folio) {
+      // Guardar folio generado por el sheet
+      sessionStorage.setItem('form-folio', result.folio);
+    }
+  } catch(e) {
+    // Si falla la API continuar igual — el folio se genera en el chat
+    console.warn('No se pudo guardar en sheet:', e);
+  }
+
+  window.location.href = `chat-de-registro.html?nombre=${encodeURIComponent(nombre)}&tipo=${encodeURIComponent(tipoSeleccionado)}`;
 }
 </script>
 </body>
