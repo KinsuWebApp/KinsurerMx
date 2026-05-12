@@ -78,7 +78,7 @@
         </div>
         <div>
           <p class="text-[10px] text-[#1a3a0a] uppercase font-black tracking-wider">Nivel</p>
-          <p class="text-base font-black text-[#1a3a0a]">Kinsurer Certificado</p>
+          <p class="text-base font-black text-[#1a3a0a]" id="header-nivel">Kinsurer Certificado</p>
         </div>
       </div>
     </div>
@@ -140,8 +140,8 @@
               </div>
               <div>
                 <h4 class="text-base font-bold text-[#0d1c2e]">Cuenta Bancaria</h4>
-                <p class="text-slate-400 text-sm">BBVA México</p>
-                <p class="font-mono text-sm font-bold text-[#1565c0] tracking-widest mt-1">**** **** **** 0921</p>
+                <p class="text-slate-400 text-sm" id="perfil-banco">BBVA México</p>
+                <p class="font-mono text-sm font-bold text-[#1565c0] tracking-widest mt-1" id="perfil-clabe">**** **** **** 0921</p>
               </div>
             </div>
             <div class="flex gap-3">
@@ -196,7 +196,7 @@
           <div class="absolute -left-10 -top-10 w-48 h-48 bg-[#005db7] rounded-full blur-3xl opacity-10 pointer-events-none"></div>
           <div class="relative z-10 text-center md:text-left">
             <p class="text-white/50 text-[10px] font-black uppercase tracking-[.2em] mb-2">Saldo Disponible</p>
-            <h2 class="text-3xl lg:text-4xl font-black text-white tracking-tighter">$4,513.00</h2>
+<h2 class="text-3xl lg:text-4xl font-black text-white tracking-tighter" id="perfil-saldo">$4,513.00</h2>
             <p class="text-[#a6f86d] text-xs font-bold mt-2 flex items-center gap-1 justify-center md:justify-start">
               <span class="material-symbols-outlined text-[14px]">trending_up</span>
               +12% vs semana anterior
@@ -251,27 +251,82 @@
   </a>
 </nav>
 
+<script src="kinsu-config.js"></script>
 <script>
-// ── Usuario desde sessionStorage ──
+// ── Usuario desde sessionStorage (datos inmediatos) ──
 const user = JSON.parse(
   sessionStorage.getItem('user') ||
-  '{"nombre":"Jimena Ríos","email":"kinsurer@kinsu.mx","initials":"JR"}'
+  '{"nombre":"Jimena Ríos","email":"kinsurer@kinsu.mx","initials":"JR","kinsurerID":"KIN-0001"}'
 );
 
-document.getElementById('topbar-av').textContent      = user.initials || 'JR';
+// Poblar con sessionStorage inmediatamente (sin esperar API)
+document.getElementById('topbar-av').textContent       = user.initials || 'JR';
 document.getElementById('avatar-initials').textContent = user.initials || 'JR';
-document.getElementById('perfil-nombre').textContent  = user.nombre   || 'Jimena Ríos';
-document.getElementById('perfil-email').textContent   = user.email    || 'kinsurer@kinsu.mx';
+document.getElementById('perfil-nombre').textContent   = user.nombre   || 'Jimena Ríos';
+document.getElementById('perfil-email').textContent    = user.email    || 'kinsurer@kinsu.mx';
+document.getElementById('perfil-clabe').textContent    = user.clabe    || '**** **** **** 0921';
+document.getElementById('perfil-banco').textContent    = user.banco    || 'BBVA México';
 
-// ID visual basado en email
-const id = 'KIN-' + (user.email || 'kinsurer@kinsu.mx').toUpperCase().slice(0,4) + '-XP';
-document.getElementById('perfil-id').textContent = 'ID: ' + id;
+const nivel = user.nivel || 'Kinsurer Certificado';
+const nivelCorto = nivel.replace('Kinsurer ','');
+document.getElementById('topbar-nivel').textContent = nivelCorto;
+document.getElementById('header-nivel').textContent = nivel;
+
+// ID desde kinsurerID real
+document.getElementById('perfil-id').textContent = 'ID: ' + (user.kinsurerID || 'KIN-0001');
+
+// ── Cargar datos frescos del sheet ──
+async function loadPerfil() {
+  try {
+    const data = await KinsuAPI.getPerfil();
+    if (!data || data.error) return;
+
+    // Actualizar con datos reales del sheet
+    const nombre   = data['Nombre Completo'] || user.nombre;
+    const email    = data['Email']            || user.email;
+    const clabe    = data['CLABE Bancaria']   || user.clabe || '**** **** **** 0921';
+    const banco    = data['Banco']            || user.banco || 'BBVA México';
+    const nivelAPI = data['Nivel']            || user.nivel || 'Kinsurer Certificado';
+    const id       = data['ID_Kinsurer']      || user.kinsurerID || 'KIN-0001';
+    const polizas  = data['Pólizas Emitidas'] || 0;
+
+    const initials = nombre.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+
+    // Actualizar UI
+    document.getElementById('avatar-initials').textContent = initials;
+    document.getElementById('topbar-av').textContent       = initials;
+    document.getElementById('perfil-nombre').textContent   = nombre;
+    document.getElementById('perfil-email').textContent    = email;
+    document.getElementById('perfil-clabe').textContent    = clabe;
+    document.getElementById('perfil-banco').textContent    = banco;
+    document.getElementById('perfil-id').textContent       = 'ID: ' + id;
+    document.getElementById('topbar-nivel').textContent    = nivelAPI.replace('Kinsurer ','');
+    document.getElementById('header-nivel').textContent    = nivelAPI;
+
+    // Calcular saldo desde ganancias
+    const ganData = await KinsuAPI.getGanancias();
+    if (ganData?.total) {
+      document.getElementById('perfil-saldo').textContent = ganData.total;
+    }
+
+    // Actualizar sessionStorage con datos frescos del sheet
+    sessionStorage.setItem('user', JSON.stringify({
+      ...user, nombre, email, initials, clabe, banco,
+      nivel: nivelAPI, kinsurerID: id
+    }));
+
+  } catch(e) {
+    console.warn('Error cargando perfil:', e);
+  }
+}
 
 // ── Cerrar sesión ──
 function doLogout() {
   sessionStorage.clear();
   window.location.href = 'index.html';
 }
+
+loadPerfil();
 </script>
 </body>
 </html>
