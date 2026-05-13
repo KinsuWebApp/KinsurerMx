@@ -318,21 +318,26 @@ document.getElementById('topbar-av').textContent = user.initials || 'JR';
 
 // ── Skeleton loader ──
 function showSkeleton() {
-  const skeletonPill = `<div class="h-8 w-28 bg-slate-200 rounded-full animate-pulse inline-block"></div>`;
-  const skeletonNum  = `<div class="h-10 w-20 bg-slate-200 rounded-xl animate-pulse"></div>`;
-  const skeletonRow  = `<div class="bg-white rounded-2xl border border-gray-100 p-5 flex items-center gap-4">
+  // Hero ganancias
+  document.getElementById('hero-ganancias').innerHTML =
+    '<div class="h-10 w-36 bg-white/20 rounded-xl animate-pulse inline-block"></div>';
+
+  // Pipeline cards — números en skeleton
+  ['stat-enviados','stat-cotizacion','stat-emision','stat-completados'].forEach(id => {
+    document.getElementById(id).innerHTML =
+      '<div class="h-8 w-8 bg-slate-200 rounded-lg animate-pulse"></div>';
+  });
+
+  // Prospectos recientes
+  const skRow = `<div class="bg-white rounded-2xl border border-gray-100 p-5 flex items-center gap-4">
     <div class="w-12 h-12 rounded-full bg-slate-200 animate-pulse flex-shrink-0"></div>
     <div class="flex-1 space-y-2">
       <div class="h-4 bg-slate-200 rounded animate-pulse w-3/4"></div>
       <div class="h-3 bg-slate-200 rounded animate-pulse w-1/2"></div>
     </div>
+    <div class="h-6 w-20 bg-slate-200 rounded-full animate-pulse"></div>
   </div>`;
-
-  document.getElementById('hero-ganancias').innerHTML = skeletonPill;
-  document.getElementById('stat-prospectos').innerHTML = '<div class="h-8 w-8 bg-slate-200 rounded animate-pulse"></div>';
-  document.getElementById('stat-asegurados').innerHTML = '<div class="h-8 w-8 bg-slate-200 rounded animate-pulse"></div>';
-  document.getElementById('stat-proceso').innerHTML    = '<div class="h-8 w-8 bg-slate-200 rounded animate-pulse"></div>';
-  document.getElementById('recent-list').innerHTML = skeletonRow + skeletonRow + skeletonRow;
+  document.getElementById('recent-list').innerHTML = skRow + skRow + skRow;
 }
 
 // ── Render con datos ──
