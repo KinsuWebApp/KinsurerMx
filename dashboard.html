@@ -119,16 +119,21 @@
     <div class="bg-on-background text-white rounded-3xl p-8 flex flex-col justify-between relative overflow-hidden">
       <div class="relative z-10">
         <span class="bg-secondary px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">KINSURER</span>
-        <h2 class="mt-4 text-2xl font-bold" id="nivel-nombre">Certificado</h2>
-        <p class="mt-2 text-blue-200 text-sm" id="nivel-faltan">Faltan 4 pólizas para el siguiente nivel</p>
+        <!-- Skeleton nivel -->
+        <div id="nivel-skeleton" class="mt-4 space-y-2">
+          <div class="h-7 w-32 bg-white/20 rounded-lg animate-pulse"></div>
+          <div class="h-4 w-48 bg-white/10 rounded-lg animate-pulse"></div>
+        </div>
+        <h2 class="mt-4 text-2xl font-bold hidden" id="nivel-nombre"></h2>
+        <p class="mt-2 text-blue-200 text-sm hidden" id="nivel-faltan"></p>
       </div>
       <div class="mt-8 relative z-10">
         <div class="flex justify-between text-xs mb-2 text-blue-100">
-          <span id="nivel-polizas-label">1 de 5 pólizas</span>
-          <span id="nivel-pct">20%</span>
+          <span id="nivel-polizas-label"></span>
+          <span id="nivel-pct"></span>
         </div>
         <div class="h-2 w-full bg-blue-900/50 rounded-full overflow-hidden">
-          <div class="h-full bg-secondary-container rounded-full transition-all duration-700" id="nivel-bar" style="width:20%"></div>
+          <div class="h-full bg-secondary-container rounded-full transition-all duration-700" id="nivel-bar" style="width:0%"></div>
         </div>
       </div>
       <div class="absolute -right-12 -bottom-12 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -161,45 +166,62 @@
         Ver todos<span class="material-symbols-outlined text-sm">chevron_right</span>
       </a>
     </div>
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- Pipeline view: Enviados → En Cotización → En Emisión → Completados -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
 
-      <div class="bg-white p-4 lg:p-6 rounded-2xl border border-gray-100 flex flex-col gap-3 shadow-sm">
-        <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-blue-100 flex items-center justify-center text-blue-700 flex-shrink-0">
-          <span class="material-symbols-outlined text-[20px] lg:text-[24px]">person_search</span>
+      <!-- Enviados -->
+      <div class="bg-white p-4 lg:p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#e8f0fe;">
+            <span class="material-symbols-outlined text-[18px]" style="color:#1565c0;">send</span>
+          </div>
+          <span class="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full" style="background:#e8f0fe;color:#1565c0;">Paso 1</span>
         </div>
-        <div>
-          <p class="text-2xl font-black leading-none" id="stat-prospectos">0</p>
-          <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1">Prospectos</p>
+        <div class="mt-1">
+          <p class="text-3xl font-black leading-none text-[#0d1c2e]" id="stat-enviados">—</p>
+          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1.5">Enviados</p>
         </div>
       </div>
 
-      <div class="bg-white p-4 lg:p-6 rounded-2xl border border-gray-100 flex flex-col gap-3 shadow-sm">
-        <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-[#d4f0a0] flex items-center justify-center text-[#1a3a0a] flex-shrink-0">
-          <span class="material-symbols-outlined text-[20px] lg:text-[24px]">verified</span>
+      <!-- En Cotización -->
+      <div class="bg-white p-4 lg:p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#eeedfe;">
+            <span class="material-symbols-outlined text-[18px]" style="color:#534ab7;">request_quote</span>
+          </div>
+          <span class="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full" style="background:#eeedfe;color:#534ab7;">Paso 2</span>
         </div>
-        <div>
-          <p class="text-2xl font-black leading-none" id="stat-asegurados">0</p>
-          <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1">Asegurados</p>
-        </div>
-      </div>
-
-      <div class="bg-white p-4 lg:p-6 rounded-2xl border border-gray-100 flex flex-col gap-3 shadow-sm">
-        <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-orange-100 flex items-center justify-center text-orange-700 flex-shrink-0">
-          <span class="material-symbols-outlined text-[20px] lg:text-[24px]">pending_actions</span>
-        </div>
-        <div>
-          <p class="text-2xl font-black leading-none" id="stat-proceso">0</p>
-          <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1">En proceso</p>
+        <div class="mt-1">
+          <p class="text-3xl font-black leading-none text-[#0d1c2e]" id="stat-cotizacion">—</p>
+          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1.5">Cotización</p>
         </div>
       </div>
 
-      <div class="bg-white p-4 lg:p-6 rounded-2xl border border-gray-100 flex flex-col gap-3 shadow-sm">
-        <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-purple-100 flex items-center justify-center text-purple-700 flex-shrink-0">
-          <span class="material-symbols-outlined text-[20px] lg:text-[24px]">mail</span>
+      <!-- En Emisión -->
+      <div class="bg-white p-4 lg:p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#e1f5ee;">
+            <span class="material-symbols-outlined text-[18px]" style="color:#0f6e56;">description</span>
+          </div>
+          <span class="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full" style="background:#e1f5ee;color:#0f6e56;">Paso 3</span>
         </div>
-        <div>
-          <p class="text-2xl font-black leading-none" id="stat-enviados">0</p>
-          <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1">Cotizaciones</p>
+        <div class="mt-1">
+          <p class="text-3xl font-black leading-none text-[#0d1c2e]" id="stat-emision">—</p>
+          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1.5">En Emisión</p>
+        </div>
+      </div>
+
+      <!-- Completados -->
+      <div class="p-4 lg:p-5 rounded-2xl flex flex-col gap-2" style="background:#d4f0a0;">
+        <div class="flex items-center justify-between">
+          <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(26,58,10,0.12);">
+            <span class="material-symbols-outlined text-[18px]" style="color:#1a3a0a;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">verified</span>
+          </div>
+          <span class="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full" style="background:rgba(26,58,10,0.12);color:#1a3a0a;">Póliza</span>
+        </div>
+        <div class="mt-1">
+          <p class="text-3xl font-black leading-none" style="color:#1a3a0a;" id="stat-completados">—</p>
+          <p class="text-[10px] font-bold uppercase tracking-wider mt-1.5" style="color:#285900;">Completados</p>
         </div>
       </div>
 
@@ -336,6 +358,11 @@ function renderDashboard(data) {
     const progreso  = nivelData.progresoEnNivel || 0;
     const polizas   = nivelData.polizas || 0;
 
+    // Ocultar skeleton, mostrar datos reales
+    document.getElementById('nivel-skeleton').classList.add('hidden');
+    document.getElementById('nivel-nombre').classList.remove('hidden');
+    document.getElementById('nivel-faltan').classList.remove('hidden');
+
     document.getElementById('nivel-nombre').textContent = nombre.replace('Kinsurer ', '');
 
     if (siguiente) {
@@ -348,22 +375,15 @@ function renderDashboard(data) {
       document.getElementById('nivel-polizas-label').textContent = `${polizas} pólizas emitidas`;
     }
 
-    document.getElementById('nivel-pct').textContent = progreso + '%';
+    document.getElementById('nivel-pct').textContent  = progreso + '%';
     document.getElementById('nivel-bar').style.width  = progreso + '%';
-  } else {
-    // Fallback
-    document.getElementById('nivel-nombre').textContent  = FALLBACK.nivel.replace('Kinsurer ','');
-    document.getElementById('nivel-faltan').textContent  = 'Faltan 4 pólizas para el siguiente nivel';
-    document.getElementById('nivel-polizas-label').textContent = '1 de 5 pólizas';
-    document.getElementById('nivel-pct').textContent     = '20%';
-    document.getElementById('nivel-bar').style.width     = '20%';
   }
 
-  // ── Stats de actividad (datos reales del sheet) ──
-  document.getElementById('stat-prospectos').textContent = data.prospectos_total          ?? FALLBACK.prospectos_total;
-  document.getElementById('stat-asegurados').textContent = data.prospectos_completados    ?? FALLBACK.completados;
-  document.getElementById('stat-proceso').textContent    = data.prospectos_en_proceso     ?? FALLBACK.prospectos_activos;
-  document.getElementById('stat-enviados').textContent   = data.prospectos_enviados       ?? 0;
+  // ── Pipeline stats — datos reales del sheet ──
+  document.getElementById('stat-enviados').textContent   = data.prospectos_enviados    ?? '—';
+  document.getElementById('stat-cotizacion').textContent = data.prospectos_cotizacion  ?? '—';
+  document.getElementById('stat-emision').textContent    = data.prospectos_emision     ?? '—';
+  document.getElementById('stat-completados').textContent= data.prospectos_completados ?? '—';
 
   // ── Prospectos recientes ──
   const prospects = data.prospectos_recientes || FALLBACK.prospectos_recientes;
