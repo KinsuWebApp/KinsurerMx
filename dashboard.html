@@ -166,62 +166,72 @@
         Ver todos<span class="material-symbols-outlined text-sm">chevron_right</span>
       </a>
     </div>
-    <!-- Pipeline view: Enviados → En Cotización → En Emisión → Completados -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+    <!-- Resumen de actividad — todos los estatus -->
+    <div class="grid grid-cols-3 lg:grid-cols-6 gap-2 lg:gap-3">
 
       <!-- Enviados -->
-      <div class="bg-white p-4 lg:p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col gap-2">
-        <div class="flex items-center justify-between">
-          <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#e8f0fe;">
-            <span class="material-symbols-outlined text-[18px]" style="color:#1565c0;">send</span>
-          </div>
-          <span class="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full" style="background:#e8f0fe;color:#1565c0;">Paso 1</span>
+      <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-3 lg:p-4 flex flex-col gap-2">
+        <div class="w-8 h-8 rounded-xl flex items-center justify-center" style="background:#e8f0fe;">
+          <span class="material-symbols-outlined text-[16px]" style="color:#1565c0;">send</span>
         </div>
-        <div class="mt-1">
-          <p class="text-3xl font-black leading-none text-[#0d1c2e]" id="stat-enviados">—</p>
-          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1.5">Enviados</p>
+        <div>
+          <p class="text-2xl font-black leading-none text-[#0d1c2e]" id="stat-enviados">—</p>
+          <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-1 leading-tight">Enviados</p>
         </div>
       </div>
 
       <!-- En Cotización -->
-      <div class="bg-white p-4 lg:p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col gap-2">
-        <div class="flex items-center justify-between">
-          <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#eeedfe;">
-            <span class="material-symbols-outlined text-[18px]" style="color:#534ab7;">request_quote</span>
-          </div>
-          <span class="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full" style="background:#eeedfe;color:#534ab7;">Paso 2</span>
+      <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-3 lg:p-4 flex flex-col gap-2">
+        <div class="w-8 h-8 rounded-xl flex items-center justify-center" style="background:#eeedfe;">
+          <span class="material-symbols-outlined text-[16px]" style="color:#534ab7;">request_quote</span>
         </div>
-        <div class="mt-1">
-          <p class="text-3xl font-black leading-none text-[#0d1c2e]" id="stat-cotizacion">—</p>
-          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1.5">Cotización</p>
+        <div>
+          <p class="text-2xl font-black leading-none text-[#0d1c2e]" id="stat-cotizacion">—</p>
+          <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-1 leading-tight">Cotización</p>
         </div>
       </div>
 
       <!-- En Emisión -->
-      <div class="bg-white p-4 lg:p-5 rounded-2xl border border-slate-100 shadow-sm flex flex-col gap-2">
-        <div class="flex items-center justify-between">
-          <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#e1f5ee;">
-            <span class="material-symbols-outlined text-[18px]" style="color:#0f6e56;">description</span>
-          </div>
-          <span class="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full" style="background:#e1f5ee;color:#0f6e56;">Paso 3</span>
+      <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-3 lg:p-4 flex flex-col gap-2">
+        <div class="w-8 h-8 rounded-xl flex items-center justify-center" style="background:#e1f5ee;">
+          <span class="material-symbols-outlined text-[16px]" style="color:#0f6e56;">description</span>
         </div>
-        <div class="mt-1">
-          <p class="text-3xl font-black leading-none text-[#0d1c2e]" id="stat-emision">—</p>
-          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1.5">En Emisión</p>
+        <div>
+          <p class="text-2xl font-black leading-none text-[#0d1c2e]" id="stat-emision">—</p>
+          <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-1 leading-tight">En Emisión</p>
+        </div>
+      </div>
+
+      <!-- En Cobranza -->
+      <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-3 lg:p-4 flex flex-col gap-2">
+        <div class="w-8 h-8 rounded-xl flex items-center justify-center" style="background:#fbeaf0;">
+          <span class="material-symbols-outlined text-[16px]" style="color:#993556;">payments</span>
+        </div>
+        <div>
+          <p class="text-2xl font-black leading-none text-[#0d1c2e]" id="stat-cobranza">—</p>
+          <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-1 leading-tight">Cobranza</p>
         </div>
       </div>
 
       <!-- Completados -->
-      <div class="p-4 lg:p-5 rounded-2xl flex flex-col gap-2" style="background:#d4f0a0;">
-        <div class="flex items-center justify-between">
-          <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(26,58,10,0.12);">
-            <span class="material-symbols-outlined text-[18px]" style="color:#1a3a0a;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">verified</span>
-          </div>
-          <span class="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full" style="background:rgba(26,58,10,0.12);color:#1a3a0a;">Póliza</span>
+      <div class="rounded-2xl p-3 lg:p-4 flex flex-col gap-2" style="background:#d4f0a0;">
+        <div class="w-8 h-8 rounded-xl flex items-center justify-center" style="background:rgba(26,58,10,0.15);">
+          <span class="material-symbols-outlined text-[16px]" style="color:#1a3a0a;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">verified</span>
         </div>
-        <div class="mt-1">
-          <p class="text-3xl font-black leading-none" style="color:#1a3a0a;" id="stat-completados">—</p>
-          <p class="text-[10px] font-bold uppercase tracking-wider mt-1.5" style="color:#285900;">Completados</p>
+        <div>
+          <p class="text-2xl font-black leading-none" style="color:#1a3a0a;" id="stat-completados">—</p>
+          <p class="text-[9px] font-bold uppercase tracking-wider mt-1 leading-tight" style="color:#285900;">Completados</p>
+        </div>
+      </div>
+
+      <!-- Cancelados -->
+      <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-3 lg:p-4 flex flex-col gap-2">
+        <div class="w-8 h-8 rounded-xl flex items-center justify-center" style="background:#f1efe8;">
+          <span class="material-symbols-outlined text-[16px]" style="color:#888780;">cancel</span>
+        </div>
+        <div>
+          <p class="text-2xl font-black leading-none text-[#0d1c2e]" id="stat-cancelados">—</p>
+          <p class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-1 leading-tight">Cancelados</p>
         </div>
       </div>
 
@@ -323,7 +333,7 @@ function showSkeleton() {
     '<div class="h-10 w-36 bg-white/20 rounded-xl animate-pulse inline-block"></div>';
 
   // Pipeline cards — números en skeleton
-  ['stat-enviados','stat-cotizacion','stat-emision','stat-completados'].forEach(id => {
+  ['stat-enviados','stat-cotizacion','stat-emision','stat-cobranza','stat-completados','stat-cancelados'].forEach(id => {
     document.getElementById(id).innerHTML =
       '<div class="h-8 w-8 bg-slate-200 rounded-lg animate-pulse"></div>';
   });
@@ -384,13 +394,15 @@ function renderDashboard(data) {
     document.getElementById('nivel-bar').style.width  = progreso + '%';
   }
 
-  // ── Pipeline stats — datos reales del sheet ──
-  document.getElementById('stat-enviados').textContent   = data.prospectos_enviados    ?? '—';
-  document.getElementById('stat-cotizacion').textContent = data.prospectos_cotizacion  ?? '—';
-  document.getElementById('stat-emision').textContent    = data.prospectos_emision     ?? '—';
-  document.getElementById('stat-completados').textContent= data.prospectos_completados ?? '—';
+  // ── Todos los estatus — datos reales del sheet ──
+  document.getElementById('stat-enviados').textContent    = data.prospectos_enviados    ?? '—';
+  document.getElementById('stat-cotizacion').textContent  = data.prospectos_cotizacion  ?? '—';
+  document.getElementById('stat-emision').textContent     = data.prospectos_emision     ?? '—';
+  document.getElementById('stat-cobranza').textContent    = data.prospectos_cobranza    ?? '—';
+  document.getElementById('stat-completados').textContent = data.prospectos_completados ?? '—';
+  document.getElementById('stat-cancelados').textContent  = data.prospectos_cancelados  ?? '—';
 
-  // ── Prospectos recientes ──
+  // ── Prospectos recientes — los 3 más recientes del Kinsurer ──
   const prospects = data.prospectos_recientes || FALLBACK.prospectos_recientes;
   const list = document.getElementById('recent-list');
   list.innerHTML = '';
@@ -404,29 +416,40 @@ function renderDashboard(data) {
     'Cancelado':     { bg:'#f1efe8', color:'#888780' },
   };
 
+  if (!prospects.length) {
+    list.innerHTML = `<div class="text-center py-8 text-slate-400">
+      <span class="material-symbols-outlined text-[40px] mb-2 block">person_search</span>
+      <p class="text-sm font-semibold">Aún no tienes prospectos registrados</p>
+      <a href="nuevo-prospecto.html" class="text-[#1565c0] font-bold text-sm mt-2 inline-block">+ Agregar el primero</a>
+    </div>`;
+    return;
+  }
+
   prospects.slice(0, 3).forEach(p => {
-    const nombre  = p['Nombre Prospecto'] || p.nombre   || 'Prospecto';
-    const tipo    = p['Tipo Seguro']       || p.tipo     || '—';
-    const folio   = p['Folio']             || p.folio    || '';
-    const estatus = p['Estatus']           || p.estatus  || '';
+    const nombre  = p['Nombre Prospecto'] || p.nombre  || 'Prospecto';
+    const folio   = p['Folio']            || p.folio   || '';
+    const estatus = p['Estatus']          || p.estatus || 'Enviado';
+    const fecha   = p['Fecha Registro']   || p.fecha   || '';
     const ini     = nombre.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
     const badge   = BADGE[estatus] || { bg:'#e8f0fe', color:'#1565c0' };
+    const fechaFmt= fecha ? new Date(fecha).toLocaleDateString('es-MX',{day:'numeric',month:'short'}) : '';
 
     list.innerHTML += `
     <a href="detalle-prospecto.html?folio=${folio}"
-      class="bg-white rounded-2xl border border-gray-100 p-5 flex items-center justify-between
+      class="bg-white rounded-2xl border border-gray-100 p-4 lg:p-5 flex items-center justify-between
              group hover:shadow-md hover:translate-x-1 transition-all cursor-pointer block">
-      <div class="flex items-center gap-4">
-        <div class="w-12 h-12 rounded-full bg-[#e8f0fe] flex items-center justify-center font-bold text-[#1565c0]">${ini}</div>
-        <div>
-          <h4 class="font-bold text-on-background">${nombre}</h4>
-          <p class="text-xs text-slate-400 uppercase tracking-widest">${tipo}</p>
+      <div class="flex items-center gap-3 lg:gap-4 min-w-0">
+        <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-[#e8f0fe] flex items-center justify-center
+                    font-bold text-[#1565c0] text-sm flex-shrink-0">${ini}</div>
+        <div class="min-w-0">
+          <h4 class="font-bold text-on-background text-sm lg:text-base truncate">${nombre}</h4>
+          <p class="text-[10px] text-slate-400 font-medium">${fechaFmt ? fechaFmt + ' · ' : ''}#${folio}</p>
         </div>
       </div>
-      <div class="flex items-center gap-4">
-        <span class="hidden md:block px-3 py-1 rounded-full text-[10px] font-bold"
+      <div class="flex items-center gap-2 flex-shrink-0 ml-2">
+        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap"
           style="background:${badge.bg};color:${badge.color};">${estatus}</span>
-        <span class="material-symbols-outlined text-slate-300 group-hover:text-primary transition-colors">chevron_right</span>
+        <span class="material-symbols-outlined text-slate-300 group-hover:text-primary transition-colors text-[18px]">chevron_right</span>
       </div>
     </a>`;
   });
