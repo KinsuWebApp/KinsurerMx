@@ -324,42 +324,64 @@ function renderTimeline(estatus) {
 }
 
 async function loadDetalle() {
-  const folio = new URLSearchParams(location.search).get('folio');
+  const params = new URLSearchParams(location.search);
+  const folio  = (params.get('folio') || '').trim();
 
-  if (folio && folio.trim() !== '') {
+  // SIEMPRE que haya folio en URL → cargar del sheet, nunca demo
+  if (folio) {
     showSkeletonDetalle();
+    let data = null;
     try {
-      const data = await KinsuAPI.getProspecto(folio.trim());
-      if (data && !data.error) {
-        renderDetalle({
-          nombre:  data['Nombre Prospecto'] || '—',
-          tipo:    (data['Tipo Seguro'] || 'salud').toLowerCase(),
-          folio:   data['Folio']  || folio,
-          tel:     data['Teléfono'] || data['Telefono'] || data['Tel'] || '—',
-          correo:  data['Email']  || '—',
-          ciudad:  data['Ciudad'] || 'CDMX, México',
-          estatus: data['Estatus'] || 'Enviado',
-          fecha:   data['Fecha Registro'] || '',
-        });
-      } else {
-        document.getElementById('hero-nombre').textContent = 'Prospecto no encontrado';
-        document.getElementById('hero-folio').textContent  = 'Folio #' + folio;
-        document.getElementById('timeline').innerHTML = '<p class="text-slate-400 text-sm p-4">No se encontró este prospecto.</p>';
-      }
-    } catch(e) { console.warn(e); }
-    return;
+      data = await KinsuAPI.getProspecto(folio);
+    } catch(e) {
+      console.warn('Error API:', e);
+    }
+
+    if (data && !data.error) {
+      // ✅ Datos reales del sheet
+      renderDetalle({
+        nombre:  data['Nombre Prospecto'] || '—',
+        tipo:    (data['Tipo Seguro'] || 'salud').toLowerCase(),
+        folio:   data['Folio']  || folio,
+        tel:     data['Teléfono'] || data['Telefono'] || data['Tel'] || '—',
+        correo:  data['Email']  || '—',
+        ciudad:  data['Ciudad'] || 'CDMX, México',
+        estatus: data['Estatus'] || 'Enviado',
+        fecha:   data['Fecha Registro'] || '',
+      });
+    } else {
+      // ❌ No encontrado — mostrar error, NUNCA Juan López
+      document.getElementById('hero-nombre').textContent   = 'Prospecto no encontrado';
+      document.getElementById('hero-folio').textContent    = 'Folio #' + folio;
+      document.getElementById('hero-meta').textContent     = 'Folio #' + folio;
+      document.getElementById('hero-comision').textContent = '—';
+      document.getElementById('hero-comision-mobile').textContent = '—';
+      document.getElementById('info-tel').textContent      = '—';
+      document.getElementById('info-email').textContent    = '—';
+      document.getElementById('info-ciudad').textContent   = '—';
+      document.getElementById('info-fecha').textContent    = '—';
+      document.getElementById('timeline').innerHTML        =
+        '<div class="p-4 text-center"><span class="material-symbols-outlined text-slate-300 text-[40px] block mb-2">search_off</span><p class="text-slate-400 text-sm">No se encontró el folio #' + folio + '</p></div>';
+    }
+    return; // ← SIEMPRE retorna aquí, nunca cae al demo
   }
 
-  // Sin folio: desde sessionStorage (chat flow)
+  // Sin folio en URL: viene del chat de registro
   const cached = JSON.parse(sessionStorage.getItem('prospecto') || 'null');
-  renderDetalle(cached ? {
-    nombre: cached.nombre, tipo: cached.tipo || 'salud',
-    folio: cached.folio, tel: cached.tel || '—',
-    correo: cached.correo || '—',
-    ciudad: cached.datos?.ciudad || 'CDMX, México', estatus: 'Enviado'
-  } : { nombre:'Juan López', tipo:'salud', folio:'S20240001',
-        tel:'+52 55 1234 5678', correo:'juan@ejemplo.com',
-        ciudad:'CDMX', estatus:'En Emisión', fecha:'2024-10-12' });
+  if (cached?.folio) {
+    renderDetalle({
+      nombre:  cached.nombre,
+      tipo:    cached.tipo || 'salud',
+      folio:   cached.folio,
+      tel:     cached.tel    || '—',
+      correo:  cached.correo || '—',
+      ciudad:  cached.datos?.ciudad || 'CDMX, México',
+      estatus: 'Enviado',
+    });
+  } else {
+    // Sin folio Y sin sessionStorage → redirigir a prospectos
+    window.location.href = 'prospectos.html';
+  }
 }
 
 const st = document.createElement('style');
