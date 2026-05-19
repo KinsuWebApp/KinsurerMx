@@ -264,7 +264,7 @@ function renderDetalle(d) {
 
   // WhatsApp
   const waMsg = encodeURIComponent('Hola ' + nombre + ' \u{1F44B}\n\nTe contacto de parte de Kinsu. Tu seguro de *' + tipoCap + '* está en proceso.\n\nFolio: *#' + folio + '*\n\n¿Dudas? Aquí estoy 😊');
-  const telNum = tel.replace(/[^0-9]/g,'');
+  const telNum = String(tel || '').replace(/[^0-9]/g,'');
   document.getElementById('btn-whatsapp').href = 'https://wa.me/52' + telNum + '?text=' + waMsg;
 
   renderTimeline(estatus);
