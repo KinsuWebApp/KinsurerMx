@@ -149,7 +149,7 @@
                              hover:bg-[#1255a8] active:scale-95 transition-all">
                 Actualizar
               </button>
-              <button onclick="window.location.href='ganancias.html'"
+              <button onclick="openModal()"
                 class="px-6 py-2.5 border border-[#d4dcf5] text-[#1565c0] rounded-full font-bold text-sm
                        hover:bg-[#f0f4ff] active:scale-95 transition-all">
                 Ver historial
@@ -197,12 +197,9 @@
           <div class="relative z-10 text-center md:text-left">
             <p class="text-white/50 text-[10px] font-black uppercase tracking-[.2em] mb-2">Saldo Disponible</p>
 <h2 class="text-3xl lg:text-4xl font-black text-white tracking-tighter" id="perfil-saldo">$4,513.00</h2>
-            <p class="text-[#a6f86d] text-xs font-bold mt-2 flex items-center gap-1 justify-center md:justify-start">
-              <span class="material-symbols-outlined text-[14px]">trending_up</span>
-              +12% vs semana anterior
-            </p>
+
           </div>
-          <button onclick="window.location.href='ganancias.html'"
+          <button onclick="openModal()"
             class="relative z-10 px-6 py-3 bg-white text-[#1565c0] rounded-full font-black text-sm
                    hover:bg-blue-50 active:scale-95 transition-all shadow-lg whitespace-nowrap">
             Retirar Fondos
@@ -301,9 +298,24 @@ async function loadPerfil() {
     setEl('header-nivel',    nivelAPI);
     if(tel) setEl('perfil-tel', tel);
 
-    // Saldo desde ganancias
-    const ganData = await KinsuAPI.getGanancias();
-    if(ganData?.total) setEl('perfil-saldo', ganData.total);
+    // Saldo disponible = suma de comisiones PENDIENTES de cobro
+    try {
+      const ganData = await KinsuAPI.getGanancias();
+      if(ganData?.transacciones) {
+        const pendientes = ganData.transacciones.filter(t =>
+          (t['Estatus Pago'] || '').trim() === 'Pendiente'
+        );
+        const saldo = pendientes.reduce((s, t) => {
+          const raw = t['Monto Comisión'] || t.monto || '0';
+          return s + (parseFloat(String(raw).replace(/[$,MXN\s]/g,'')) || 0);
+        }, 0);
+        const saldoFmt = '$' + saldo.toLocaleString('es-MX',{minimumFractionDigits:2}) + ' MXN';
+        setEl('perfil-saldo', saldoFmt);
+        // Actualizar modal
+        const mc = document.getElementById('modal-saldo');
+        if(mc) mc.textContent = saldoFmt;
+      }
+    } catch(e) {}
 
     // Actualizar sessionStorage
     sessionStorage.setItem('user', JSON.stringify({
@@ -313,6 +325,33 @@ async function loadPerfil() {
   } catch(e) { console.warn('Error cargando perfil:', e); }
 }
 
+function openModal() {
+  const overlay = document.getElementById('modal-overlay');
+  const card    = document.getElementById('modal-card');
+  const clabe   = document.getElementById('modal-clabe');
+  const banco   = document.getElementById('modal-banco');
+  if(clabe) clabe.textContent = user.clabe || '**** **** **** 0921';
+  if(banco) banco.textContent = user.banco || 'BBVA México';
+  overlay.style.opacity      = '1';
+  overlay.style.pointerEvents= 'all';
+  if(card) card.style.transform = 'translateY(0) scale(1)';
+}
+
+function closeModal() {
+  const overlay = document.getElementById('modal-overlay');
+  const card    = document.getElementById('modal-card');
+  overlay.style.opacity      = '0';
+  overlay.style.pointerEvents= 'none';
+  if(card) card.style.transform = 'translateY(24px) scale(.97)';
+}
+
+// Cerrar al click fuera
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('modal-overlay')?.addEventListener('click', function(e) {
+    if(e.target === this) closeModal();
+  });
+});
+
 function doLogout() {
   sessionStorage.clear();
   window.location.href = 'index.html';
@@ -320,5 +359,44 @@ function doLogout() {
 
 loadPerfil();
 </script>
+
+<!-- Modal Retirar Fondos -->
+<div id="modal-overlay"
+  class="fixed inset-0 z-50 flex items-center justify-center px-4"
+  style="background:rgba(11,27,53,0.45);opacity:0;pointer-events:none;transition:opacity .25s ease;">
+  <div id="modal-card" class="bg-white w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl"
+    style="transform:translateY(24px) scale(.97);transition:transform .25s ease;">
+    <div class="p-8 text-center">
+      <div class="w-20 h-20 bg-[#d4f0a0] rounded-full flex items-center justify-center mx-auto mb-6">
+        <span class="material-symbols-outlined text-[#1a3a0a] text-[44px]" style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">check_circle</span>
+      </div>
+      <h3 class="text-2xl font-black text-[#0d1c2e] mb-2">Solicitar Retiro</h3>
+      <p class="text-sm text-slate-500 max-w-xs mx-auto mb-6 leading-relaxed">
+        Tu saldo se deposita en 2 días hábiles a la cuenta bancaria registrada.
+      </p>
+      <div class="bg-[#f1f3ff] rounded-2xl p-5 text-left space-y-4 mb-6">
+        <div class="flex justify-between items-center">
+          <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Saldo Disponible</span>
+          <span class="text-xl font-black text-[#1565c0]" id="modal-saldo">$0.00 MXN</span>
+        </div>
+        <div class="h-px bg-slate-200"></div>
+        <div class="flex justify-between items-center">
+          <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">CLABE Destino</span>
+          <span class="text-sm font-mono font-bold text-[#0d1c2e]" id="modal-clabe">**** **** **** 0921</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Banco</span>
+          <span class="text-sm font-bold text-[#0d1c2e]" id="modal-banco">BBVA México</span>
+        </div>
+      </div>
+      <button onclick="closeModal()"
+        class="w-full py-4 bg-[#1565c0] text-white rounded-full font-black text-sm uppercase tracking-widest
+               hover:bg-[#1255a8] active:scale-95 transition-all">
+        Entendido
+      </button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
