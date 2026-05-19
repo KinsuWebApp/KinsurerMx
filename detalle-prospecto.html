@@ -218,126 +218,77 @@ document.getElementById('topbar-av').textContent = user.initials || 'JR';
 const TIPO_ICON     = { salud:'health_and_safety', auto:'directions_car', viaje:'flight' };
 const TIPO_COMISION = { salud:'$1,000 MXN', auto:'$500 MXN', viaje:'$300 MXN' };
 
-const DEMO = {
-  nombre:'Juan López', tipo:'auto', folio:'A20240001',
-  tel:'+52 55 1234 5678', correo:'juan@ejemplo.com',
-  comision:'$500 MXN', estatus:'En Emisión', ciudad:'CDMX',
-};
+// ── Skeleton ──
+function showSkeletonDetalle() {
+  ['hero-nombre','hero-folio','hero-meta','hero-comision','hero-comision-mobile',
+   'info-tel','info-email','info-ciudad','info-fecha'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = '<div class="h-4 bg-white/20 rounded animate-pulse inline-block w-24"></div>';
+  });
+  document.getElementById('timeline').innerHTML = Array(4).fill(`
+    <div class="relative flex gap-5 pb-7">
+      <div class="w-8 h-8 rounded-full bg-slate-200 animate-pulse flex-shrink-0 mt-1"></div>
+      <div class="flex-1 space-y-2 pt-1">
+        <div class="h-3 bg-slate-200 rounded animate-pulse w-20"></div>
+        <div class="h-5 bg-slate-200 rounded animate-pulse w-32"></div>
+      </div>
+    </div>`).join('');
+}
 
-// ── Poblar UI con datos ──
+// ── Render con datos ──
 function renderDetalle(d) {
-  const tipo     = (d.tipo || 'auto').toLowerCase();
-  const comision = TIPO_COMISION[tipo] || d.comision || '$500 MXN';
-  const icon     = TIPO_ICON[tipo]     || 'shield';
+  const tipo     = (d.tipo || 'salud').toLowerCase();
+  const comision = TIPO_COMISION[tipo] || '$1,000 MXN';
+  const icon     = TIPO_ICON[tipo]     || 'health_and_safety';
   const tipoCap  = tipo.charAt(0).toUpperCase() + tipo.slice(1);
-  const folio    = d.folio || 'A20240001';
-  const nombre   = d.nombre || DEMO.nombre;
-  const tel      = d.tel    || DEMO.tel;
-  const correo   = d.correo || DEMO.correo;
+  const folio    = d.folio  || '—';
+  const nombre   = d.nombre || '—';
+  const tel      = d.tel    || '—';
+  const correo   = d.correo || '—';
   const ciudad   = d.ciudad || 'CDMX, México';
   const estatus  = d.estatus|| 'Enviado';
-  const fecha    = d.fecha  || new Date().toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});
+  const fecha    = d.fecha
+    ? new Date(d.fecha).toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'})
+    : new Date().toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});
 
-  document.getElementById('hero-folio').textContent            = `Folio #${folio}`;
-  document.getElementById('hero-nombre').textContent           = nombre;
-  document.getElementById('hero-icon').textContent             = icon;
-  document.getElementById('hero-meta').textContent             = `${tipoCap} · Folio #${folio}`;
-  document.getElementById('hero-comision').textContent         = comision;
-  document.getElementById('hero-comision-mobile').textContent  = comision;
-  document.getElementById('card-comision').innerHTML           = `${comision.split(' ')[0]} <span class="text-base font-medium">${comision.split(' ')[1]||''}</span>`;
-  document.getElementById('info-tel').textContent              = tel;
-  document.getElementById('info-email').textContent            = correo;
-  document.getElementById('info-ciudad').textContent           = ciudad;
-  document.getElementById('info-fecha').textContent            = fecha;
+  document.getElementById('hero-folio').textContent           = `Folio #${folio}`;
+  document.getElementById('hero-nombre').textContent          = nombre;
+  document.getElementById('hero-icon').textContent            = icon;
+  document.getElementById('hero-meta').textContent            = `${tipoCap} · Folio #${folio}`;
+  document.getElementById('hero-comision').textContent        = comision;
+  document.getElementById('hero-comision-mobile').textContent = comision;
+  document.getElementById('card-comision').innerHTML          = `${comision.split(' ')[0]} <span class="text-base font-medium">${comision.split(' ')[1]||''}</span>`;
+  document.getElementById('info-tel').textContent             = tel;
+  document.getElementById('info-email').textContent           = correo;
+  document.getElementById('info-ciudad').textContent          = ciudad;
+  document.getElementById('info-fecha').textContent           = fecha;
 
-  // WhatsApp real
+  // WhatsApp
   const waMsg = encodeURIComponent(
     `Hola ${nombre} 👋
 
-` +
-    `Te contacto de parte de Kinsu. Acabo de iniciar tu proceso para el seguro de *${tipoCap}* — sin compromiso.
+Te contacto de parte de Kinsu. Acabo de iniciar tu proceso para el seguro de *${tipoCap}* — sin compromiso.
 
-` +
-    `Ya tengo tu información registrada. Un asesor de Kinsu te enviará las mejores opciones en breve.
+Tu número de seguimiento es *#${folio}*.
 
-` +
-    `Tu número de seguimiento es *#${folio}*. Con él puedes rastrear tu cotización.
-
-` +
-    `¿Alguna duda? Aquí estoy 😊`
+¿Alguna duda? Aquí estoy 😊`
   );
   const telNum = tel.replace(/\D/g,'');
   document.getElementById('btn-whatsapp').href = `https://wa.me/52${telNum}?text=${waMsg}`;
 
-  // Timeline según estatus real
   renderTimeline(estatus);
 }
 
-// ── Cargar datos ──
-function showSkeletonDetalle() {
-  document.getElementById('hero-nombre').textContent   = '...';
-  document.getElementById('hero-folio').textContent    = 'Cargando...';
-  document.getElementById('info-tel').textContent      = '—';
-  document.getElementById('info-email').textContent    = '—';
-  document.getElementById('info-ciudad').textContent   = '—';
-  document.getElementById('timeline').innerHTML        = `
-    <div class="space-y-4">
-      ${Array(4).fill('<div class="flex gap-4"><div class="w-8 h-8 rounded-full bg-slate-200 animate-pulse flex-shrink-0"></div><div class="flex-1 space-y-2 pt-1"><div class="h-3 bg-slate-200 rounded animate-pulse w-16"></div><div class="h-5 bg-slate-200 rounded animate-pulse w-28"></div></div></div>').join('')}
-    </div>`;
-}
-
-async function loadDetalle() {
-  const params = new URLSearchParams(location.search);
-  const folio  = params.get('folio');
-
-  // Si hay folio en URL → siempre cargar desde el sheet (fuente de verdad)
-  if (folio) {
-    showSkeletonDetalle();
-    try {
-      const data = await KinsuAPI.getProspecto(folio);
-      if (data && !data.error) {
-        renderDetalle({
-          nombre:  data['Nombre Prospecto'] || '—',
-          tipo:    (data['Tipo Seguro']     || 'salud').toLowerCase(),
-          folio:   data['Folio']            || folio,
-          tel:     data['Teléfono'] || data['Telefono'] || data['Tel'] || '—',
-          correo:  data['Email']            || '—',
-          ciudad:  data['Ciudad']           || 'CDMX, México',
-          estatus: data['Estatus']          || 'Enviado',
-          fecha:   data['Fecha Registro']   || '',
-        });
-        return;
-      }
-    } catch(e) {
-      console.warn('Error cargando prospecto:', e);
-    }
-  }
-
-  // Fallback: sessionStorage del chat (solo si no hay folio en URL)
-  const cached = JSON.parse(sessionStorage.getItem('prospecto') || 'null');
-  if (cached) {
-    renderDetalle({
-      nombre:  cached.nombre,
-      tipo:    cached.tipo || 'salud',
-      folio:   cached.folio,
-      tel:     cached.tel     || '—',
-      correo:  cached.correo  || '—',
-      ciudad:  cached.datos?.ciudad || 'CDMX, México',
-      estatus: 'Enviado',
-    });
-  } else {
-    renderDetalle(DEMO);
-  }
-}
-
-// ── Timeline dinámico según estatus ──
+// ── Timeline ──
 function renderTimeline(estatus) {
   const ORDEN = ['Enviado','En Cotización','En Emisión','En Cobranza','Completado'];
-  const estatusIdx = ORDEN.indexOf(estatus);
-  if (estatusIdx === -1 && estatus === 'Cancelado') {
-    // Mostrar timeline cancelado
-    document.getElementById('timeline').innerHTML = `
-      <div class="flex items-center gap-4 py-3">
+  const timeline = document.getElementById('timeline');
+  timeline.innerHTML = '';
+
+  // Caso especial: Cancelado
+  if (estatus === 'Cancelado') {
+    timeline.innerHTML = `
+      <div class="flex items-center gap-4 py-2">
         <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style="background:#f1efe8;">
           <span class="material-symbols-outlined text-[#888780] text-[16px]">cancel</span>
         </div>
@@ -349,58 +300,109 @@ function renderTimeline(estatus) {
     return;
   }
 
-  const PASOS = ORDEN.map((label, i) => ({
-    label,
-    done:    i < estatusIdx,
-    current: i === estatusIdx,
-    pending: i > estatusIdx,
-  }));
+  const estatusIdx = ORDEN.indexOf(estatus);
 
-const timeline = document.getElementById('timeline');
-timeline.innerHTML = '';
-PASOS.forEach((paso, i) => {
-  const isLast = i === PASOS.length - 1;
-  let dotStyle, titleStyle, badgeHtml = '';
+  ORDEN.forEach((label, i) => {
+    const isLast   = i === ORDEN.length - 1;
+    const isDone    = i < estatusIdx;
+    const isCurrent = i === estatusIdx;
+    const isPending = i > estatusIdx;
 
-  if (paso.current) {
-    dotStyle = 'background:#1565c0;box-shadow:0 0 0 4px rgba(21,101,192,0.15);';
-    titleStyle = 'font-size:18px;font-weight:900;color:#1565c0;';
-    badgeHtml = `<span class="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-bold"
-      style="background:#e8f0fe;color:#1565c0;">Estado actual</span>`;
-  } else if (paso.done) {
-    dotStyle = 'background:#82d14b;';
-    titleStyle = 'font-size:16px;font-weight:700;color:#0d1c2e;';
-  } else {
-    dotStyle = 'background:#d7e2ff;opacity:.5;';
-    titleStyle = 'font-size:16px;font-weight:700;color:#8899bb;';
+    let dotBg, dotContent, metaColor, metaText, titleStyle;
+
+    if (isCurrent) {
+      dotBg      = 'background:#1565c0;box-shadow:0 0 0 4px rgba(21,101,192,0.15);';
+      dotContent = '<div style="width:10px;height:10px;border-radius:50%;background:#fff;animation:pulse 1.5s infinite;"></div>';
+      metaColor  = '#1565c0';
+      metaText   = 'Estado actual';
+      titleStyle = 'font-size:18px;font-weight:900;color:#1565c0;';
+    } else if (isDone) {
+      dotBg      = 'background:#82d14b;';
+      dotContent = '<span class="material-symbols-outlined text-white text-[16px]" style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">check</span>';
+      metaColor  = '#82d14b';
+      metaText   = 'Paso superado ✓';
+      titleStyle = 'font-size:15px;font-weight:700;color:#0d1c2e;';
+    } else {
+      dotBg      = 'background:#e2e8f0;';
+      dotContent = '<span class="material-symbols-outlined text-[#c0cad8] text-[16px]">hourglass_empty</span>';
+      metaColor  = '#c0cad8';
+      metaText   = 'Pendiente';
+      titleStyle = 'font-size:15px;font-weight:700;color:#8899bb;';
+    }
+
+    const badgeHtml = isCurrent
+      ? '<span class="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-bold" style="background:#e8f0fe;color:#1565c0;">Estado actual</span>'
+      : '';
+
+    timeline.innerHTML += `
+    <div class="relative flex gap-5 ${isLast ? '' : 'pb-7'}">
+      <div class="z-10 mt-1 flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style="${dotBg}">
+        ${dotContent}
+      </div>
+      <div class="flex-1">
+        <p class="text-[10px] font-bold uppercase tracking-wider mb-0.5" style="color:${metaColor};">${metaText}</p>
+        <h5 style="${titleStyle}">${label}</h5>
+        ${badgeHtml}
+      </div>
+    </div>`;
+  });
+}
+
+// ── Cargar datos ──
+async function loadDetalle() {
+  const params = new URLSearchParams(location.search);
+  const folio  = params.get('folio');
+
+  // Si hay folio en URL → fuente de verdad es el sheet, ignorar sessionStorage
+  if (folio) {
+    showSkeletonDetalle();
+    try {
+      const data = await KinsuAPI.getProspecto(folio);
+      if (data && !data.error) {
+        renderDetalle({
+          nombre:  data['Nombre Prospecto'] || '—',
+          tipo:    (data['Tipo Seguro'] || 'salud').toLowerCase(),
+          folio:   data['Folio']            || folio,
+          tel:     data['Teléfono'] || data['Telefono'] || data['Tel'] || '—',
+          correo:  data['Email']            || '—',
+          ciudad:  data['Ciudad']           || 'CDMX, México',
+          estatus: data['Estatus']          || 'Enviado',
+          fecha:   data['Fecha Registro']   || '',
+        });
+        return;
+      } else {
+        // API no encontró el folio — mostrar error
+        document.getElementById('hero-nombre').textContent = 'Prospecto no encontrado';
+        document.getElementById('hero-folio').textContent  = `Folio #${folio}`;
+        document.getElementById('timeline').innerHTML = '<p class="text-slate-400 text-sm">No se encontró este prospecto en el sistema.</p>';
+        return;
+      }
+    } catch(e) {
+      console.warn('Error:', e);
+    }
   }
 
-  timeline.innerHTML += `
-  <div class="relative flex gap-5 ${isLast ? '' : 'pb-8'}">
-    <div class="z-10 mt-1 flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style="${dotStyle}">
-      ${paso.done && !paso.current
-        ? '<span class="material-symbols-outlined text-white text-[16px] filled" style="font-variation-settings:\'FILL\' 1,\'wght\' 400,\'GRAD\' 0,\'opsz\' 24;">check</span>'
-        : paso.current
-          ? '<div style="width:10px;height:10px;border-radius:50%;background:#fff;animation:pulse 1.5s infinite;"></div>'
-          : '<span class="material-symbols-outlined text-[#8899bb] text-[16px]">hourglass_empty</span>'
-      }
-    </div>
-    <div class="flex-1">
-      <p class="text-[10px] font-bold uppercase tracking-wider mb-0.5"
-        style="color:${paso.current ? '#1565c0' : paso.done ? '#8899bb' : '#c0cad8'};">
-        ${paso.fecha}
-      </p>
-      <h5 style="${titleStyle}">${paso.label}</h5>
-      ${badgeHtml}
-    </div>
-  </div>`;
-});
+  // Sin folio en URL: usar sessionStorage (viene del chat)
+  const cached = JSON.parse(sessionStorage.getItem('prospecto') || 'null');
+  renderDetalle(cached ? {
+    nombre:  cached.nombre,
+    tipo:    cached.tipo || 'salud',
+    folio:   cached.folio,
+    tel:     cached.tel    || '—',
+    correo:  cached.correo || '—',
+    ciudad:  cached.datos?.ciudad || 'CDMX, México',
+    estatus: 'Enviado',
+  } : {
+    nombre:'Juan López', tipo:'salud', folio:'S20240001',
+    tel:'+52 55 1234 5678', correo:'juan@ejemplo.com',
+    ciudad:'CDMX', estatus:'En Emisión', fecha:'2024-10-12'
+  });
+}
 
 // Pulse animation
-const style = document.createElement('style');
-style.textContent = '@keyframes pulse { 0%,100%{opacity:.5;transform:scale(.8)} 50%{opacity:1;transform:scale(1)} }';
-document.head.appendChild(style);
-} // end renderTimeline
+const st = document.createElement('style');
+st.textContent = '@keyframes pulse{0%,100%{opacity:.5;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}';
+document.head.appendChild(st);
 
 loadDetalle();
 </script>
