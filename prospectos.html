@@ -228,7 +228,7 @@ function renderProspectos() {
   lista.innerHTML = filtered.map(p => {
     const badge = BADGE[p.estatus] || { bg:'#e8f0fe', color:'#1565c0' };
     return `
-    <a href="detalle-prospecto.html?folio=${p.folio}"
+    <a href="detalle-prospecto.html?folio=${p.folio}" onclick="sessionStorage.removeItem('prospecto')"
       class="block bg-white rounded-2xl border border-slate-100 p-5 flex items-center justify-between
              hover:shadow-md hover:translate-x-1 transition-all group cursor-pointer">
       <div class="flex items-center gap-4 min-w-0">

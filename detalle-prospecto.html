@@ -326,10 +326,10 @@ function renderTimeline(estatus) {
 async function loadDetalle() {
   const folio = new URLSearchParams(location.search).get('folio');
 
-  if (folio) {
+  if (folio && folio.trim() !== '') {
     showSkeletonDetalle();
     try {
-      const data = await KinsuAPI.getProspecto(folio);
+      const data = await KinsuAPI.getProspecto(folio.trim());
       if (data && !data.error) {
         renderDetalle({
           nombre:  data['Nombre Prospecto'] || '—',

@@ -436,8 +436,9 @@ function renderDashboard(data) {
     const badge   = BADGE[estatus] || { bg:'#e8f0fe', color:'#1565c0' };
     const fechaFmt= fecha ? new Date(fecha).toLocaleDateString('es-MX',{day:'numeric',month:'short'}) : '';
 
+    const linkFolio = folio || '';
     list.innerHTML += `
-    <a href="detalle-prospecto.html?folio=${folio}"
+    <a href="detalle-prospecto.html?folio=${linkFolio}" onclick="sessionStorage.removeItem('prospecto')"
       class="bg-white rounded-2xl border border-gray-100 p-4 lg:p-5 flex items-center justify-between
              group hover:shadow-md hover:translate-x-1 transition-all cursor-pointer block">
       <div class="flex items-center gap-3 lg:gap-4 min-w-0">
