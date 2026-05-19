@@ -249,114 +249,119 @@
 </nav>
 
 <script src="kinsu-config.js"></script>
-
 <script>
+// ── Validar sesión ──
 const userRaw = sessionStorage.getItem('user');
 if (!userRaw) { window.location.href = 'index.html'; }
 const user = JSON.parse(userRaw || '{}');
-// Verificar que tenemos kinsurerID válido
 if (!user.kinsurerID) { window.location.href = 'index.html'; }
 
-// Poblar inmediatamente desde sessionStorage
-const setEl = (id, val) => { const e=document.getElementById(id); if(e) e.textContent=val; };
+const setEl = (id, val) => { const e = document.getElementById(id); if(e) e.textContent = val; };
 
-setEl('topbar-av',       user.initials||'');
-setEl('avatar-initials', user.initials||'');
-setEl('perfil-nombre',   user.nombre  ||'');
-setEl('perfil-email',    user.email   ||'');
-setEl('perfil-clabe',    user.clabe   ||'—');
-setEl('perfil-banco',    user.banco   ||'—');
-setEl('perfil-tel',      user.tel     ||'—');
-setEl('perfil-id',       'ID: '+(user.kinsurerID||''));
+// ── Mostrar datos inmediatos desde sessionStorage ──
+setEl('topbar-av',       user.initials || '');
+setEl('avatar-initials', user.initials || '');
+setEl('perfil-nombre',   user.nombre   || '');
+setEl('perfil-email',    user.email    || '');
+setEl('perfil-clabe',    user.clabe    || '—');
+setEl('perfil-banco',    user.banco    || '—');
+setEl('perfil-tel',      user.tel      || '—');
+setEl('perfil-id',       'ID: ' + (user.kinsurerID || ''));
 
-const nivel = user.nivel||'';
-setEl('topbar-nivel',  nivel.replace('Kinsurer ',''));
-setEl('header-nivel',  nivel);
+const nivel = user.nivel || '';
+setEl('topbar-nivel', nivel.replace('Kinsurer ',''));
+setEl('header-nivel', nivel);
 
-// ── Cargar datos frescos del sheet ──
-async function loadPerfil() {
-  try {
-    console.log('[Perfil] Cargando para kinsurerID:', user.kinsurerID);
-    const data = await KinsuAPI.getPerfil();
-    if(!data||data.error) {
-      console.warn('[Perfil] Error API:', data?.error);
-      return;
-    }
-    console.log('[Perfil] Datos recibidos para:', data['ID_Kinsurer'], data['Nombre Completo']);
-
-    const nombre   = data['Nombre Completo'] || user.nombre;
-    const email    = data['Email']            || user.email;
-    const clabe    = data['CLABE Bancaria']   || user.clabe||'**** **** **** 0921';
-    const banco    = data['Banco']            || user.banco||'BBVA México';
-    const nivelAPI = data['Nivel']            || user.nivel||'';
-    const id       = data['ID_Kinsurer']      || user.kinsurerID||'';
-    const tel      = data['Tel']||data['Teléfono']||data['Telefono']||user.tel||'';
-    const initials = nombre.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
-
-    setEl('avatar-initials', initials);
-    setEl('topbar-av',       initials);
-    setEl('perfil-nombre',   nombre);
-    setEl('perfil-email',    email);
-    setEl('perfil-clabe',    clabe);
-    setEl('perfil-banco',    banco);
-    setEl('perfil-id',       'ID: '+id);
-    setEl('topbar-nivel',    nivelAPI.replace('Kinsurer ',''));
-    setEl('header-nivel',    nivelAPI);
-    if(tel) setEl('perfil-tel', tel);
-
-    // Saldo disponible = suma de comisiones PENDIENTES de cobro
-    try {
-      const ganData = await KinsuAPI.getGanancias();
-      if(ganData?.transacciones) {
-        const pendientes = ganData.transacciones.filter(t =>
-          (t['Estatus Pago'] || '').trim() === 'Pendiente'
-        );
-        const saldo = pendientes.reduce((s, t) => {
-          const raw = t['Monto Comisión'] || t.monto || '0';
-          return s + (parseFloat(String(raw).replace(/[$,MXN\s]/g,'')) || 0);
-        }, 0);
-        const saldoFmt = '$' + saldo.toLocaleString('es-MX',{minimumFractionDigits:2}) + ' MXN';
-        // Actualizar modal
-        const mc = document.getElementById('modal-saldo');
-        if(mc) mc.textContent = saldoFmt;
-      }
-    } catch(e) {}
-
-    // Actualizar sessionStorage
-    sessionStorage.setItem('user', JSON.stringify({
-      ...user, nombre, email, initials, clabe, banco,
-      nivel:nivelAPI, kinsurerID:id, tel
-    }));
-  } catch(e) { console.warn('Error cargando perfil:', e); }
+// ── Helper: calcular saldo de transacciones pendientes ──
+function calcSaldoPendiente(transacciones) {
+  const pendientes = (transacciones || []).filter(t =>
+    (t['Estatus Pago'] || '').trim() === 'Pendiente'
+  );
+  const saldo = pendientes.reduce((s, t) => {
+    const raw = String(t['Monto Comisión'] || t.monto || '0');
+    return s + (parseFloat(raw.replace(/[^0-9.]/g, '')) || 0);
+  }, 0);
+  return '$' + saldo.toLocaleString('es-MX', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' MXN';
 }
 
+// ── Cargar datos frescos en paralelo ──
+async function loadPerfil() {
+  try {
+    // Ambas llamadas simultáneas
+    const [perfil, ganData] = await Promise.all([
+      KinsuAPI.getPerfil(),
+      KinsuAPI.getGanancias()
+    ]);
+
+    // ── Datos del perfil ──
+    if (perfil && !perfil.error) {
+      const nombre   = perfil['Nombre Completo'] || user.nombre || '';
+      const email    = perfil['Email']            || user.email  || '';
+      const clabe    = perfil['CLABE Bancaria']   || user.clabe  || '—';
+      const banco    = perfil['Banco']            || user.banco  || '—';
+      const nivelAPI = perfil['Nivel']            || user.nivel  || '';
+      const id       = perfil['ID_Kinsurer']      || user.kinsurerID || '';
+      const tel      = perfil['Tel'] || perfil['Teléfono'] || perfil['Telefono'] || user.tel || '';
+      const initials = nombre.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+
+      setEl('avatar-initials', initials);
+      setEl('topbar-av',       initials);
+      setEl('perfil-nombre',   nombre);
+      setEl('perfil-email',    email);
+      setEl('perfil-clabe',    clabe);
+      setEl('perfil-banco',    banco);
+      setEl('perfil-id',       'ID: ' + id);
+      setEl('topbar-nivel',    nivelAPI.replace('Kinsurer ', ''));
+      setEl('header-nivel',    nivelAPI);
+      if (tel) setEl('perfil-tel', tel);
+
+      // Actualizar sessionStorage
+      sessionStorage.setItem('user', JSON.stringify({
+        ...user, nombre, email, initials, clabe, banco,
+        nivel: nivelAPI, kinsurerID: id, tel
+      }));
+    }
+
+    // ── Saldo disponible (transacciones pendientes) ──
+    const saldoFmt = calcSaldoPendiente(ganData?.transacciones);
+    const saldoEl  = document.getElementById('perfil-saldo');
+    if (saldoEl) saldoEl.textContent = saldoFmt;
+
+    // Pre-llenar modal con saldo y datos bancarios
+    const modalSaldo = document.getElementById('modal-saldo');
+    const modalClabe = document.getElementById('modal-clabe');
+    const modalBanco = document.getElementById('modal-banco');
+    if (modalSaldo) modalSaldo.textContent = saldoFmt;
+    if (modalClabe) modalClabe.textContent = user.clabe || '—';
+    if (modalBanco) modalBanco.textContent = user.banco || '—';
+
+  } catch(e) {
+    console.warn('[Perfil] Error:', e);
+  }
+}
+
+// ── Modal ──
 function openModal() {
   const overlay = document.getElementById('modal-overlay');
   const card    = document.getElementById('modal-card');
-  const clabe   = document.getElementById('modal-clabe');
-  const banco   = document.getElementById('modal-banco');
-  if(clabe) clabe.textContent = document.getElementById('perfil-clabe')?.textContent || user.clabe || '—';
-  if(banco) banco.textContent = document.getElementById('perfil-banco')?.textContent || user.banco || '—';
-  overlay.style.opacity      = '1';
-  overlay.style.pointerEvents= 'all';
-  if(card) card.style.transform = 'translateY(0) scale(1)';
+  if (overlay) { overlay.style.opacity = '1'; overlay.style.pointerEvents = 'all'; }
+  if (card)    card.style.transform = 'translateY(0) scale(1)';
 }
 
 function closeModal() {
   const overlay = document.getElementById('modal-overlay');
   const card    = document.getElementById('modal-card');
-  overlay.style.opacity      = '0';
-  overlay.style.pointerEvents= 'none';
-  if(card) card.style.transform = 'translateY(24px) scale(.97)';
+  if (overlay) { overlay.style.opacity = '0'; overlay.style.pointerEvents = 'none'; }
+  if (card)    card.style.transform = 'translateY(24px) scale(.97)';
 }
 
-// Cerrar al click fuera
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('modal-overlay')?.addEventListener('click', function(e) {
-    if(e.target === this) closeModal();
+    if (e.target === this) closeModal();
   });
 });
 
+// ── Cerrar sesión ──
 function doLogout() {
   sessionStorage.clear();
   window.location.href = 'index.html';
@@ -364,44 +369,5 @@ function doLogout() {
 
 loadPerfil();
 </script>
-
-<!-- Modal Retirar Fondos -->
-<div id="modal-overlay"
-  class="fixed inset-0 z-50 flex items-center justify-center px-4"
-  style="background:rgba(11,27,53,0.45);opacity:0;pointer-events:none;transition:opacity .25s ease;">
-  <div id="modal-card" class="bg-white w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl"
-    style="transform:translateY(24px) scale(.97);transition:transform .25s ease;">
-    <div class="p-8 text-center">
-      <div class="w-20 h-20 bg-[#d4f0a0] rounded-full flex items-center justify-center mx-auto mb-6">
-        <span class="material-symbols-outlined text-[#1a3a0a] text-[44px]" style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">check_circle</span>
-      </div>
-      <h3 class="text-2xl font-black text-[#0d1c2e] mb-2">Solicitar Retiro</h3>
-      <p class="text-sm text-slate-500 max-w-xs mx-auto mb-6 leading-relaxed">
-        Tu saldo se deposita en 2 días hábiles a la cuenta bancaria registrada.
-      </p>
-      <div class="bg-[#f1f3ff] rounded-2xl p-5 text-left space-y-4 mb-6">
-        <div class="flex justify-between items-center">
-          <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Saldo Disponible</span>
-          <span class="text-xl font-black text-[#1565c0]" id="modal-saldo">$0.00 MXN</span>
-        </div>
-        <div class="h-px bg-slate-200"></div>
-        <div class="flex justify-between items-center">
-          <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">CLABE Destino</span>
-          <span class="text-sm font-mono font-bold text-[#0d1c2e]" id="modal-clabe">**** **** **** 0921</span>
-        </div>
-        <div class="flex justify-between items-center">
-          <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Banco</span>
-          <span class="text-sm font-bold text-[#0d1c2e]" id="modal-banco">BBVA México</span>
-        </div>
-      </div>
-      <button onclick="closeModal()"
-        class="w-full py-4 bg-[#1565c0] text-white rounded-full font-black text-sm uppercase tracking-widest
-               hover:bg-[#1255a8] active:scale-95 transition-all">
-        Entendido
-      </button>
-    </div>
-  </div>
-</div>
-
 </body>
 </html>
