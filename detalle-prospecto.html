@@ -210,7 +210,7 @@
 </nav>
 
 <script src="kinsu-config.js"></script>
-<script src="kinsu-config.js"></script>
+
 <script>
 const user = JSON.parse(sessionStorage.getItem('user') || '{"initials":"JR"}');
 document.getElementById('topbar-av').textContent = user.initials || 'JR';
@@ -263,15 +263,7 @@ function renderDetalle(d) {
   document.getElementById('info-fecha').textContent           = fecha;
 
   // WhatsApp
-  const waMsg = encodeURIComponent(
-    'Hola ' + nombre + ' 👋
-
-Te contacto de parte de Kinsu. Acabo de iniciar tu proceso para el seguro de *' + tipoCap + '* — sin compromiso.
-
-Tu número de seguimiento es *#' + folio + '*.
-
-¿Alguna duda? Aquí estoy 😊'
-  );
+  const waMsg = encodeURIComponent('Hola ' + nombre + ' \u{1F44B}\n\nTe contacto de parte de Kinsu. Tu seguro de *' + tipoCap + '* está en proceso.\n\nFolio: *#' + folio + '*\n\n¿Dudas? Aquí estoy 😊');
   const telNum = tel.replace(/[^0-9]/g,'');
   document.getElementById('btn-whatsapp').href = 'https://wa.me/52' + telNum + '?text=' + waMsg;
 
