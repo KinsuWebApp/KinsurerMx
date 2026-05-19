@@ -209,76 +209,155 @@
   </a>
 </nav>
 
+<script src="kinsu-config.js"></script>
 <script>
 // ── Usuario ──
 const user = JSON.parse(sessionStorage.getItem('user') || '{"initials":"JR"}');
 document.getElementById('topbar-av').textContent = user.initials || 'JR';
 
-// ── Datos del prospecto ──
-// Intenta leer desde sessionStorage (viene del flujo chat)
-// Si no hay, usa datos demo
-const p = JSON.parse(sessionStorage.getItem('prospecto') || 'null');
-
-const DEMO = {
-  nombre:   'Juan López',
-  tipo:     'auto',
-  folio:    'A20240001',
-  tel:      '+52 55 1234 5678',
-  correo:   'juan@ejemplo.com',
-  comision: '$500 MXN',
-  estatus:  'En Emisión',
-};
-
-const data = {
-  nombre:   p?.nombre   || DEMO.nombre,
-  tipo:     p?.tipo     || DEMO.tipo,
-  folio:    p?.folio    || DEMO.folio,
-  tel:      p?.tel      || DEMO.tel,
-  correo:   p?.correo   || DEMO.correo,
-  comision: p?.comision || DEMO.comision,
-  estatus:  'En Emisión',
-};
-
-const TIPO_ICON = { salud:'health_and_safety', auto:'directions_car', viaje:'flight' };
+const TIPO_ICON     = { salud:'health_and_safety', auto:'directions_car', viaje:'flight' };
 const TIPO_COMISION = { salud:'$1,000 MXN', auto:'$500 MXN', viaje:'$300 MXN' };
 
-const comision = TIPO_COMISION[data.tipo] || data.comision;
-const icon = TIPO_ICON[data.tipo] || 'shield';
-const tipoCap = data.tipo.charAt(0).toUpperCase() + data.tipo.slice(1);
+const DEMO = {
+  nombre:'Juan López', tipo:'auto', folio:'A20240001',
+  tel:'+52 55 1234 5678', correo:'juan@ejemplo.com',
+  comision:'$500 MXN', estatus:'En Emisión', ciudad:'CDMX',
+};
 
-// ── Poblar UI ──
-document.getElementById('hero-folio').textContent    = `Folio #${data.folio}`;
-document.getElementById('hero-nombre').textContent   = data.nombre;
-document.getElementById('hero-icon').textContent     = icon;
-document.getElementById('hero-meta').textContent     = `${tipoCap} · Folio #${data.folio}`;
-document.getElementById('hero-comision').textContent = comision;
-document.getElementById('hero-comision-mobile').textContent = comision;
-document.getElementById('card-comision').innerHTML   = `${comision.split(' ')[0]} <span class="text-base font-medium">${comision.split(' ')[1]||''}</span>`;
-document.getElementById('info-tel').textContent      = data.tel;
-document.getElementById('info-email').textContent    = data.correo;
-document.getElementById('info-ciudad').textContent   = data.datos?.ciudad || 'CDMX, México';
-document.getElementById('info-fecha').textContent    = new Date().toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});
+// ── Poblar UI con datos ──
+function renderDetalle(d) {
+  const tipo     = (d.tipo || 'auto').toLowerCase();
+  const comision = TIPO_COMISION[tipo] || d.comision || '$500 MXN';
+  const icon     = TIPO_ICON[tipo]     || 'shield';
+  const tipoCap  = tipo.charAt(0).toUpperCase() + tipo.slice(1);
+  const folio    = d.folio || 'A20240001';
+  const nombre   = d.nombre || DEMO.nombre;
+  const tel      = d.tel    || DEMO.tel;
+  const correo   = d.correo || DEMO.correo;
+  const ciudad   = d.ciudad || 'CDMX, México';
+  const estatus  = d.estatus|| 'Enviado';
+  const fecha    = d.fecha  || new Date().toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});
 
-// ── WhatsApp link real ──
-const waMsg = encodeURIComponent(
-  `Hola ${data.nombre} 👋\n\n` +
-  `Te contacto de parte de Kinsu. Acabo de iniciar tu proceso para el seguro de *${tipoCap}* — sin compromiso.\n\n` +
-  `Ya tengo tu información registrada. Un asesor de Kinsu te enviará las mejores opciones en breve.\n\n` +
-  `Tu número de seguimiento es *#${data.folio}*. Con él puedes rastrear tu cotización.\n\n` +
-  `¿Alguna duda? Aquí estoy 😊`
-);
-const tel = data.tel.replace(/\D/g,'');
-document.getElementById('btn-whatsapp').href = `https://wa.me/52${tel}?text=${waMsg}`;
+  document.getElementById('hero-folio').textContent            = `Folio #${folio}`;
+  document.getElementById('hero-nombre').textContent           = nombre;
+  document.getElementById('hero-icon').textContent             = icon;
+  document.getElementById('hero-meta').textContent             = `${tipoCap} · Folio #${folio}`;
+  document.getElementById('hero-comision').textContent         = comision;
+  document.getElementById('hero-comision-mobile').textContent  = comision;
+  document.getElementById('card-comision').innerHTML           = `${comision.split(' ')[0]} <span class="text-base font-medium">${comision.split(' ')[1]||''}</span>`;
+  document.getElementById('info-tel').textContent              = tel;
+  document.getElementById('info-email').textContent            = correo;
+  document.getElementById('info-ciudad').textContent           = ciudad;
+  document.getElementById('info-fecha').textContent            = fecha;
 
-// ── Timeline ──
-const PASOS = [
-  { label:'Enviado',       fecha:'Completado', done:true },
-  { label:'En Cotización', fecha:'Completado', done:true },
-  { label:'En Emisión',    fecha:'Estado actual', current:true },
-  { label:'Completado',    fecha:'Pendiente',  done:false },
-];
+  // WhatsApp real
+  const waMsg = encodeURIComponent(
+    `Hola ${nombre} 👋
+
+` +
+    `Te contacto de parte de Kinsu. Acabo de iniciar tu proceso para el seguro de *${tipoCap}* — sin compromiso.
+
+` +
+    `Ya tengo tu información registrada. Un asesor de Kinsu te enviará las mejores opciones en breve.
+
+` +
+    `Tu número de seguimiento es *#${folio}*. Con él puedes rastrear tu cotización.
+
+` +
+    `¿Alguna duda? Aquí estoy 😊`
+  );
+  const telNum = tel.replace(/\D/g,'');
+  document.getElementById('btn-whatsapp').href = `https://wa.me/52${telNum}?text=${waMsg}`;
+
+  // Timeline según estatus real
+  renderTimeline(estatus);
+}
+
+// ── Cargar datos ──
+function showSkeletonDetalle() {
+  document.getElementById('hero-nombre').textContent   = '...';
+  document.getElementById('hero-folio').textContent    = 'Cargando...';
+  document.getElementById('info-tel').textContent      = '—';
+  document.getElementById('info-email').textContent    = '—';
+  document.getElementById('info-ciudad').textContent   = '—';
+  document.getElementById('timeline').innerHTML        = `
+    <div class="space-y-4">
+      ${Array(4).fill('<div class="flex gap-4"><div class="w-8 h-8 rounded-full bg-slate-200 animate-pulse flex-shrink-0"></div><div class="flex-1 space-y-2 pt-1"><div class="h-3 bg-slate-200 rounded animate-pulse w-16"></div><div class="h-5 bg-slate-200 rounded animate-pulse w-28"></div></div></div>').join('')}
+    </div>`;
+}
+
+async function loadDetalle() {
+  const params = new URLSearchParams(location.search);
+  const folio  = params.get('folio');
+
+  // Si hay folio en URL → siempre cargar desde el sheet (fuente de verdad)
+  if (folio) {
+    showSkeletonDetalle();
+    try {
+      const data = await KinsuAPI.getProspecto(folio);
+      if (data && !data.error) {
+        renderDetalle({
+          nombre:  data['Nombre Prospecto'] || '—',
+          tipo:    (data['Tipo Seguro']     || 'salud').toLowerCase(),
+          folio:   data['Folio']            || folio,
+          tel:     data['Teléfono'] || data['Telefono'] || data['Tel'] || '—',
+          correo:  data['Email']            || '—',
+          ciudad:  data['Ciudad']           || 'CDMX, México',
+          estatus: data['Estatus']          || 'Enviado',
+          fecha:   data['Fecha Registro']   || '',
+        });
+        return;
+      }
+    } catch(e) {
+      console.warn('Error cargando prospecto:', e);
+    }
+  }
+
+  // Fallback: sessionStorage del chat (solo si no hay folio en URL)
+  const cached = JSON.parse(sessionStorage.getItem('prospecto') || 'null');
+  if (cached) {
+    renderDetalle({
+      nombre:  cached.nombre,
+      tipo:    cached.tipo || 'salud',
+      folio:   cached.folio,
+      tel:     cached.tel     || '—',
+      correo:  cached.correo  || '—',
+      ciudad:  cached.datos?.ciudad || 'CDMX, México',
+      estatus: 'Enviado',
+    });
+  } else {
+    renderDetalle(DEMO);
+  }
+}
+
+// ── Timeline dinámico según estatus ──
+function renderTimeline(estatus) {
+  const ORDEN = ['Enviado','En Cotización','En Emisión','En Cobranza','Completado'];
+  const estatusIdx = ORDEN.indexOf(estatus);
+  if (estatusIdx === -1 && estatus === 'Cancelado') {
+    // Mostrar timeline cancelado
+    document.getElementById('timeline').innerHTML = `
+      <div class="flex items-center gap-4 py-3">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style="background:#f1efe8;">
+          <span class="material-symbols-outlined text-[#888780] text-[16px]">cancel</span>
+        </div>
+        <div>
+          <p class="text-[10px] font-bold text-[#888780] uppercase tracking-wider">Cancelado</p>
+          <h5 class="text-base font-bold text-[#888780]">Solicitud cancelada</h5>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const PASOS = ORDEN.map((label, i) => ({
+    label,
+    done:    i < estatusIdx,
+    current: i === estatusIdx,
+    pending: i > estatusIdx,
+  }));
 
 const timeline = document.getElementById('timeline');
+timeline.innerHTML = '';
 PASOS.forEach((paso, i) => {
   const isLast = i === PASOS.length - 1;
   let dotStyle, titleStyle, badgeHtml = '';
@@ -321,6 +400,9 @@ PASOS.forEach((paso, i) => {
 const style = document.createElement('style');
 style.textContent = '@keyframes pulse { 0%,100%{opacity:.5;transform:scale(.8)} 50%{opacity:1;transform:scale(1)} }';
 document.head.appendChild(style);
+} // end renderTimeline
+
+loadDetalle();
 </script>
 </body>
 </html>
