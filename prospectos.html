@@ -75,17 +75,17 @@
       <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden">
         <div class="flex justify-between items-start mb-3">
           <p class="text-xs font-black tracking-widest text-slate-400 uppercase">Total Prospectos</p>
-          <span class="px-2 py-1 bg-[#d4f0a0] text-[#1a3a0a] text-[10px] font-bold rounded-full">+12%</span>
+
         </div>
-        <p class="text-4xl font-black text-[#0d1c2e]" id="stat-total">6</p>
+        <p class="text-4xl font-black text-[#0d1c2e]" id="stat-total">—</p>
       </div>
       <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden">
         <p class="text-xs font-black tracking-widest text-slate-400 uppercase mb-3">En Proceso</p>
-        <p class="text-4xl font-black text-[#0d1c2e]" id="stat-proceso">4</p>
+        <p class="text-4xl font-black text-[#0d1c2e]" id="stat-proceso">—</p>
       </div>
       <div class="bg-[#d4f0a0] p-6 rounded-2xl relative overflow-hidden">
         <p class="text-xs font-black tracking-widest text-[#1a3a0a] uppercase mb-3">Completados</p>
-        <p class="text-4xl font-black text-[#1a3a0a]" id="stat-completados">1</p>
+        <p class="text-4xl font-black text-[#1a3a0a]" id="stat-completados">—</p>
       </div>
     </div>
 
@@ -181,8 +181,15 @@ let searchVal = '';
 
 // ── Skeleton ──
 function showSkeleton() {
+  // Skeleton stats
+  ['stat-total','stat-proceso','stat-completados'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.innerHTML = '<div class="h-8 w-8 bg-slate-200 rounded-lg animate-pulse"></div>';
+  });
+
+  // Skeleton lista
   const lista = document.getElementById('lista-prospectos');
-  lista.innerHTML = Array(4).fill(`
+  lista.innerHTML = Array(5).fill(`
     <div class="bg-white rounded-2xl border border-slate-100 p-5 flex items-center gap-4">
       <div class="w-12 h-12 rounded-full bg-slate-200 animate-pulse flex-shrink-0"></div>
       <div class="flex-1 space-y-2">
@@ -211,7 +218,14 @@ function renderProspectos() {
   const empty = document.getElementById('empty-state');
   const q     = searchVal.toLowerCase();
 
-  let filtered = PROSPECTOS.map(norm).filter(p => {
+  // Ordenar por fecha más reciente primero
+  const sorted = [...PROSPECTOS].sort((a, b) => {
+    const da = new Date(a['Fecha Registro'] || a.fecha || 0);
+    const db = new Date(b['Fecha Registro'] || b.fecha || 0);
+    return db - da;
+  });
+
+  let filtered = sorted.map(norm).filter(p => {
     const matchFilter = currentFilter === 'todos' || p.estatus === currentFilter;
     const matchSearch = !q || p.nombre.toLowerCase().includes(q)
       || p.tipo.toLowerCase().includes(q) || p.folio.toLowerCase().includes(q);
@@ -250,10 +264,10 @@ function renderProspectos() {
 
   // Stats
   const all = PROSPECTOS.map(norm);
-  const el = id => document.getElementById(id);
-  if(el('stat-total'))       el('stat-total').textContent       = all.length;
-  if(el('stat-proceso'))     el('stat-proceso').textContent     = all.filter(p=>!['Completado','Cancelado'].includes(p.estatus)).length;
-  if(el('stat-completados')) el('stat-completados').textContent = all.filter(p=>p.estatus==='Completado').length;
+  const elS = id => document.getElementById(id);
+  if(elS('stat-total'))       elS('stat-total').textContent       = all.length;
+  if(elS('stat-proceso'))     elS('stat-proceso').textContent     = all.filter(p=>!['Completado','Cancelado'].includes(p.estatus)).length;
+  if(elS('stat-completados')) elS('stat-completados').textContent = all.filter(p=>p.estatus==='Completado').length;
 }
 
 // ── Filtros ──
