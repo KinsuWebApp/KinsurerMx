@@ -11,25 +11,11 @@
   body { font-family:'Inter',sans-serif; background:#f9f9ff; }
   .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
   .filled { font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24; }
-
-  /* Modal */
-  #modal-overlay {
-    opacity:0; pointer-events:none;
-    transition: opacity .25s ease;
-  }
-  #modal-overlay.open {
-    opacity:1; pointer-events:all;
-  }
-  #modal-card {
-    transform: translateY(24px) scale(.97);
-    transition: transform .25s ease;
-  }
-  #modal-overlay.open #modal-card {
-    transform: translateY(0) scale(1);
-  }
-
-  /* Barras del gráfico */
-  .bar { transition: height .6s cubic-bezier(.34,1.56,.64,1); border-radius:8px 8px 0 0; }
+  #modal-overlay { opacity:0; pointer-events:none; transition:opacity .25s ease; }
+  #modal-overlay.open { opacity:1; pointer-events:all; }
+  #modal-card { transform:translateY(24px) scale(.97); transition:transform .25s ease; }
+  #modal-overlay.open #modal-card { transform:translateY(0) scale(1); }
+  .bar { transition:height .6s cubic-bezier(.34,1.56,.64,1); border-radius:8px 8px 0 0; }
 </style>
 </head>
 
@@ -58,62 +44,86 @@
     <h1 class="hidden lg:block text-base font-bold text-slate-800">Ganancias</h1>
   </div>
   <div class="flex items-center gap-3">
-    
+    <button class="text-slate-500 hover:text-blue-600 transition-colors">
+      <span class="material-symbols-outlined">notifications</span>
+    </button>
+    <button onclick="window.location.href='perfil.html'"
+      class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-700 text-xs"
+      id="topbar-av">JR</button>
+  </div>
+</header>
+
+<!-- Main -->
+<main class="pt-20 pb-28 lg:pl-[200px] px-6 min-h-screen">
+  <div class="max-w-5xl mx-auto">
+
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 mt-4">
+      <div>
+        <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Resumen de Cuenta</p>
+        <h2 class="text-4xl lg:text-6xl font-black text-[#0d1c2e] tracking-tighter leading-none" id="hero-total">$0.00 MXN</h2>
+        <p class="text-sm text-slate-400 mt-3">Ganancias totales acumuladas</p>
       </div>
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden"><div id="txn-list">
+      <button onclick="openModal()"
+        class="flex items-center gap-2 px-8 py-4 bg-[#1565c0] text-white rounded-full font-bold shadow-lg hover:bg-[#1255a8] active:scale-95 transition-all w-fit">
+        <span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+        Retirar Fondos
+      </button>
+    </div>
 
-        <!-- Row 1 -->
-        <div class="flex items-center justify-between p-5 lg:p-6 hover:bg-[#f1f3ff] transition-colors group border-b border-slate-50">
-          <div class="flex items-center gap-4 lg:gap-5">
-            <div class="w-12 h-12 lg:w-14 lg:h-14 rounded-2xl bg-red-50 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
-              <span class="material-symbols-outlined text-red-600 text-2xl">health_and_safety</span>
-            </div>
-            <div>
-              <h5 class="font-bold text-[#0d1c2e]">Seguro de Salud</h5>
-              <p class="text-xs text-slate-400">Juan López · Póliza #S20240001</p>
-            </div>
-          </div>
-          <div class="text-right">
-            <p class="text-lg font-black text-[#285900]">+$1,000.00</p>
-            <p class="text-xs text-slate-400">12 Jun, 2024</p>
+    <!-- Bento grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+
+      <!-- Gráfica últimos 6 meses -->
+      <div class="lg:col-span-2 bg-white rounded-2xl p-6 lg:p-8 shadow-sm border border-slate-100">
+        <div class="flex items-center justify-between mb-8">
+          <div>
+            <h3 class="text-lg font-bold text-[#0d1c2e]">Crecimiento Mensual</h3>
+            <p class="text-xs text-slate-400 mt-0.5">Últimos 6 meses · Todos los estatus</p>
           </div>
         </div>
+        <!-- Barras dinámicas -->
+        <div class="flex items-end justify-between gap-2 lg:gap-4 h-48" id="chart-bars">
+          <div class="flex-1 flex flex-col items-center gap-2"><div class="bar w-full bg-slate-200 animate-pulse" style="height:40%;"></div><span class="text-[10px] text-slate-300">---</span></div>
+          <div class="flex-1 flex flex-col items-center gap-2"><div class="bar w-full bg-slate-200 animate-pulse" style="height:60%;"></div><span class="text-[10px] text-slate-300">---</span></div>
+          <div class="flex-1 flex flex-col items-center gap-2"><div class="bar w-full bg-slate-200 animate-pulse" style="height:45%;"></div><span class="text-[10px] text-slate-300">---</span></div>
+          <div class="flex-1 flex flex-col items-center gap-2"><div class="bar w-full bg-slate-200 animate-pulse" style="height:75%;"></div><span class="text-[10px] text-slate-300">---</span></div>
+          <div class="flex-1 flex flex-col items-center gap-2"><div class="bar w-full bg-slate-200 animate-pulse" style="height:65%;"></div><span class="text-[10px] text-slate-300">---</span></div>
+          <div class="flex-1 flex flex-col items-center gap-2"><div class="bar w-full bg-slate-200 animate-pulse" style="height:100%;"></div><span class="text-[10px] text-slate-300">---</span></div>
+        </div>
+      </div>
 
-        <!-- Row 2 -->
-        <div class="flex items-center justify-between p-5 lg:p-6 hover:bg-[#f1f3ff] transition-colors group border-b border-slate-50">
-          <div class="flex items-center gap-4 lg:gap-5">
-            <div class="w-12 h-12 lg:w-14 lg:h-14 rounded-2xl bg-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
-              <span class="material-symbols-outlined text-blue-600 text-2xl">directions_car</span>
-            </div>
-            <div>
-              <h5 class="font-bold text-[#0d1c2e]">Seguro de Auto</h5>
-              <p class="text-xs text-slate-400">Roberto Vega · Póliza #A20240005</p>
-            </div>
+      <!-- Stats col -->
+      <div class="flex flex-col gap-4">
+        <!-- Promedio de Ganancia -->
+        <div class="bg-[#f1f3ff] rounded-2xl p-6 border border-[#e2e8f5] flex-1">
+          <div class="w-12 h-12 bg-[#d4f0a0] rounded-xl flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-[#285900] filled">payments</span>
           </div>
-          <div class="text-right">
-            <p class="text-lg font-black text-[#285900]">+$500.00</p>
-            <p class="text-xs text-slate-400">1 Jun, 2024</p>
-          </div>
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Promedio de Ganancia</p>
+          <h4 class="text-2xl font-black text-[#0d1c2e]" id="stat-promedio">$0.00</h4>
         </div>
 
-        <!-- Row 3 -->
-        <div class="flex items-center justify-between p-5 lg:p-6 hover:bg-[#f1f3ff] transition-colors group">
-          <div class="flex items-center gap-4 lg:gap-5">
-            <div class="w-12 h-12 lg:w-14 lg:h-14 rounded-2xl bg-[#d4f0a0] flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
-              <span class="material-symbols-outlined text-[#1b3f00] text-2xl">flight</span>
-            </div>
-            <div>
-              <h5 class="font-bold text-[#0d1c2e]">Seguro de Viaje</h5>
-              <p class="text-xs text-slate-400">Carlos Ríos · Póliza #V20240003</p>
-            </div>
-          </div>
-          <div class="text-right">
-            <p class="text-lg font-black text-[#285900]">+$300.00</p>
-            <p class="text-xs text-slate-400">25 May, 2024</p>
+        <!-- Nivel -->
+        <div class="bg-[#0d1c2e] rounded-2xl p-6 flex-1 relative overflow-hidden">
+          <div class="relative z-10">
+            <span class="material-symbols-outlined text-[#a6f86d] text-3xl filled mb-3 block">verified</span>
+            <p class="text-[10px] text-white/50 uppercase tracking-widest mb-1" id="nivel-label">Nivel Kinsurer</p>
+            <h4 class="text-2xl font-black text-white" id="nivel-comision">—</h4>
+            <p class="text-xs text-white/50 mt-1">Tasa de comisión</p>
           </div>
         </div>
-        </div><!-- /txn-list -->
+      </div>
+    </div>
 
+    <!-- Transacciones recientes -->
+    <div>
+      <div class="mb-6">
+        <h3 class="text-xl font-bold text-[#0d1c2e]">Transacciones Recientes</h3>
+        <p class="text-xs text-slate-400 mt-1">Últimos 3 movimientos</p>
+      </div>
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+        <div id="txn-list"></div>
       </div>
     </div>
 
@@ -147,52 +157,31 @@
 </nav>
 
 <!-- Modal Retirar Fondos -->
-<div id="modal-overlay"
-  class="fixed inset-0 z-50 flex items-center justify-center px-4"
-  style="background:rgba(11,27,53,0.45);">
+<div id="modal-overlay" class="fixed inset-0 z-50 flex items-center justify-center px-4" style="background:rgba(11,27,53,0.45);">
   <div id="modal-card" class="bg-white w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl">
     <div class="p-8 text-center">
-
-      <!-- Ícono -->
-      <div class="w-20 h-20 bg-[#d4f0a0] rounded-full flex items-center justify-center mx-auto mb-6 relative">
+      <div class="w-20 h-20 bg-[#d4f0a0] rounded-full flex items-center justify-center mx-auto mb-6">
         <span class="material-symbols-outlined text-[#1a3a0a] text-[44px] filled">check_circle</span>
-        <div class="absolute inset-0 rounded-full border-4 border-[#d4f0a0] animate-ping opacity-20"></div>
       </div>
-
       <h3 class="text-2xl font-black text-[#0d1c2e] mb-2">Retiro solicitado</h3>
       <p class="text-sm text-slate-500 max-w-xs mx-auto mb-6 leading-relaxed">
         Tu comisión se deposita automáticamente en 2 días hábiles a la cuenta bancaria registrada.
       </p>
-
-      <!-- Detalles -->
       <div class="bg-[#f1f3ff] rounded-2xl p-5 text-left space-y-4 mb-6">
         <div class="flex justify-between items-center">
           <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Saldo Disponible</span>
-          <span class="text-xl font-black text-[#1565c0]" id="modal-total">$24,850.00</span>
+          <span class="text-xl font-black text-[#1565c0]" id="modal-total">$0.00 MXN</span>
         </div>
         <div class="h-px bg-slate-200"></div>
         <div class="flex justify-between items-center">
           <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">CLABE Destino</span>
           <span class="text-sm font-mono font-bold text-[#0d1c2e]" id="modal-clabe">**** **** **** 0921</span>
         </div>
-        <div class="flex justify-between items-center">
-          <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Referencia</span>
-          <span class="text-sm font-bold text-[#0d1c2e]">KS-992031</span>
-        </div>
       </div>
-
       <button onclick="closeModal()"
-        class="w-full py-4 bg-[#1565c0] text-white rounded-full font-black text-sm uppercase tracking-widest
-               hover:bg-[#1255a8] active:scale-95 transition-all">
+        class="w-full py-4 bg-[#1565c0] text-white rounded-full font-black text-sm uppercase tracking-widest hover:bg-[#1255a8] active:scale-95 transition-all">
         Entendido
       </button>
-    </div>
-
-    <div class="bg-[#f1f3ff] px-6 py-4 text-center">
-      <p class="text-[11px] text-slate-400">
-        ¿Necesitas ayuda?
-        <a href="#" class="text-[#1565c0] font-bold">Contactar Soporte</a>
-      </p>
     </div>
   </div>
 </div>
@@ -217,24 +206,22 @@ function fmtMXN(n) {
 }
 
 function showSkeleton() {
-  const el = id => document.getElementById(id);
-  if(el('hero-total')) el('hero-total').innerHTML = '<div class="h-12 w-48 bg-slate-200 rounded-xl animate-pulse"></div>';
-  if(el('stat-promedio')) el('stat-promedio').innerHTML = '<div class="h-7 w-24 bg-slate-200 rounded animate-pulse"></div>';
-  if(el('chart-bars')) el('chart-bars').innerHTML = Array(6).fill('<div class="flex-1 flex flex-col items-center gap-2"><div class="bar w-full bg-slate-200 animate-pulse" style="height:60%;"></div><span class="text-[10px] text-slate-300">---</span></div>').join('');
-  if(el('txn-list')) el('txn-list').innerHTML = Array(3).fill(`
+  document.getElementById('hero-total').innerHTML = '<div class="h-12 w-48 bg-slate-200 rounded-xl animate-pulse"></div>';
+  document.getElementById('stat-promedio').innerHTML = '<div class="h-7 w-24 bg-slate-200 rounded animate-pulse"></div>';
+  document.getElementById('txn-list').innerHTML = Array(3).fill(`
     <div class="flex items-center justify-between p-5 border-b border-slate-50">
       <div class="flex items-center gap-4">
         <div class="w-14 h-14 rounded-2xl bg-slate-200 animate-pulse flex-shrink-0"></div>
         <div class="space-y-2"><div class="h-4 bg-slate-200 rounded animate-pulse w-32"></div><div class="h-3 bg-slate-200 rounded animate-pulse w-44"></div></div>
       </div>
-      <div class="space-y-2 text-right"><div class="h-5 bg-slate-200 rounded animate-pulse w-20 ml-auto"></div><div class="h-3 bg-slate-200 rounded animate-pulse w-16 ml-auto"></div></div>
+      <div class="space-y-2 text-right"><div class="h-5 bg-slate-200 rounded animate-pulse w-20 ml-auto"></div></div>
     </div>`).join('');
 }
 
 function renderChart(txns) {
   const el = document.getElementById('chart-bars');
   if(!el) return;
-  const now    = new Date();
+  const now = new Date();
   const months = [];
   for(let i=5;i>=0;i--) {
     const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
@@ -251,40 +238,45 @@ function renderChart(txns) {
     const m = months.find(m=>m.key===key);
     if(m) m.total += parseMonto(t['Monto Comisión']||t.monto);
   });
-  const maxVal = Math.max(...months.map(m=>m.total), 1);
+  const maxVal = Math.max(...months.map(m=>m.total),1);
   const curKey = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
   el.innerHTML = months.map(m => {
-    const pct  = Math.max((m.total/maxVal)*100, m.total>0?5:0);
-    const isCur= m.key===curKey;
-    const color= isCur ? '#285900' : '#d7e2ff';
-    const lbl  = isCur ? 'font-black text-[#0d1c2e]' : 'font-bold text-slate-400';
-    const tip  = m.total>0 ? '<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#0d1c2e] text-white text-[10px] py-1 px-2 rounded-lg font-bold whitespace-nowrap">$'+m.total.toLocaleString('es-MX')+'</div>' : '';
-    return '<div class="flex-1 flex flex-col items-center gap-2"><div class="relative w-full flex items-end" style="height:192px;"><div class="bar w-full relative group" style="height:'+pct+'%;background:'+color+';">'+tip+'</div></div><span class="text-[10px] '+lbl+'">'+m.label+'</span></div>';
+    const pct   = Math.max((m.total/maxVal)*100, m.total>0?5:2);
+    const isCur = m.key===curKey;
+    const color = isCur ? '#285900' : '#d7e2ff';
+    const lbl   = isCur ? 'font-black text-[#0d1c2e]' : 'font-bold text-slate-400';
+    const tip   = m.total>0
+      ? `<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-[#0d1c2e] text-white text-[10px] py-1 px-2 rounded-lg font-bold whitespace-nowrap">$${m.total.toLocaleString('es-MX')}</div>`
+      : '';
+    return `<div class="flex-1 flex flex-col items-center gap-2">
+      <div class="relative w-full flex items-end" style="height:192px;">
+        <div class="bar w-full relative" style="height:${pct}%;background:${color};">${tip}</div>
+      </div>
+      <span class="text-[10px] ${lbl}">${m.label}</span>
+    </div>`;
   }).join('');
 }
 
 function renderGanancias(txns) {
-  const el = id => document.getElementById(id);
-
   if(!txns||!txns.length) {
-    if(el('hero-total'))    el('hero-total').textContent    = '$0.00 MXN';
-    if(el('stat-promedio')) el('stat-promedio').textContent = '$0.00';
-    if(el('modal-total'))   el('modal-total').textContent   = '$0.00 MXN';
-    if(el('modal-clabe'))   el('modal-clabe').textContent   = user.clabe||'**** **** **** 0921';
-    if(el('nivel-label'))   el('nivel-label').textContent   = user.nivel||'Kinsurer Certificado';
+    document.getElementById('hero-total').textContent    = '$0.00 MXN';
+    document.getElementById('stat-promedio').textContent = '$0.00';
+    document.getElementById('modal-total').textContent   = '$0.00 MXN';
+    document.getElementById('modal-clabe').textContent   = user.clabe||'**** **** **** 0921';
+    document.getElementById('nivel-label').textContent   = user.nivel||'Kinsurer Certificado';
+    document.getElementById('nivel-comision').textContent= '—';
+    document.getElementById('txn-list').innerHTML = '<p class="text-center text-slate-400 py-8 text-sm">Aún no tienes transacciones registradas.</p>';
     return;
   }
 
-  // Totales — todos los estatus
   const total = txns.reduce((s,t)=>s+parseMonto(t['Monto Comisión']||t.monto),0);
   const avg   = total/txns.length;
 
-  if(el('hero-total'))    el('hero-total').textContent    = fmtMXN(total);
-  if(el('modal-total'))   el('modal-total').textContent   = fmtMXN(total);
-  if(el('modal-clabe'))   el('modal-clabe').textContent   = user.clabe||'**** **** **** 0921';
-  if(el('stat-promedio')) el('stat-promedio').textContent = '$'+avg.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2});
+  document.getElementById('hero-total').textContent    = fmtMXN(total);
+  document.getElementById('modal-total').textContent   = fmtMXN(total);
+  document.getElementById('modal-clabe').textContent   = user.clabe||'**** **** **** 0921';
+  document.getElementById('stat-promedio').textContent = '$'+avg.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2});
 
-  // Nivel desde sessionStorage
   const COMISIONES = {
     'Kinsurer Certificado':'$200 MXN fijos',
     'Kinsurer Pro':'15% comisión',
@@ -292,16 +284,16 @@ function renderGanancias(txns) {
     'Kinsurer Embajador':'25% + red',
   };
   const nivel = user.nivel||'Kinsurer Certificado';
-  if(el('nivel-label'))   el('nivel-label').textContent   = nivel;
-  if(el('nivel-comision'))el('nivel-comision').textContent= COMISIONES[nivel]||'—';
+  document.getElementById('nivel-label').textContent    = nivel;
+  document.getElementById('nivel-comision').textContent = COMISIONES[nivel]||'—';
 
-  // Gráfica
   renderChart(txns);
 
-  // Últimas 3 transacciones por fecha reciente
-  const sorted = [...txns].sort((a,b)=>new Date(b['Fecha Transacción']||b.fecha||0)-new Date(a['Fecha Transacción']||a.fecha||0)).slice(0,3);
+  const sorted = [...txns].sort((a,b)=>
+    new Date(b['Fecha Transacción']||b.fecha||0) - new Date(a['Fecha Transacción']||a.fecha||0)
+  ).slice(0,3);
 
-  if(el('txn-list')) el('txn-list').innerHTML = sorted.map((t,i)=>{
+  document.getElementById('txn-list').innerHTML = sorted.map((t,i) => {
     const tipo    = (t['Tipo Seguro']||t.tipo||'salud').toLowerCase();
     const folio   = t['Folio']||t.folio||'';
     const monto   = '+$'+parseMonto(t['Monto Comisión']||t.monto).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -310,8 +302,22 @@ function renderGanancias(txns) {
     const s       = TIPO_STYLE[tipo]||TIPO_STYLE.salud;
     const tipoCap = tipo.charAt(0).toUpperCase()+tipo.slice(1);
     const border  = i<2?'border-b border-slate-50':'';
-    const estatusClr = estatus==='Pagado'?'text-[#285900]':'text-[#993556]';
-    return '<div class="flex items-center justify-between p-5 lg:p-6 hover:bg-[#f1f3ff] transition-colors group '+border+'"><div class="flex items-center gap-4 lg:gap-5"><div class="w-12 h-12 lg:w-14 lg:h-14 rounded-2xl '+s.cls+' flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0"><span class="material-symbols-outlined text-2xl">'+s.icon+'</span></div><div><h5 class="font-bold text-[#0d1c2e]">Seguro de '+tipoCap+'</h5><p class="text-xs text-slate-400">'+folio+' · <span class="'+estatusClr+' font-semibold">'+estatus+'</span></p><p class="text-xs text-slate-400">'+fecha+'</p></div></div><div class="text-right"><p class="text-lg font-black text-[#285900]">'+monto+'</p></div></div>';
+    const eColor  = estatus==='Pagado'?'text-[#285900]':'text-[#993556]';
+    return `<div class="flex items-center justify-between p-5 lg:p-6 hover:bg-[#f1f3ff] transition-colors ${border}">
+      <div class="flex items-center gap-4 lg:gap-5">
+        <div class="w-12 h-12 lg:w-14 lg:h-14 rounded-2xl ${s.cls} flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined text-2xl">${s.icon}</span>
+        </div>
+        <div>
+          <h5 class="font-bold text-[#0d1c2e]">Seguro de ${tipoCap}</h5>
+          <p class="text-xs text-slate-400">${folio} · <span class="${eColor} font-semibold">${estatus}</span></p>
+          <p class="text-xs text-slate-400">${fecha}</p>
+        </div>
+      </div>
+      <div class="text-right">
+        <p class="text-lg font-black text-[#285900]">${monto}</p>
+      </div>
+    </div>`;
   }).join('');
 }
 
@@ -327,7 +333,7 @@ async function loadGanancias() {
 
 function openModal()  { document.getElementById('modal-overlay').classList.add('open'); }
 function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
-document.getElementById('modal-overlay').addEventListener('click', function(e){ if(e.target===this)closeModal(); });
+document.getElementById('modal-overlay').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
 
 loadGanancias();
 </script>
