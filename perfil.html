@@ -251,39 +251,45 @@
 <script src="kinsu-config.js"></script>
 <script src="kinsu-config.js"></script>
 <script>
-const user = JSON.parse(
-  sessionStorage.getItem('user') ||
-  '{"nombre":"Jimena Ríos","email":"kinsurer@kinsu.mx","initials":"JR","kinsurerID":"KIN-0001"}'
-);
+const userRaw = sessionStorage.getItem('user');
+if (!userRaw) { window.location.href = 'index.html'; }
+const user = JSON.parse(userRaw || '{}');
+// Verificar que tenemos kinsurerID válido
+if (!user.kinsurerID) { window.location.href = 'index.html'; }
 
 // Poblar inmediatamente desde sessionStorage
 const setEl = (id, val) => { const e=document.getElementById(id); if(e) e.textContent=val; };
 
-setEl('topbar-av',       user.initials||'JR');
-setEl('avatar-initials', user.initials||'JR');
-setEl('perfil-nombre',   user.nombre  ||'Jimena Ríos');
-setEl('perfil-email',    user.email   ||'kinsurer@kinsu.mx');
-setEl('perfil-clabe',    user.clabe   ||'**** **** **** 0921');
-setEl('perfil-banco',    user.banco   ||'BBVA México');
-setEl('perfil-tel',      user.tel     ||'+52 55 1234 5678');
-setEl('perfil-id',       'ID: '+(user.kinsurerID||'KIN-0001'));
+setEl('topbar-av',       user.initials||'');
+setEl('avatar-initials', user.initials||'');
+setEl('perfil-nombre',   user.nombre  ||'');
+setEl('perfil-email',    user.email   ||'');
+setEl('perfil-clabe',    user.clabe   ||'—');
+setEl('perfil-banco',    user.banco   ||'—');
+setEl('perfil-tel',      user.tel     ||'—');
+setEl('perfil-id',       'ID: '+(user.kinsurerID||''));
 
-const nivel = user.nivel||'Kinsurer Certificado';
+const nivel = user.nivel||'';
 setEl('topbar-nivel',  nivel.replace('Kinsurer ',''));
 setEl('header-nivel',  nivel);
 
 // ── Cargar datos frescos del sheet ──
 async function loadPerfil() {
   try {
+    console.log('[Perfil] Cargando para kinsurerID:', user.kinsurerID);
     const data = await KinsuAPI.getPerfil();
-    if(!data||data.error) return;
+    if(!data||data.error) {
+      console.warn('[Perfil] Error API:', data?.error);
+      return;
+    }
+    console.log('[Perfil] Datos recibidos para:', data['ID_Kinsurer'], data['Nombre Completo']);
 
     const nombre   = data['Nombre Completo'] || user.nombre;
     const email    = data['Email']            || user.email;
     const clabe    = data['CLABE Bancaria']   || user.clabe||'**** **** **** 0921';
     const banco    = data['Banco']            || user.banco||'BBVA México';
-    const nivelAPI = data['Nivel']            || user.nivel||'Kinsurer Certificado';
-    const id       = data['ID_Kinsurer']      || user.kinsurerID||'KIN-0001';
+    const nivelAPI = data['Nivel']            || user.nivel||'';
+    const id       = data['ID_Kinsurer']      || user.kinsurerID||'';
     const tel      = data['Tel']||data['Teléfono']||data['Telefono']||user.tel||'';
     const initials = nombre.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
 
@@ -330,8 +336,8 @@ function openModal() {
   const card    = document.getElementById('modal-card');
   const clabe   = document.getElementById('modal-clabe');
   const banco   = document.getElementById('modal-banco');
-  if(clabe) clabe.textContent = user.clabe || '**** **** **** 0921';
-  if(banco) banco.textContent = user.banco || 'BBVA México';
+  if(clabe) clabe.textContent = document.getElementById('perfil-clabe')?.textContent || user.clabe || '—';
+  if(banco) banco.textContent = document.getElementById('perfil-banco')?.textContent || user.banco || '—';
   overlay.style.opacity      = '1';
   overlay.style.pointerEvents= 'all';
   if(card) card.style.transform = 'translateY(0) scale(1)';
