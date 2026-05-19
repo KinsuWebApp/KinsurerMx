@@ -249,7 +249,7 @@
 </nav>
 
 <script src="kinsu-config.js"></script>
-<script src="kinsu-config.js"></script>
+
 <script>
 const userRaw = sessionStorage.getItem('user');
 if (!userRaw) { window.location.href = 'index.html'; }
@@ -316,7 +316,6 @@ async function loadPerfil() {
           return s + (parseFloat(String(raw).replace(/[$,MXN\s]/g,'')) || 0);
         }, 0);
         const saldoFmt = '$' + saldo.toLocaleString('es-MX',{minimumFractionDigits:2}) + ' MXN';
-         saldoFmt);
         // Actualizar modal
         const mc = document.getElementById('modal-saldo');
         if(mc) mc.textContent = saldoFmt;
