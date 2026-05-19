@@ -252,78 +252,67 @@
 </nav>
 
 <script src="kinsu-config.js"></script>
+<script src="kinsu-config.js"></script>
 <script>
-// ── Usuario desde sessionStorage (datos inmediatos) ──
 const user = JSON.parse(
   sessionStorage.getItem('user') ||
   '{"nombre":"Jimena Ríos","email":"kinsurer@kinsu.mx","initials":"JR","kinsurerID":"KIN-0001"}'
 );
 
-// Poblar con sessionStorage inmediatamente (sin esperar API)
-document.getElementById('topbar-av').textContent       = user.initials || 'JR';
-document.getElementById('avatar-initials').textContent = user.initials || 'JR';
-document.getElementById('perfil-nombre').textContent   = user.nombre   || 'Jimena Ríos';
-document.getElementById('perfil-email').textContent    = user.email    || 'kinsurer@kinsu.mx';
-document.getElementById('perfil-clabe').textContent    = user.clabe    || '**** **** **** 0921';
-document.getElementById('perfil-banco').textContent    = user.banco    || 'BBVA México';
-document.getElementById('perfil-tel').textContent      = user.tel      || '+52 55 1234 5678';
+// Poblar inmediatamente desde sessionStorage
+const setEl = (id, val) => { const e=document.getElementById(id); if(e) e.textContent=val; };
 
-const nivel = user.nivel || 'Kinsurer Certificado';
-const nivelCorto = nivel.replace('Kinsurer ','');
-document.getElementById('topbar-nivel').textContent = nivelCorto;
-document.getElementById('header-nivel').textContent = nivel;
+setEl('topbar-av',       user.initials||'JR');
+setEl('avatar-initials', user.initials||'JR');
+setEl('perfil-nombre',   user.nombre  ||'Jimena Ríos');
+setEl('perfil-email',    user.email   ||'kinsurer@kinsu.mx');
+setEl('perfil-clabe',    user.clabe   ||'**** **** **** 0921');
+setEl('perfil-banco',    user.banco   ||'BBVA México');
+setEl('perfil-tel',      user.tel     ||'+52 55 1234 5678');
+setEl('perfil-id',       'ID: '+(user.kinsurerID||'KIN-0001'));
 
-// ID desde kinsurerID real
-document.getElementById('perfil-id').textContent = 'ID: ' + (user.kinsurerID || 'KIN-0001');
+const nivel = user.nivel||'Kinsurer Certificado';
+setEl('topbar-nivel',  nivel.replace('Kinsurer ',''));
+setEl('header-nivel',  nivel);
 
 // ── Cargar datos frescos del sheet ──
 async function loadPerfil() {
   try {
     const data = await KinsuAPI.getPerfil();
-    if (!data || data.error) return;
+    if(!data||data.error) return;
 
-    // Actualizar con datos reales del sheet
     const nombre   = data['Nombre Completo'] || user.nombre;
     const email    = data['Email']            || user.email;
-    const clabe    = data['CLABE Bancaria']   || user.clabe || '**** **** **** 0921';
-    const banco    = data['Banco']            || user.banco || 'BBVA México';
-    const nivelAPI = data['Nivel']            || user.nivel || 'Kinsurer Certificado';
-    const id       = data['ID_Kinsurer']      || user.kinsurerID || 'KIN-0001';
-    const polizas  = data['Pólizas Emitidas'] || 0;
-    const tel      = data['Tel'] || data['Teléfono'] || data['Telefono'] || user.tel || '';
-
+    const clabe    = data['CLABE Bancaria']   || user.clabe||'**** **** **** 0921';
+    const banco    = data['Banco']            || user.banco||'BBVA México';
+    const nivelAPI = data['Nivel']            || user.nivel||'Kinsurer Certificado';
+    const id       = data['ID_Kinsurer']      || user.kinsurerID||'KIN-0001';
+    const tel      = data['Tel']||data['Teléfono']||data['Telefono']||user.tel||'';
     const initials = nombre.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
 
-    // Actualizar UI
-    document.getElementById('avatar-initials').textContent = initials;
-    document.getElementById('topbar-av').textContent       = initials;
-    document.getElementById('perfil-nombre').textContent   = nombre;
-    document.getElementById('perfil-email').textContent    = email;
-    document.getElementById('perfil-clabe').textContent    = clabe;
-    document.getElementById('perfil-banco').textContent    = banco;
-    document.getElementById('perfil-id').textContent       = 'ID: ' + id;
-    document.getElementById('topbar-nivel').textContent    = nivelAPI.replace('Kinsurer ','');
-    document.getElementById('header-nivel').textContent    = nivelAPI;
-    if (tel) document.getElementById('perfil-tel').textContent = tel;
+    setEl('avatar-initials', initials);
+    setEl('topbar-av',       initials);
+    setEl('perfil-nombre',   nombre);
+    setEl('perfil-email',    email);
+    setEl('perfil-clabe',    clabe);
+    setEl('perfil-banco',    banco);
+    setEl('perfil-id',       'ID: '+id);
+    setEl('topbar-nivel',    nivelAPI.replace('Kinsurer ',''));
+    setEl('header-nivel',    nivelAPI);
+    if(tel) setEl('perfil-tel', tel);
 
-    // Calcular saldo desde ganancias
+    // Saldo desde ganancias
     const ganData = await KinsuAPI.getGanancias();
-    if (ganData?.total) {
-      document.getElementById('perfil-saldo').textContent = ganData.total;
-    }
+    if(ganData?.total) setEl('perfil-saldo', ganData.total);
 
-    // Actualizar sessionStorage con datos frescos del sheet
+    // Actualizar sessionStorage
     sessionStorage.setItem('user', JSON.stringify({
       ...user, nombre, email, initials, clabe, banco,
-      nivel: nivelAPI, kinsurerID: id, tel
+      nivel:nivelAPI, kinsurerID:id, tel
     }));
-
-  } catch(e) {
-    console.warn('Error cargando perfil:', e);
-  }
+  } catch(e) { console.warn('Error cargando perfil:', e); }
 }
 
-// ── Cerrar sesión ──
 function doLogout() {
   sessionStorage.clear();
   window.location.href = 'index.html';

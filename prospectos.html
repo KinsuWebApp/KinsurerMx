@@ -161,12 +161,11 @@
   </a>
 </nav>
 
+<script src="kinsu-config.js"></script>
 <script>
-// ── Usuario ──
 const user = JSON.parse(sessionStorage.getItem('user') || '{"nombre":"Jimena Ríos","initials":"JR"}');
 document.getElementById('topbar-av').textContent = user.initials || 'JR';
 
-// ── Datos de prospectos ──
 const BADGE = {
   'Enviado':       { bg:'#e8f0fe', color:'#1565c0' },
   'En Cotización': { bg:'#eeedfe', color:'#534ab7' },
@@ -176,44 +175,46 @@ const BADGE = {
   'Cancelado':     { bg:'#f1efe8', color:'#888780' },
 };
 
-const TIPO_ICON = { salud:'health_and_safety', auto:'directions_car', viaje:'flight' };
-
-let PROSPECTOS = [
-  { id:1, initials:'JL', nombre:'Juan López',    tipo:'auto',  folio:'#A20240001', estatus:'En Emisión',    fecha:'Hoy' },
-  { id:2, initials:'AP', nombre:'Ana Pérez',     tipo:'salud', folio:'#S20240002', estatus:'En Cotización', fecha:'Hace 3 días' },
-  { id:3, initials:'CR', nombre:'Carlos Ríos',   tipo:'viaje', folio:'#V20240003', estatus:'Enviado',       fecha:'Hace 5 días' },
-  { id:4, initials:'MG', nombre:'María García',  tipo:'salud', folio:'#S20240004', estatus:'En Cobranza',   fecha:'Hace 1 sem' },
-  { id:5, initials:'RV', nombre:'Roberto Vega',  tipo:'auto',  folio:'#A20240005', estatus:'Completado',    fecha:'Hace 2 sem' },
-  { id:6, initials:'LM', nombre:'Laura Méndez',  tipo:'viaje', folio:'#V20240006', estatus:'Cancelado',     fecha:'Hace 3 sem' },
-];
-
-// Verificar si viene con ?success=true (desde chat-de-registro)
-const params = new URLSearchParams(location.search);
-if (params.get('success') === 'true') {
-  const p = JSON.parse(sessionStorage.getItem('prospecto') || '{}');
-  if (p.nombre) {
-    const ini = p.nombre.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
-    PROSPECTOS.unshift({
-      id:0, initials:ini, nombre:p.nombre,
-      tipo:p.tipo||'salud', folio:`#${p.folio||'NEW'}`,
-      estatus:'Enviado', fecha:'Ahora'
-    });
-    showToast(`✓ ${p.nombre} registrado correctamente`);
-  }
-}
-
-// ── Render ──
+let PROSPECTOS = [];
 let currentFilter = 'todos';
 let searchVal = '';
 
+// ── Skeleton ──
+function showSkeleton() {
+  const lista = document.getElementById('lista-prospectos');
+  lista.innerHTML = Array(4).fill(`
+    <div class="bg-white rounded-2xl border border-slate-100 p-5 flex items-center gap-4">
+      <div class="w-12 h-12 rounded-full bg-slate-200 animate-pulse flex-shrink-0"></div>
+      <div class="flex-1 space-y-2">
+        <div class="h-4 bg-slate-200 rounded animate-pulse w-3/4"></div>
+        <div class="h-3 bg-slate-200 rounded animate-pulse w-1/2"></div>
+      </div>
+      <div class="h-6 w-24 bg-slate-200 rounded-full animate-pulse"></div>
+    </div>`).join('');
+}
+
+// ── Normalizar prospecto del sheet ──
+function norm(p) {
+  const nombre  = p['Nombre Prospecto'] || p.nombre  || 'Prospecto';
+  const tipo    = (p['Tipo Seguro']     || p.tipo    || 'salud').toLowerCase();
+  const folio   = p['Folio']            || p.folio   || '';
+  const estatus = p['Estatus']          || p.estatus || 'Enviado';
+  const fecha   = p['Fecha Registro']   || p.fecha   || '';
+  const initials= nombre.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+  const fechaFmt= fecha ? new Date(fecha).toLocaleDateString('es-MX',{day:'numeric',month:'short'}) : '';
+  return { nombre, tipo, folio, estatus, fecha:fechaFmt, initials };
+}
+
+// ── Render lista ──
 function renderProspectos() {
   const lista = document.getElementById('lista-prospectos');
   const empty = document.getElementById('empty-state');
-  const q = searchVal.toLowerCase();
+  const q     = searchVal.toLowerCase();
 
-  let filtered = PROSPECTOS.filter(p => {
+  let filtered = PROSPECTOS.map(norm).filter(p => {
     const matchFilter = currentFilter === 'todos' || p.estatus === currentFilter;
-    const matchSearch = !q || p.nombre.toLowerCase().includes(q) || p.tipo.toLowerCase().includes(q) || p.folio.toLowerCase().includes(q);
+    const matchSearch = !q || p.nombre.toLowerCase().includes(q)
+      || p.tipo.toLowerCase().includes(q) || p.folio.toLowerCase().includes(q);
     return matchFilter && matchSearch;
   });
 
@@ -226,52 +227,44 @@ function renderProspectos() {
 
   lista.innerHTML = filtered.map(p => {
     const badge = BADGE[p.estatus] || { bg:'#e8f0fe', color:'#1565c0' };
-    const icon  = TIPO_ICON[p.tipo] || 'shield';
-    const tipoCap = p.tipo.charAt(0).toUpperCase() + p.tipo.slice(1);
     return `
-    <a href="detalle-prospecto.html"
+    <a href="detalle-prospecto.html?folio=${p.folio}"
       class="block bg-white rounded-2xl border border-slate-100 p-5 flex items-center justify-between
              hover:shadow-md hover:translate-x-1 transition-all group cursor-pointer">
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-4 min-w-0">
         <div class="w-12 h-12 rounded-full bg-[#e8f0fe] flex items-center justify-center font-bold text-[#1565c0] text-sm flex-shrink-0">
           ${p.initials}
         </div>
-        <div>
-          <h3 class="font-bold text-[#0d1c2e] text-base">${p.nombre}</h3>
-          <div class="flex items-center gap-1 mt-0.5">
-            <span class="material-symbols-outlined text-[14px] text-slate-400">${icon}</span>
-            <p class="text-xs text-slate-400 font-medium">${tipoCap} · ${p.folio}</p>
-          </div>
+        <div class="min-w-0">
+          <h3 class="font-bold text-[#0d1c2e] text-base truncate">${p.nombre}</h3>
+          <p class="text-xs text-slate-400 font-medium">Salud · #${p.folio} ${p.fecha ? '· ' + p.fecha : ''}</p>
         </div>
       </div>
-      <div class="flex items-center gap-4">
-        <span class="hidden lg:block text-xs font-bold text-slate-400 uppercase tracking-wide">${p.fecha}</span>
-        <span class="px-3 py-1.5 rounded-full text-[11px] font-bold whitespace-nowrap"
-          style="background:${badge.bg};color:${badge.color};">
-          ${p.estatus}
-        </span>
+      <div class="flex items-center gap-3 flex-shrink-0 ml-2">
+        <span class="px-3 py-1.5 rounded-full text-[11px] font-bold whitespace-nowrap hidden sm:block"
+          style="background:${badge.bg};color:${badge.color};">${p.estatus}</span>
         <span class="material-symbols-outlined text-slate-300 group-hover:text-[#1565c0] transition-colors">chevron_right</span>
       </div>
     </a>`;
   }).join('');
 
   // Stats
-  document.getElementById('stat-total').textContent       = PROSPECTOS.length;
-  document.getElementById('stat-proceso').textContent     = PROSPECTOS.filter(p => !['Completado','Cancelado'].includes(p.estatus)).length;
-  document.getElementById('stat-completados').textContent = PROSPECTOS.filter(p => p.estatus === 'Completado').length;
+  const all = PROSPECTOS.map(norm);
+  const el = id => document.getElementById(id);
+  if(el('stat-total'))       el('stat-total').textContent       = all.length;
+  if(el('stat-proceso'))     el('stat-proceso').textContent     = all.filter(p=>!['Completado','Cancelado'].includes(p.estatus)).length;
+  if(el('stat-completados')) el('stat-completados').textContent = all.filter(p=>p.estatus==='Completado').length;
 }
 
 // ── Filtros ──
 function setFilter(val, btn) {
   currentFilter = val;
   document.querySelectorAll('.chip-filter').forEach(c => {
-    c.classList.remove('active-chip');
     c.style.background = '#d7e2ff';
-    c.style.color = '#8899bb';
+    c.style.color      = '#8899bb';
   });
-  btn.classList.add('active-chip');
   btn.style.background = '#1565c0';
-  btn.style.color = '#fff';
+  btn.style.color      = '#fff';
   renderProspectos();
 }
 
@@ -280,19 +273,40 @@ function filterProspectos() {
   renderProspectos();
 }
 
-// Init chip activo
-document.querySelector('.chip-filter.active-chip').style.cssText = 'background:#1565c0;color:#fff;';
-
 // ── Toast ──
 function showToast(msg) {
   const t = document.getElementById('toast');
   document.getElementById('toast-msg').textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3500);
+  t.style.opacity = '1';
+  t.style.transform = 'translateY(0)';
+  setTimeout(() => { t.style.opacity='0'; t.style.transform='translateY(20px)'; }, 3500);
 }
 
-// ── Init ──
-renderProspectos();
+// ── Cargar desde API ──
+async function loadProspectos() {
+  showSkeleton();
+  try {
+    const data = await KinsuAPI.getProspectos();
+    PROSPECTOS = Array.isArray(data) && data.length ? data : [];
+  } catch(e) {
+    PROSPECTOS = [];
+  }
+
+  // Prospecto nuevo desde sessionStorage
+  const params = new URLSearchParams(location.search);
+  if (params.get('success') === 'true') {
+    const p = JSON.parse(sessionStorage.getItem('prospecto') || 'null');
+    if (p?.nombre) showToast(`✓ ${p.nombre} registrado`);
+  }
+
+  // Activar chip inicial
+  const activeChip = document.querySelector('.chip-filter');
+  if(activeChip) { activeChip.style.background='#1565c0'; activeChip.style.color='#fff'; }
+
+  renderProspectos();
+}
+
+loadProspectos();
 </script>
 </body>
 </html>

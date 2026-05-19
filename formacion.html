@@ -3,189 +3,224 @@
 <head>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>Kinsu - Formación</title>
+<title>Kinsu - Formación con Ana</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <style>
-  body { font-family:'Inter',sans-serif; background:#f9f9ff; }
+  body { font-family:'Inter',sans-serif; background:#eef2f9; }
   .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
-  .filled { font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24; }
-  @keyframes float {
-    0%,100% { transform: translateY(0); }
-    50%     { transform: translateY(-8px); }
-  }
-  @keyframes orbit {
-    from { transform: rotate(0deg); }
-    to   { transform: rotate(360deg); }
-  }
-  @keyframes grow {
-    from { width: 0%; }
-  }
-  .pulse-dot { animation: pulse-ring 2s infinite; }
-  @keyframes pulse-ring {
-    0%  { box-shadow: 0 0 0 0 rgba(21,101,192,0.4); }
-    70% { box-shadow: 0 0 0 8px rgba(21,101,192,0); }
-    100%{ box-shadow: 0 0 0 0 rgba(21,101,192,0); }
-  }
-
-  @keyframes pulse-ring {
-    0%   { box-shadow: 0 0 0 0 rgba(21,101,192,0.4); }
-    70%  { box-shadow: 0 0 0 12px rgba(21,101,192,0); }
-    100% { box-shadow: 0 0 0 0 rgba(21,101,192,0); }
-  }
-  .pulse { animation: pulse-ring 2s infinite; }
+  .ana-bubble  { border-radius:16px 16px 16px 4px; }
+  .user-bubble { border-radius:16px 16px 4px 16px; }
+  .no-scrollbar::-webkit-scrollbar{display:none}
+  .no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+  .dot{width:6px;height:6px;border-radius:50%;background:#1565c0;display:inline-block;animation:blink 1.2s infinite}
+  .dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+  @keyframes blink{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
+  .qr-chip{flex-shrink:0;padding:8px 18px;border-radius:99px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
+  .qr-primary{background:#1565c0;color:#fff}.qr-primary:hover{background:#1255a8}
+  .qr-secondary{background:#fff;color:#1565c0;border:1.5px solid rgba(21,101,192,.2)}.qr-secondary:hover{background:#e8f0fe}
 </style>
 </head>
+<body class="min-h-screen flex flex-col">
 
-<body class="min-h-screen text-[#0d1c2e]">
-
-<!-- Sidebar Desktop -->
-<aside class="fixed left-0 top-0 h-screen w-[200px] hidden lg:flex flex-col bg-[#f8fafc] border-r border-slate-200 z-50">
-  <div class="px-6 py-8">
-    <div class="text-[24px] font-[900] text-[#1d4ed8] leading-none">Kinsu</div>
-    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-1">DASHBOARD</div>
-  </div>
-  <nav class="flex-1">
-    <a href="dashboard.html"       class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">home</span>Inicio</a>
-    <a href="prospectos.html"      class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">group</span>Prospectos</a>
-    <a href="formacion.html"       class="flex items-center gap-3 px-4 py-3 text-blue-700 border-l-4 border-blue-700 bg-blue-50/50 font-semibold text-sm"><span class="material-symbols-outlined filled">school</span>Formación</a>
-    <a href="nuevo-prospecto.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">add_box</span>Nuevo</a>
-    <a href="ganancias.html"       class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">payments</span>Ganancias</a>
-    <a href="perfil.html"          class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">person</span>Perfil</a>
-  </nav>
-</aside>
-
-<!-- Topbar -->
-<header class="fixed top-0 right-0 left-0 lg:left-[200px] h-16 bg-white/85 backdrop-blur-md flex items-center justify-between px-6 z-40 shadow-sm">
-  <div class="flex items-center gap-3">
-    <span class="lg:hidden text-xl font-black text-[#1d4ed8]">Kinsu</span>
-    <h1 class="hidden lg:block text-base font-bold text-slate-800">Centro de Formación</h1>
-  </div>
-  <div class="flex items-center gap-3">
-    <button class="text-slate-500 hover:text-blue-600 transition-colors">
-      <span class="material-symbols-outlined">notifications</span>
-    </button>
-    <button onclick="window.location.href='perfil.html'"
-      class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-700 text-xs"
-      id="topbar-av">JR</button>
+<!-- TOPBAR -->
+<header class="bg-white/90 backdrop-blur-md fixed top-0 w-full z-50 border-b border-[#e8f0fe]">
+  <div class="flex items-center justify-between px-4 h-16 max-w-2xl mx-auto">
+    <div class="flex items-center gap-3">
+      <button onclick="window.location.href='dashboard.html'" class="text-[#1565c0] hover:bg-slate-100 p-2 rounded-full transition-all">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </button>
+      <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 relative"
+        style="background:linear-gradient(135deg,#1565c0 0%,#82d14b 100%);">
+        <span class="text-white font-black text-base">A</span>
+        <div class="absolute bottom-0 right-0 w-3 h-3 bg-[#82d14b] border-2 border-white rounded-full"></div>
+      </div>
+      <div>
+        <p class="text-[13px] font-bold text-[#0d1c2e]">Ana de Kinsu</p>
+        <div class="flex items-center gap-1">
+          <span class="w-1.5 h-1.5 bg-[#82d14b] rounded-full"></span>
+          <span class="text-[10px] text-slate-500 font-medium uppercase tracking-wider">Tu guía personal</span>
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="px-3 py-1 bg-[#d4f0a0] text-[#1a3a0a] rounded-full text-[10px] font-bold uppercase tracking-wider" id="nivel-badge">Certificado</span>
+    </div>
   </div>
 </header>
 
-<!-- Main -->
-<main class="pt-16 pb-28 lg:pl-[200px] min-h-screen flex flex-col">
+<!-- CHAT -->
+<main class="flex-1 w-full max-w-2xl mx-auto pt-20 pb-44 px-4 flex flex-col gap-4 no-scrollbar overflow-y-auto" id="chat-area"></main>
 
-  <!-- Hero header -->
-  <div style="background:linear-gradient(135deg,#0d1c2e 0%,#1565c0 100%);" class="px-6 lg:px-12 py-10">
-    <div class="max-w-5xl mx-auto">
-      <p class="text-[11px] font-black uppercase tracking-[.18em] text-white/60 mb-2">Formación potenciada con IA</p>
-      <h1 class="text-3xl lg:text-5xl font-black text-white tracking-tighter leading-none mb-3">Tu camino Kinsu</h1>
-      <p class="text-white/70 text-base max-w-md">Completa misiones, sube de nivel y aumenta tus comisiones.</p>
+<!-- QUICK REPLIES -->
+<div class="fixed w-full max-w-2xl left-1/2 -translate-x-1/2 px-4 z-40" id="qr-container" style="bottom:100px;"></div>
+
+<!-- INPUT -->
+<div class="fixed bottom-0 left-0 w-full z-50">
+  <div class="max-w-2xl mx-auto px-4 pb-6 pt-2">
+    <div class="bg-white/90 backdrop-blur-xl rounded-3xl p-2 shadow-lg flex items-center gap-2 border border-white">
+      <input id="chat-input" type="text" placeholder="Escribe tu pregunta a Ana..."
+        class="flex-1 bg-transparent border-none focus:ring-0 text-[14px] text-[#0d1c2e] placeholder:text-slate-400 px-2 outline-none">
+      <button onclick="sendMsg()" id="send-btn"
+        class="w-10 h-10 bg-[#1565c0] text-white rounded-full flex items-center justify-center shadow active:scale-90 transition-transform flex-shrink-0">
+        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">arrow_upward</span>
+      </button>
     </div>
   </div>
+</div>
 
-  <!-- Under construction -->
-  <div class="flex-1 flex items-center justify-center px-6 py-16">
-    <div class="max-w-lg w-full text-center">
-
-      <!-- Animated icon -->
-      <div class="relative w-32 h-32 mx-auto mb-8">
-        <div class="w-32 h-32 rounded-3xl flex items-center justify-center"
-          style="background:linear-gradient(135deg,#e8f0fe 0%,#d4f0a0 100%);">
-          <span class="material-symbols-outlined text-[56px] text-[#1565c0]"
-            style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;animation:float 3s ease-in-out infinite;">
-            construction
-          </span>
-        </div>
-        <!-- Orbiting dot -->
-        <div class="absolute inset-0" style="animation:orbit 4s linear infinite;">
-          <div class="w-4 h-4 bg-[#82d14b] rounded-full absolute -top-2 left-1/2 -translate-x-1/2 shadow-lg"></div>
-        </div>
-      </div>
-
-      <h2 class="text-3xl font-black text-[#0d1c2e] tracking-tight mb-3">En construcción</h2>
-      <p class="text-slate-500 text-base leading-relaxed mb-8 max-w-sm mx-auto">
-        Estamos construyendo algo increíble para ti. El sistema de formación y misiones de Kinsu estará listo muy pronto.
-      </p>
-
-      <!-- Progress bar -->
-      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 mb-6 text-left">
-        <div class="flex items-center justify-between mb-3">
-          <span class="text-sm font-bold text-[#0d1c2e]">Progreso de desarrollo</span>
-          <span class="text-sm font-black text-[#1565c0]">72%</span>
-        </div>
-        <div class="w-full bg-[#f1f3ff] rounded-full h-2.5 overflow-hidden">
-          <div class="h-full bg-gradient-to-r from-[#1565c0] to-[#82d14b] rounded-full"
-            style="width:72%;animation:grow 1.5s ease-out forwards;"></div>
-        </div>
-        <div class="grid grid-cols-3 gap-3 mt-5">
-          <div class="text-center">
-            <div class="w-8 h-8 bg-[#d4f0a0] rounded-full flex items-center justify-center mx-auto mb-1">
-              <span class="material-symbols-outlined text-[#1a3a0a] text-[16px]" style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">check</span>
-            </div>
-            <p class="text-[10px] font-bold text-[#1a3a0a]">Diseño</p>
-          </div>
-          <div class="text-center">
-            <div class="w-8 h-8 bg-[#d4f0a0] rounded-full flex items-center justify-center mx-auto mb-1">
-              <span class="material-symbols-outlined text-[#1a3a0a] text-[16px]" style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">check</span>
-            </div>
-            <p class="text-[10px] font-bold text-[#1a3a0a]">Ana IA</p>
-          </div>
-          <div class="text-center">
-            <div class="w-8 h-8 bg-[#e8f0fe] rounded-full flex items-center justify-center mx-auto mb-1 pulse-dot">
-              <span class="material-symbols-outlined text-[#1565c0] text-[16px]">settings</span>
-            </div>
-            <p class="text-[10px] font-bold text-[#1565c0]">Misiones</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- CTA -->
-      <a href="chat-ana.html"
-        class="inline-flex items-center gap-3 px-8 py-4 bg-[#0d1c2e] text-white rounded-2xl
-               font-bold text-sm hover:bg-[#1565c0] active:scale-95 transition-all shadow-lg">
-        <div class="w-8 h-8 rounded-full flex items-center justify-center"
-          style="background:linear-gradient(135deg,#1565c0,#82d14b);">
-          <span class="text-white font-black text-sm">A</span>
-        </div>
-        Mientras tanto, habla con Ana
-      </a>
-      <p class="text-xs text-slate-400 mt-3">Ana puede responder todas tus dudas sobre Kinsu</p>
-
-    </div>
-  </div>
-
-</main>
-
-<!-- Bottom Nav Mobile -->
-<nav class="lg:hidden fixed bottom-0 left-0 w-full h-16 bg-white/85 backdrop-blur-xl flex justify-around items-center px-2 z-50 border-t border-slate-100 shadow-sm rounded-t-2xl">
-  <a href="dashboard.html" class="flex flex-col items-center justify-center text-slate-400">
-    <span class="material-symbols-outlined">home</span>
-    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Inicio</span>
-  </a>
-  <a href="prospectos.html" class="flex flex-col items-center justify-center text-slate-400">
-    <span class="material-symbols-outlined">group</span>
-    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Prospectos</span>
-  </a>
-  <div class="flex flex-col items-center -mt-8">
-    <a href="nuevo-prospecto.html"
-      class="w-14 h-14 bg-[#1565c0] text-white rounded-xl shadow-lg flex items-center justify-center active:scale-95 transition-transform">
-      <span class="material-symbols-outlined text-3xl">add</span>
-    </a>
-  </div>
-  <a href="ganancias.html" class="flex flex-col items-center justify-center text-slate-400">
-    <span class="material-symbols-outlined">payments</span>
-    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Ganancias</span>
-  </a>
-  <a href="perfil.html" class="flex flex-col items-center justify-center text-slate-400">
-    <span class="material-symbols-outlined">person</span>
-    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Perfil</span>
-  </a>
-</nav>
-
+<script src="kinsu-config.js"></script>
 <script>
-const user = JSON.parse(sessionStorage.getItem('user') || '{"initials":"JR"}');
-document.getElementById('topbar-av').textContent = user.initials || 'JR';
+const user = JSON.parse(sessionStorage.getItem('user') || '{"nombre":"Kinsurer","nivel":"Kinsurer Certificado","kinsurerID":"KIN-0001"}');
+const userName = user.nombre?.split(' ')[0] || 'Kinsurer';
+const nivel    = user.nivel || 'Kinsurer Certificado';
+
+document.getElementById('nivel-badge').textContent = nivel.replace('Kinsurer ','');
+
+let history = [];
+let busy    = false;
+
+const ANA_SYSTEM = `Eres Ana de Kinsu, la guía personal de formación y soporte para Kinsurers en México.
+
+SOBRE KINSU:
+- Kinsu es una plataforma donde personas normales (Kinsurers) refieren prospectos para seguros de Salud (Gastos Médicos Mayores) y ganan comisiones.
+- El proceso: Kinsurer registra un prospecto → Kinsu contacta al prospecto → Si compra, el Kinsurer gana su comisión.
+- Solo se trabaja con Seguro de Salud (GMM).
+- Comisión: $200 MXN fijos (Certificado), 15% (Pro), 20% (Elite), 25%+red (Embajador).
+
+NIVELES KINSURER:
+- Nuevo (0 pólizas): Sin comisión, necesita completar formación
+- Certificado (1-4 pólizas): $200 MXN fijos
+- Pro (5-14 pólizas): 15%
+- Elite (15-29 pólizas): 20%
+- Embajador (30+): 25% + bono de red
+
+EL KINSURER ACTUAL se llama ${userName} y está en nivel ${nivel}.
+
+TU ROL:
+1. Guía de formación: explica cómo funciona Kinsu, el seguro de salud, cómo hacer el pitch, cómo manejar objeciones.
+2. Soporte personal: responde cualquier duda sobre el proceso, comisiones, prospectos, niveles.
+3. Coach de ventas: ayuda a ${userName} a mejorar su tasa de conversión con consejos prácticos.
+4. Motivadora: celebra sus logros y lo impulsa a crecer.
+
+PERSONALIDAD: Cálida, directa, experta. Usa ejemplos del mercado mexicano. Respuestas cortas (máx 4 oraciones). Usa emojis con moderación.
+Responde SIEMPRE en español mexicano.`;
+
+// UI
+function scrollDown() { setTimeout(()=>{ const a=document.getElementById('chat-area'); a.scrollTo({top:a.scrollHeight,behavior:'smooth'}); },80); }
+
+function addBubble(text, side='ana') {
+  const area = document.getElementById('chat-area');
+  const html = text.replace(/\n/g,'<br>').replace(/\*(.*?)\*/g,'<strong>$1</strong>');
+  if(side==='ana') {
+    area.innerHTML += `<div class="flex items-end gap-2 max-w-[88%]">
+      <div class="w-8 h-8 rounded-full flex-shrink-0 self-start mt-1 flex items-center justify-center" style="background:linear-gradient(135deg,#1565c0 0%,#82d14b 100%);">
+        <span class="text-white font-bold text-[11px]">A</span>
+      </div>
+      <div class="bg-white ana-bubble border border-[#b5d4f4] px-4 py-3 text-[14px] text-[#0d1c2e] leading-relaxed shadow-sm">${html}</div>
+    </div>`;
+  } else {
+    area.innerHTML += `<div class="flex justify-end">
+      <div class="bg-[#1565c0] text-white px-4 py-3 text-[14px] leading-relaxed max-w-[80%] user-bubble">${html}</div>
+    </div>`;
+  }
+  scrollDown();
+}
+
+function showTyping() {
+  document.getElementById('chat-area').innerHTML += `<div class="flex items-end gap-2" id="typing-ind">
+    <div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center" style="background:rgba(21,101,192,.15);">
+      <span class="text-[#1565c0] font-bold text-[11px]">A</span>
+    </div>
+    <div class="bg-white px-4 py-3 shadow-sm border border-[#b5d4f4]/40 ana-bubble">
+      <div style="display:flex;gap:4px;align-items:center;"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+    </div>
+  </div>`;
+  scrollDown();
+}
+
+function removeTyping() { document.getElementById('typing-ind')?.remove(); }
+
+function setQR(replies) {
+  const c = document.getElementById('qr-container');
+  if(!replies?.length) { c.innerHTML=''; return; }
+  c.innerHTML = `<div class="flex gap-2 overflow-x-auto no-scrollbar py-2">${replies.map((r,i)=>`<button class="qr-chip ${i===0?'qr-primary':'qr-secondary'}" onclick="onQR('${r.replace(/'/g,"\\'")}')">${r}</button>`).join('')}</div>`;
+}
+
+function setDisabled(v) {
+  document.getElementById('chat-input').disabled = v;
+  document.getElementById('send-btn').disabled   = v;
+}
+
+// ── Llamar a Ana ──
+async function callAna(msg) {
+  setDisabled(true);
+  document.getElementById('qr-container').innerHTML='';
+  showTyping();
+  history.push({ role:'user', content:msg });
+
+  try {
+    const res  = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:600,
+        system: ANA_SYSTEM,
+        messages: history
+      })
+    });
+    const data  = await res.json();
+    const reply = data.content?.[0]?.text || 'Lo siento, hubo un error. Intenta de nuevo.';
+
+    removeTyping();
+    history.push({ role:'assistant', content:reply });
+    addBubble(reply);
+
+    // Quick replies contextuales
+    if(reply.toLowerCase().includes('prospecto')||reply.toLowerCase().includes('referido')) {
+      setQR(['¿Cómo hago el pitch?','¿Qué objeciones son comunes?','¿Cómo hago seguimiento?']);
+    } else if(reply.toLowerCase().includes('comisión')||reply.toLowerCase().includes('nivel')) {
+      setQR(['¿Cuándo me pagan?','¿Cómo subo de nivel?','Ver mis ganancias']);
+    } else if(reply.toLowerCase().includes('salud')||reply.toLowerCase().includes('seguro')) {
+      setQR(['¿Qué cubre el seguro?','¿Qué son preexistencias?','¿Cuánto cuesta?']);
+    } else {
+      setQR(['Tengo otra duda','Ayúdame a conseguir prospectos','¿Cómo mejoro?']);
+    }
+
+  } catch(e) {
+    removeTyping();
+    addBubble('Tuve un problema de conexión. ¿Puedes intentarlo de nuevo? 🙏');
+    setQR(['Intentar de nuevo']);
+  } finally {
+    setDisabled(false);
+  }
+}
+
+function sendMsg() {
+  const inp = document.getElementById('chat-input');
+  const val = inp.value.trim();
+  if(!val||busy) return;
+  inp.value = '';
+  addBubble(val,'user');
+  callAna(val);
+}
+
+function onQR(val) {
+  if(val==='Ver mis ganancias') { window.location.href='ganancias.html'; return; }
+  document.getElementById('chat-input').value='';
+  document.getElementById('qr-container').innerHTML='';
+  addBubble(val,'user');
+  callAna(val);
+}
+
+document.getElementById('chat-input').addEventListener('keydown', e=>{ if(e.key==='Enter') sendMsg(); });
+
+// ── Inicio ──
+setTimeout(() => {
+  callAna(`Hola Ana, soy ${userName}. Estoy en nivel ${nivel}. ¿Puedes ayudarme a entender cómo avanzar y ganar más comisiones con Kinsu?`);
+}, 500);
 </script>
 </body>
 </html>
