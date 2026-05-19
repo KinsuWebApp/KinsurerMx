@@ -40,21 +40,23 @@
         <p class="text-[13px] font-bold text-[#0d1c2e]">Ana · Nuevo Prospecto</p>
         <div class="flex items-center gap-1">
           <span class="w-1.5 h-1.5 bg-[#82d14b] rounded-full"></span>
-          <span class="text-[10px] text-slate-500 font-medium uppercase tracking-wider">En línea</span>
+          <span class="text-[10px] text-slate-500 font-medium">En línea</span>
         </div>
       </div>
     </div>
-    <span class="px-3 py-1 bg-[#e8f0fe] text-[#1565c0] rounded-full text-[10px] font-bold uppercase tracking-wider">Seguro de Salud</span>
+    <span class="px-3 py-1 bg-[#e8f0fe] text-[#1565c0] rounded-full text-[10px] font-bold uppercase tracking-wider">
+      Seguro de Salud
+    </span>
   </div>
 </header>
 
-<!-- CHAT AREA -->
+<!-- CHAT -->
 <main class="flex-1 w-full max-w-2xl mx-auto pt-20 pb-44 px-4 flex flex-col gap-4 no-scrollbar overflow-y-auto" id="chat-area"></main>
 
 <!-- QUICK REPLIES -->
 <div class="fixed w-full max-w-2xl left-1/2 -translate-x-1/2 px-4 z-40" id="qr-container" style="bottom:100px;"></div>
 
-<!-- INPUT BAR -->
+<!-- INPUT -->
 <div class="fixed bottom-0 left-0 w-full z-50">
   <div class="max-w-2xl mx-auto px-4 pb-6 pt-2">
     <div class="bg-white/90 backdrop-blur-xl rounded-3xl p-2 shadow-lg flex items-center gap-2 border border-white">
@@ -70,178 +72,247 @@
 
 <script src="kinsu-config.js"></script>
 <script>
-const user = JSON.parse(sessionStorage.getItem('user') || '{"nombre":"Kinsurer","kinsurerID":"KIN-0001"}');
-const userName = user.nombre?.split(' ')[0] || 'Kinsurer';
+const user     = JSON.parse(sessionStorage.getItem('user') || '{"nombre":"Kinsurer","kinsurerID":"KIN-0001"}');
+const userName = (user.nombre || 'Kinsurer').split(' ')[0];
 
-// Datos del prospecto que vamos recolectando
-const prospect = { tipo:'salud' };
+const prospect = { tipo: 'salud' };
 let step = 0;
 let busy = false;
 
-// Preguntas en orden
+// ── Preguntas en orden ──
 const QUESTIONS = [
-  { key:'nombre',  q:`Hola ${userName} 👋 Vamos a registrar un nuevo prospecto para *Seguro de Salud*.\n\n¿Cuál es el nombre completo de tu referido?`, placeholder:'Ej. María García López' },
-  { key:'tel',     q:'Perfecto. ¿Cuál es su número de teléfono?', placeholder:'Ej. 55 1234 5678', replies:['No tengo su número'] },
-  { key:'correo',  q:'¿Tienes su correo electrónico?', placeholder:'Ej. maria@gmail.com', replies:['No tengo su correo'] },
-  { key:'edad',    q:'¿Cuántos años tiene?', placeholder:'Ej. 35', replies:['Menos de 30','30 a 45','45 a 60','Más de 60'] },
-  { key:'ciudad',  q:'¿En qué ciudad o estado vive?', placeholder:'Ej. CDMX', replies:['CDMX','Monterrey','Guadalajara','Otra ciudad'] },
-  { key:'preexist',q:'¿Tiene alguna condición médica preexistente que debamos considerar?', placeholder:'Ej. Diabetes, hipertensión...', replies:['No, ninguna','Diabetes','Hipertensión','Otra condición'] },
+  {
+    key: 'nombre',
+    q:   '¿Cuál es el nombre completo de tu referido?',
+    placeholder: 'Ej. María García López'
+  },
+  {
+    key: 'tel',
+    q:   '¿Cuál es su número de teléfono?',
+    placeholder: 'Ej. 55 1234 5678',
+    replies: ['No tengo su número']
+  },
+  {
+    key: 'correo',
+    q:   '¿Tienes su correo electrónico?',
+    placeholder: 'Ej. maria@gmail.com',
+    replies: ['No tengo su correo']
+  },
+  {
+    key: 'edad',
+    q:   '¿En qué rango de edad está?',
+    placeholder: 'Ej. 35 años',
+    replies: ['Menos de 30', '30 a 45', '45 a 60', 'Más de 60']
+  },
+  {
+    key: 'ciudad',
+    q:   '¿En qué ciudad vive?',
+    placeholder: 'Ej. CDMX, Monterrey...',
+    replies: ['CDMX', 'Monterrey', 'Guadalajara', 'Otra ciudad']
+  },
+  {
+    key: 'preexist',
+    q:   'Por último, ¿tiene alguna condición médica preexistente?',
+    placeholder: 'Ej. Diabetes, hipertensión...',
+    replies: ['No, ninguna', 'Diabetes', 'Hipertensión', 'Otra condición']
+  },
 ];
 
-// UI helpers
-function scrollDown() { setTimeout(()=>{ const a=document.getElementById('chat-area'); a.scrollTo({top:a.scrollHeight,behavior:'smooth'}); },80); }
+// ── UI helpers ──
+function scrollDown() {
+  setTimeout(function() {
+    var a = document.getElementById('chat-area');
+    a.scrollTo({ top: a.scrollHeight, behavior: 'smooth' });
+  }, 80);
+}
 
-function addBubble(text, side='ana') {
-  const area = document.getElementById('chat-area');
-  const html = text.replace(/\n/g,'<br>').replace(/\*(.*?)\*/g,'<strong>$1</strong>');
-  if(side==='ana') {
-    area.innerHTML += `<div class="flex items-end gap-2 max-w-[88%]">
-      <div class="w-8 h-8 rounded-full flex-shrink-0 self-start mt-1 flex items-center justify-center" style="background:linear-gradient(135deg,#1565c0 0%,#82d14b 100%);">
-        <span class="text-white font-bold text-[11px]">A</span>
-      </div>
-      <div class="bg-white ana-bubble border border-[#b5d4f4] px-4 py-3 text-[14px] text-[#0d1c2e] leading-relaxed shadow-sm">${html}</div>
-    </div>`;
+function addBubble(text, side) {
+  side = side || 'ana';
+  var area = document.getElementById('chat-area');
+  var html = text.replace(/\n/g, '<br>').replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+  if (side === 'ana') {
+    area.innerHTML += '<div class="flex items-end gap-2 max-w-[88%]">' +
+      '<div class="w-8 h-8 rounded-full flex-shrink-0 self-start mt-1 flex items-center justify-center" style="background:linear-gradient(135deg,#1565c0 0%,#82d14b 100%);"><span class="text-white font-bold text-[11px]">A</span></div>' +
+      '<div class="bg-white ana-bubble border border-[#b5d4f4] px-4 py-3 text-[14px] text-[#0d1c2e] leading-relaxed shadow-sm">' + html + '</div>' +
+      '</div>';
   } else {
-    area.innerHTML += `<div class="flex justify-end">
-      <div class="bg-[#1565c0] text-white px-4 py-3 text-[14px] leading-relaxed max-w-[80%] shadow-md user-bubble">${html}</div>
-    </div>`;
+    area.innerHTML += '<div class="flex justify-end"><div class="bg-[#1565c0] text-white px-4 py-3 text-[14px] leading-relaxed max-w-[80%] shadow-md user-bubble">' + html + '</div></div>';
   }
   scrollDown();
 }
 
 function showTyping() {
-  const area = document.getElementById('chat-area');
-  area.innerHTML += `<div class="flex items-end gap-2" id="typing-ind">
-    <div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center" style="background:rgba(21,101,192,.15);">
-      <span class="text-[#1565c0] font-bold text-[11px]">A</span>
-    </div>
-    <div class="bg-white px-4 py-3 shadow-sm border border-[#b5d4f4]/40 ana-bubble">
-      <div style="display:flex;gap:4px;align-items:center;"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
-    </div>
-  </div>`;
+  document.getElementById('chat-area').innerHTML +=
+    '<div class="flex items-end gap-2" id="typing-ind">' +
+    '<div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center" style="background:rgba(21,101,192,.15);"><span class="text-[#1565c0] font-bold text-[11px]">A</span></div>' +
+    '<div class="bg-white px-4 py-3 shadow-sm border border-[#b5d4f4]/40 ana-bubble"><div style="display:flex;gap:4px;align-items:center;"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div></div>' +
+    '</div>';
   scrollDown();
 }
 
-function removeTyping() { document.getElementById('typing-ind')?.remove(); }
-
-function setQR(replies) {
-  const c = document.getElementById('qr-container');
-  if(!replies?.length) { c.innerHTML=''; return; }
-  c.innerHTML = `<div class="flex gap-2 overflow-x-auto no-scrollbar py-2">${replies.map((r,i)=>`<button class="qr-chip ${i===0?'qr-primary':'qr-secondary'}" onclick="handleAnswer('${r.replace(/'/g,"\\'")}')">${r}</button>`).join('')}</div>`;
+function removeTyping() {
+  var t = document.getElementById('typing-ind');
+  if (t) t.remove();
 }
 
-function clearQR() { document.getElementById('qr-container').innerHTML=''; }
+function setQR(replies) {
+  var c = document.getElementById('qr-container');
+  if (!replies || !replies.length) { c.innerHTML = ''; return; }
+  c.innerHTML = '<div class="flex gap-2 overflow-x-auto no-scrollbar py-2">' +
+    replies.map(function(r, i) {
+      return '<button class="qr-chip ' + (i === 0 ? 'qr-primary' : 'qr-secondary') + '" onclick="handleAnswer(\'' + r.replace(/'/g, "\\'") + '\')">' + r + '</button>';
+    }).join('') + '</div>';
+}
+
+function clearQR() {
+  document.getElementById('qr-container').innerHTML = '';
+}
 
 function setDisabled(v) {
   document.getElementById('chat-input').disabled = v;
   document.getElementById('send-btn').disabled   = v;
 }
 
+// ── Intro de Ana antes de empezar ──
+function showIntro() {
+  busy = true;
+  showTyping();
+  setTimeout(function() {
+    removeTyping();
+    addBubble(
+      'Hola ' + userName + '! 👋 Soy *Ana*, tu asistente de Kinsu.\n\n' +
+      'Vamos a registrar un nuevo prospecto para cotizar un *Seguro de Gastos Médicos Mayores* (GMM). ' +
+      'Es el único producto que manejamos — el más importante porque protege a las personas ante gastos hospitalarios mayores.\n\n' +
+      '¿Todo listo? Voy a hacerte 6 preguntas rápidas sobre tu referido 🚀'
+    );
+    setTimeout(function() {
+      setQR(['¡Listo, empecemos!']);
+      busy = false;
+    }, 400);
+  }, 1000);
+}
+
 // ── Flujo de preguntas ──
 function askStep(s) {
-  if(s >= QUESTIONS.length) { finishFlow(); return; }
+  if (s >= QUESTIONS.length) { finishFlow(); return; }
   step = s;
   busy = true;
   showTyping();
-  setTimeout(() => {
+  setTimeout(function() {
     removeTyping();
     busy = false;
-    const q = QUESTIONS[s];
-    addBubble(q.q);
-    setQR(q.replies||[]);
-    document.getElementById('chat-input').placeholder = q.placeholder||'Escribe tu respuesta...';
-  }, 800 + Math.random()*400);
+    var q = QUESTIONS[s];
+    // Numerar la pregunta
+    addBubble('*Pregunta ' + (s + 1) + ' de ' + QUESTIONS.length + '* — ' + q.q);
+    setQR(q.replies || []);
+    document.getElementById('chat-input').placeholder = q.placeholder || 'Escribe tu respuesta...';
+  }, 700 + Math.random() * 300);
 }
 
 function handleAnswer(val) {
-  if(busy || !val.trim()) return;
+  if (busy || !val.trim()) return;
   clearQR();
   addBubble(val, 'user');
+
+  // Si es la respuesta al intro
+  if (step === 0 && val === '¡Listo, empecemos!') {
+    askStep(0);
+    return;
+  }
+
   prospect[QUESTIONS[step].key] = val;
   askStep(step + 1);
 }
 
 function sendMsg() {
-  const inp = document.getElementById('chat-input');
-  const val = inp.value.trim();
-  if(!val) return;
+  var inp = document.getElementById('chat-input');
+  var val = inp.value.trim();
+  if (!val || busy) return;
   inp.value = '';
   handleAnswer(val);
 }
 
-document.getElementById('chat-input').addEventListener('keydown', e => { if(e.key==='Enter') sendMsg(); });
+document.getElementById('chat-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') sendMsg();
+});
 
-// ── Finalizar y guardar en sheet ──
+// ── Finalizar y guardar ──
 async function finishFlow() {
   busy = true;
   setDisabled(true);
   clearQR();
   showTyping();
 
-  // Guardar en Google Sheet
-  let folio = '';
+  var folio = '';
   try {
-    const result = await KinsuAPI.createProspecto({
-      nombre:   prospect.nombre,
-      telefono: prospect.tel,
-      email:    prospect.correo,
-      tipo:     'salud',
-      ciudad:   prospect.ciudad,
-      notas:    `Edad: ${prospect.edad||'—'} · Preexistencias: ${prospect.preexist||'Ninguna'}`,
+    var result = await KinsuAPI.createProspecto({
+      nombre:       prospect.nombre,
+      telefono:     prospect.tel,
+      email:        prospect.correo,
+      tipo:         'salud',
+      ciudad:       prospect.ciudad,
+      edad:         prospect.edad,
+      preexistencia:prospect.preexist,
+      notas:        'Edad: ' + (prospect.edad||'—') + ' · Preexistencias: ' + (prospect.preexist||'Ninguna'),
     });
-    folio = result?.folio || ('S'+Date.now().toString().slice(-6));
+    folio = (result && result.folio) ? result.folio : ('S' + Date.now().toString().slice(-6));
   } catch(e) {
-    folio = 'S'+Date.now().toString().slice(-6);
+    folio = 'S' + Date.now().toString().slice(-6);
   }
 
-  // Guardar en sessionStorage
-  sessionStorage.setItem('prospecto', JSON.stringify({
-    ...prospect, folio, tipo:'salud'
-  }));
+  sessionStorage.setItem('prospecto', JSON.stringify(
+    Object.assign({}, prospect, { folio: folio, tipo: 'salud' })
+  ));
 
-  // Generar link WA con mensaje B
-  const nombreProp = prospect.nombre?.split(' ')[0] || prospect.nombre || '';
-  const telNum     = String(prospect.tel || '').replace(/[^0-9]/g, '');
-  const waMsg      = encodeURIComponent(
-    'Hola ' + prospect.nombre + '! ' +
+  // Mensaje WhatsApp — Opción B
+  var telNum  = String(prospect.tel || '').replace(/[^0-9]/g, '');
+  var waText  = 'Hola ' + prospect.nombre + '! ' +
     'Te registré en Kinsu para que te coticen un seguro de salud. ' +
     'Sin compromiso, solo para que veas opciones y precios reales. ' +
     'Un asesor te escribe hoy. Folio: #' + folio + ' ' +
-    'Avísame si tienes preguntas 🙌'
-  );
-  const waUrl = telNum
-    ? 'https://wa.me/52' + telNum + '?text=' + waMsg
-    : 'https://wa.me/?text=' + waMsg;
+    'Avísame si tienes preguntas 🙌';
+  var waUrl   = (telNum ? 'https://wa.me/52' + telNum : 'https://wa.me') +
+    '?text=' + encodeURIComponent(waText);
 
   removeTyping();
-  addBubble('¡Listo! 🎉 Registré a *' + prospect.nombre + '* en el sistema.\n\nSu folio es *#' + folio + '*.\n\nUn asesor de Kinsu lo contactará pronto. Puedes escribirle por WhatsApp ahora para que sepa que viene de tu parte 👇');
+  addBubble(
+    '¡Perfecto! 🎉 Registré a *' + prospect.nombre + '* exitosamente.\n\n' +
+    'Su folio de seguimiento es *#' + folio + '*.\n\n' +
+    'Un asesor de Kinsu lo contactará pronto. Te preparé el mensaje de WhatsApp para que le avises 👇'
+  );
 
-  setTimeout(() => {
-    const area = document.getElementById('chat-area');
+  setTimeout(function() {
+    var area = document.getElementById('chat-area');
+
     // Vista previa del mensaje
-    area.innerHTML += '<div class="flex justify-center mt-3 w-full"><div class="bg-[#e8f0fe] rounded-2xl p-4 max-w-sm w-full text-[13px] text-[#0d1c2e] leading-relaxed border border-[#d4dcf5]"><p class="text-[10px] font-bold text-[#1565c0] uppercase tracking-wider mb-2">Vista previa del mensaje</p><p>Hola <strong>' + prospect.nombre + '</strong>! Te registré en Kinsu para que te coticen un seguro de salud. Sin compromiso, solo para que veas opciones y precios reales. Un asesor te escribe hoy. Folio: <strong>#' + folio + '</strong> Avísame si tienes preguntas 🙌</p></div></div>';
-    area.innerHTML += '<div class="flex justify-center gap-3 mt-4 flex-wrap">
-      <a id="wa-link" href="#" target="_blank"
-        class="flex items-center gap-2 px-6 py-3 bg-[#25d366] text-white rounded-full font-bold text-sm hover:opacity-90 active:scale-95 transition-all">
-        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-        Enviar WhatsApp
-      </a>
-      <a href="prospectos.html"
-        class="flex items-center gap-2 px-6 py-3 bg-white border border-[#1565c0] text-[#1565c0] rounded-full font-bold text-sm hover:bg-blue-50 active:scale-95 transition-all">
-        Ver mis prospectos
-      </a>
-    </div>`;
+    area.innerHTML +=
+      '<div class="flex justify-center mt-3 w-full">' +
+        '<div class="bg-[#e8f0fe] rounded-2xl p-4 max-w-sm w-full text-[13px] text-[#0d1c2e] leading-relaxed border border-[#d4dcf5]">' +
+          '<p class="text-[10px] font-bold text-[#1565c0] uppercase tracking-wider mb-2">Vista previa del mensaje</p>' +
+          '<p>Hola <strong>' + prospect.nombre + '</strong>! Te registré en Kinsu para que te coticen un seguro de salud. Sin compromiso, solo para que veas opciones y precios reales. Un asesor te escribe hoy. Folio: <strong>#' + folio + '</strong> Avísame si tienes preguntas 🙌</p>' +
+        '</div>' +
+      '</div>';
+
+    // Botones finales
+    area.innerHTML +=
+      '<div class="flex justify-center gap-3 mt-4 flex-wrap">' +
+        '<a href="' + waUrl + '" target="_blank" ' +
+          'class="flex items-center gap-2 px-6 py-3 bg-[#25d366] text-white rounded-full font-bold text-sm hover:opacity-90 active:scale-95 transition-all">' +
+          '<svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>' +
+          'Enviar WhatsApp' +
+        '</a>' +
+        '<a href="prospectos.html" ' +
+          'class="flex items-center gap-2 px-6 py-3 bg-white border border-[#1565c0] text-[#1565c0] rounded-full font-bold text-sm hover:bg-blue-50 active:scale-95 transition-all">' +
+          'Ver mis prospectos' +
+        '</a>' +
+      '</div>';
+
     scrollDown();
-    // Set WA URL on button
-    setTimeout(() => {
-      const waBtn = document.getElementById('wa-link');
-      if(waBtn) waBtn.href = waUrl;
-    }, 100);
   }, 1000);
 }
 
-// ── Inicio ──
-setTimeout(() => askStep(0), 400);
+// ── Arrancar con intro ──
+setTimeout(showIntro, 400);
 </script>
 </body>
 </html>
