@@ -210,21 +210,21 @@
 </nav>
 
 <script src="kinsu-config.js"></script>
+
 <script>
-// ── Usuario ──
 const user = JSON.parse(sessionStorage.getItem('user') || '{"initials":"JR"}');
 document.getElementById('topbar-av').textContent = user.initials || 'JR';
 
 const TIPO_ICON     = { salud:'health_and_safety', auto:'directions_car', viaje:'flight' };
-const TIPO_COMISION = { salud:'$1,000 MXN', auto:'$500 MXN', viaje:'$300 MXN' };
+// Comisión viene del sheet (dinámica por nivel). Fallback solo si falla la API.
 
-// ── Skeleton ──
 function showSkeletonDetalle() {
-  ['hero-nombre','hero-folio','hero-meta','hero-comision','hero-comision-mobile',
-   'info-tel','info-email','info-ciudad','info-fecha'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.innerHTML = '<div class="h-4 bg-white/20 rounded animate-pulse inline-block w-24"></div>';
-  });
+  document.getElementById('hero-nombre').textContent = '...';
+  document.getElementById('hero-folio').textContent  = 'Cargando...';
+  document.getElementById('info-tel').textContent    = '—';
+  document.getElementById('info-email').textContent  = '—';
+  document.getElementById('info-ciudad').textContent = '—';
+  document.getElementById('info-fecha').textContent  = '—';
   document.getElementById('timeline').innerHTML = Array(4).fill(`
     <div class="relative flex gap-5 pb-7">
       <div class="w-8 h-8 rounded-full bg-slate-200 animate-pulse flex-shrink-0 mt-1"></div>
@@ -235,78 +235,67 @@ function showSkeletonDetalle() {
     </div>`).join('');
 }
 
-// ── Render con datos ──
 function renderDetalle(d) {
   const tipo     = (d.tipo || 'salud').toLowerCase();
-  const comision = TIPO_COMISION[tipo] || '$1,000 MXN';
+  // Usar comisión estimada del sheet (calculada por nivel del Kinsurer)
+  const comisionRaw = d.comision || '';
+  const comision    = comisionRaw || (() => {
+    // Fallback por nivel si no hay dato del sheet
+    const user  = JSON.parse(sessionStorage.getItem('user') || '{}');
+    const nivel = user.nivel || 'Kinsurer Certificado';
+    if(nivel.includes('Pro'))       return 'Prima neta × 15%';
+    if(nivel.includes('Elite'))     return 'Prima neta × 20%';
+    if(nivel.includes('Embajador')) return 'Prima neta × 25%';
+    return '$200 MXN';
+  })();
   const icon     = TIPO_ICON[tipo]     || 'health_and_safety';
   const tipoCap  = tipo.charAt(0).toUpperCase() + tipo.slice(1);
-  const folio    = d.folio  || '—';
-  const nombre   = d.nombre || '—';
-  const tel      = d.tel    || '—';
-  const correo   = d.correo || '—';
-  const ciudad   = d.ciudad || 'CDMX, México';
-  const estatus  = d.estatus|| 'Enviado';
+  const folio    = d.folio   || '—';
+  const nombre   = d.nombre  || '—';
+  const tel      = d.tel     || '—';
+  const correo   = d.correo  || '—';
+  const ciudad   = d.ciudad  || 'CDMX, México';
+  const estatus  = d.estatus || 'Enviado';
   const fecha    = d.fecha
     ? new Date(d.fecha).toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'})
     : new Date().toLocaleDateString('es-MX',{day:'numeric',month:'long',year:'numeric'});
 
-  document.getElementById('hero-folio').textContent           = `Folio #${folio}`;
+  document.getElementById('hero-folio').textContent           = 'Folio #' + folio;
   document.getElementById('hero-nombre').textContent          = nombre;
   document.getElementById('hero-icon').textContent            = icon;
-  document.getElementById('hero-meta').textContent            = `${tipoCap} · Folio #${folio}`;
-  document.getElementById('hero-comision').textContent        = comision;
+  document.getElementById('hero-meta').textContent            = tipoCap + ' · Folio #' + folio;
+  document.getElementById('hero-comision').textContent = comision;
   document.getElementById('hero-comision-mobile').textContent = comision;
-  document.getElementById('card-comision').innerHTML          = `${comision.split(' ')[0]} <span class="text-base font-medium">${comision.split(' ')[1]||''}</span>`;
+  document.getElementById('card-comision').textContent = comision;
   document.getElementById('info-tel').textContent             = tel;
   document.getElementById('info-email').textContent           = correo;
   document.getElementById('info-ciudad').textContent          = ciudad;
   document.getElementById('info-fecha').textContent           = fecha;
 
   // WhatsApp
-  const waMsg = encodeURIComponent(
-    `Hola ${nombre} 👋
-
-Te contacto de parte de Kinsu. Acabo de iniciar tu proceso para el seguro de *${tipoCap}* — sin compromiso.
-
-Tu número de seguimiento es *#${folio}*.
-
-¿Alguna duda? Aquí estoy 😊`
-  );
-  const telNum = tel.replace(/\D/g,'');
-  document.getElementById('btn-whatsapp').href = `https://wa.me/52${telNum}?text=${waMsg}`;
+  const waMsg = encodeURIComponent('Hola ' + nombre + ' \u{1F44B}\n\nTe contacto de parte de Kinsu. Tu seguro de *' + tipoCap + '* está en proceso.\n\nFolio: *#' + folio + '*\n\n¿Dudas? Aquí estoy 😊');
+  const telNum = String(tel || '').replace(/[^0-9]/g,'');
+  document.getElementById('btn-whatsapp').href = 'https://wa.me/52' + telNum + '?text=' + waMsg;
 
   renderTimeline(estatus);
 }
 
-// ── Timeline ──
 function renderTimeline(estatus) {
-  const ORDEN = ['Enviado','En Cotización','En Emisión','En Cobranza','Completado'];
-  const timeline = document.getElementById('timeline');
-  timeline.innerHTML = '';
+  const ORDEN  = ['Enviado','En Cotización','En Emisión','En Cobranza','Completado'];
+  const tl     = document.getElementById('timeline');
+  tl.innerHTML = '';
 
-  // Caso especial: Cancelado
   if (estatus === 'Cancelado') {
-    timeline.innerHTML = `
-      <div class="flex items-center gap-4 py-2">
-        <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style="background:#f1efe8;">
-          <span class="material-symbols-outlined text-[#888780] text-[16px]">cancel</span>
-        </div>
-        <div>
-          <p class="text-[10px] font-bold text-[#888780] uppercase tracking-wider">Cancelado</p>
-          <h5 class="text-base font-bold text-[#888780]">Solicitud cancelada</h5>
-        </div>
-      </div>`;
+    tl.innerHTML = '<div class="flex items-center gap-4 py-2"><div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style="background:#f1efe8;"><span class="material-symbols-outlined text-[#888780] text-[16px]">cancel</span></div><div><p class="text-[10px] font-bold text-[#888780] uppercase tracking-wider">Cancelado</p><h5 class="text-base font-bold text-[#888780]">Solicitud cancelada</h5></div></div>';
     return;
   }
 
-  const estatusIdx = ORDEN.indexOf(estatus);
+  const idx = ORDEN.indexOf(estatus);
 
   ORDEN.forEach((label, i) => {
-    const isLast   = i === ORDEN.length - 1;
-    const isDone    = i < estatusIdx;
-    const isCurrent = i === estatusIdx;
-    const isPending = i > estatusIdx;
+    const isLast    = i === ORDEN.length - 1;
+    const isDone    = i < idx;
+    const isCurrent = i === idx;
 
     let dotBg, dotContent, metaColor, metaText, titleStyle;
 
@@ -318,7 +307,7 @@ function renderTimeline(estatus) {
       titleStyle = 'font-size:18px;font-weight:900;color:#1565c0;';
     } else if (isDone) {
       dotBg      = 'background:#82d14b;';
-      dotContent = '<span class="material-symbols-outlined text-white text-[16px]" style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">check</span>';
+      dotContent = '<span class="material-symbols-outlined text-white text-[16px]" style="font-variation-settings:&apos;FILL&apos; 1,&apos;wght&apos; 400,&apos;GRAD&apos; 0,&apos;opsz&apos; 24;">check</span>';
       metaColor  = '#82d14b';
       metaText   = 'Paso superado ✓';
       titleStyle = 'font-size:15px;font-weight:700;color:#0d1c2e;';
@@ -330,76 +319,74 @@ function renderTimeline(estatus) {
       titleStyle = 'font-size:15px;font-weight:700;color:#8899bb;';
     }
 
-    const badgeHtml = isCurrent
-      ? '<span class="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-bold" style="background:#e8f0fe;color:#1565c0;">Estado actual</span>'
-      : '';
+    const badge = isCurrent ? '<span class="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-bold" style="background:#e8f0fe;color:#1565c0;">Estado actual</span>' : '';
 
-    timeline.innerHTML += `
-    <div class="relative flex gap-5 ${isLast ? '' : 'pb-7'}">
-      <div class="z-10 mt-1 flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style="${dotBg}">
-        ${dotContent}
-      </div>
-      <div class="flex-1">
-        <p class="text-[10px] font-bold uppercase tracking-wider mb-0.5" style="color:${metaColor};">${metaText}</p>
-        <h5 style="${titleStyle}">${label}</h5>
-        ${badgeHtml}
-      </div>
-    </div>`;
+    tl.innerHTML += '<div class="relative flex gap-5 ' + (isLast?'':'pb-7') + '"><div class="z-10 mt-1 flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center" style="' + dotBg + '">' + dotContent + '</div><div class="flex-1"><p class="text-[10px] font-bold uppercase tracking-wider mb-0.5" style="color:' + metaColor + ';">' + metaText + '</p><h5 style="' + titleStyle + '">' + label + '</h5>' + badge + '</div></div>';
   });
 }
 
-// ── Cargar datos ──
 async function loadDetalle() {
   const params = new URLSearchParams(location.search);
-  const folio  = params.get('folio');
+  const folio  = (params.get('folio') || '').trim();
 
-  // Si hay folio en URL → fuente de verdad es el sheet, ignorar sessionStorage
+  // SIEMPRE que haya folio en URL → cargar del sheet, nunca demo
   if (folio) {
     showSkeletonDetalle();
+    let data = null;
     try {
-      const data = await KinsuAPI.getProspecto(folio);
-      if (data && !data.error) {
-        renderDetalle({
-          nombre:  data['Nombre Prospecto'] || '—',
-          tipo:    (data['Tipo Seguro'] || 'salud').toLowerCase(),
-          folio:   data['Folio']            || folio,
-          tel:     data['Teléfono'] || data['Telefono'] || data['Tel'] || '—',
-          correo:  data['Email']            || '—',
-          ciudad:  data['Ciudad']           || 'CDMX, México',
-          estatus: data['Estatus']          || 'Enviado',
-          fecha:   data['Fecha Registro']   || '',
-        });
-        return;
-      } else {
-        // API no encontró el folio — mostrar error
-        document.getElementById('hero-nombre').textContent = 'Prospecto no encontrado';
-        document.getElementById('hero-folio').textContent  = `Folio #${folio}`;
-        document.getElementById('timeline').innerHTML = '<p class="text-slate-400 text-sm">No se encontró este prospecto en el sistema.</p>';
-        return;
-      }
+      data = await KinsuAPI.getProspecto(folio);
     } catch(e) {
-      console.warn('Error:', e);
+      console.warn('Error API:', e);
     }
+
+    if (data && !data.error) {
+      // ✅ Datos reales del sheet
+      renderDetalle({
+        nombre:  data['Nombre Prospecto'] || '—',
+        tipo:    (data['Tipo Seguro'] || 'salud').toLowerCase(),
+        folio:   data['Folio']  || folio,
+        tel:     data['Teléfono'] || data['Telefono'] || data['Tel'] || '—',
+        correo:  data['Email']  || '—',
+        ciudad:  data['Ciudad'] || 'CDMX, México',
+        estatus: data['Estatus'] || 'Enviado',
+        fecha:    data['Fecha Registro'] || '',
+        comision: data['Comisión Estimada'] || data['Comision Estimada'] || '',
+      });
+    } else {
+      // ❌ No encontrado — mostrar error, NUNCA Juan López
+      document.getElementById('hero-nombre').textContent   = 'Prospecto no encontrado';
+      document.getElementById('hero-folio').textContent    = 'Folio #' + folio;
+      document.getElementById('hero-meta').textContent     = 'Folio #' + folio;
+      document.getElementById('hero-comision').textContent = '—';
+      document.getElementById('hero-comision-mobile').textContent = '—';
+      document.getElementById('info-tel').textContent      = '—';
+      document.getElementById('info-email').textContent    = '—';
+      document.getElementById('info-ciudad').textContent   = '—';
+      document.getElementById('info-fecha').textContent    = '—';
+      document.getElementById('timeline').innerHTML        =
+        '<div class="p-4 text-center"><span class="material-symbols-outlined text-slate-300 text-[40px] block mb-2">search_off</span><p class="text-slate-400 text-sm">No se encontró el folio #' + folio + '</p></div>';
+    }
+    return; // ← SIEMPRE retorna aquí, nunca cae al demo
   }
 
-  // Sin folio en URL: usar sessionStorage (viene del chat)
+  // Sin folio en URL: viene del chat de registro
   const cached = JSON.parse(sessionStorage.getItem('prospecto') || 'null');
-  renderDetalle(cached ? {
-    nombre:  cached.nombre,
-    tipo:    cached.tipo || 'salud',
-    folio:   cached.folio,
-    tel:     cached.tel    || '—',
-    correo:  cached.correo || '—',
-    ciudad:  cached.datos?.ciudad || 'CDMX, México',
-    estatus: 'Enviado',
-  } : {
-    nombre:'Juan López', tipo:'salud', folio:'S20240001',
-    tel:'+52 55 1234 5678', correo:'juan@ejemplo.com',
-    ciudad:'CDMX', estatus:'En Emisión', fecha:'2024-10-12'
-  });
+  if (cached?.folio) {
+    renderDetalle({
+      nombre:  cached.nombre,
+      tipo:    cached.tipo || 'salud',
+      folio:   cached.folio,
+      tel:     cached.tel    || '—',
+      correo:  cached.correo || '—',
+      ciudad:  cached.datos?.ciudad || 'CDMX, México',
+      estatus: 'Enviado',
+    });
+  } else {
+    // Sin folio Y sin sessionStorage → redirigir a prospectos
+    window.location.href = 'prospectos.html';
+  }
 }
 
-// Pulse animation
 const st = document.createElement('style');
 st.textContent = '@keyframes pulse{0%,100%{opacity:.5;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}';
 document.head.appendChild(st);
