@@ -269,7 +269,7 @@ function renderGanancias(txns) {
   if(!txns||!txns.length) {
     document.getElementById('hero-total').textContent    = '$0.00 MXN';
     document.getElementById('stat-promedio').textContent = '$0.00';
-    document.getElementById('modal-total').textContent   = '$0.00 MXN';
+    document.getElementById('modal-total').textContent   = '$0.00 MXN'; // sin pendientes
     document.getElementById('modal-clabe').textContent   = user.clabe||'**** **** **** 0921';
     document.getElementById('nivel-label').textContent   = user.nivel||'Kinsurer Certificado';
     document.getElementById('nivel-comision').textContent= '—';
@@ -281,7 +281,10 @@ function renderGanancias(txns) {
   const avg   = total/txns.length;
 
   document.getElementById('hero-total').textContent    = fmtMXN(total);
-  document.getElementById('modal-total').textContent   = fmtMXN(total);
+  // Modal: saldo disponible = solo Pendiente (no el total)
+  const pendientes = txns.filter(t=>(t['Estatus Pago']||'').trim()==='Pendiente');
+  const saldoPend  = pendientes.reduce((s,t)=>s+parseMonto(t['Monto Comisión']||t.monto),0);
+  document.getElementById('modal-total').textContent   = fmtMXN(saldoPend);
   document.getElementById('modal-clabe').textContent   = user.clabe||'**** **** **** 0921';
   document.getElementById('stat-promedio').textContent = '$'+avg.toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2});
 
