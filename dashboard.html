@@ -161,100 +161,94 @@
 
   <!-- Activity metrics -->
   <section class="mb-10">
-    <div class="flex items-center justify-between mb-6">
-      <h2 class="text-xl font-extrabold tracking-tight text-gray-900">Resumen de actividad</h2>
-      <a href="prospectos.html" class="text-primary text-sm font-bold flex items-center gap-1">
-        Ver todos<span class="material-symbols-outlined text-sm">chevron_right</span>
-      </a>
+        <!-- Resumen de actividad — Opción C -->
+    <div>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xl font-extrabold tracking-tight text-gray-900">Resumen de actividad</h2>
+        <a href="prospectos.html" class="text-primary text-sm font-bold flex items-center gap-1">
+          Ver todos<span class="material-symbols-outlined text-sm">chevron_right</span>
+        </a>
+      </div>
+
+      <!-- 2 cards superiores: total + activos -->
+      <div class="grid grid-cols-2 gap-3 mb-4">
+        <div class="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm">
+          <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Total prospectos</p>
+          <p class="text-4xl font-black text-[#0d1c2e] leading-none" id="stat-total">—</p>
+        </div>
+        <div class="rounded-2xl p-4" style="background:#e8f0fe;border:0.5px solid #b5d4f4;">
+          <p class="text-[10px] font-black uppercase tracking-widest mb-1.5" style="color:#185fa5;">Activos ahora</p>
+          <p class="text-4xl font-black leading-none" style="color:#185fa5;" id="stat-activos">—</p>
+        </div>
+      </div>
+
+      <!-- Card pipeline compacto -->
+      <div class="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm">
+        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Distribución por etapa</p>
+
+        <!-- Barra apilada proporcional -->
+        <div class="flex rounded-lg overflow-hidden h-2 mb-4 gap-px" id="pipeline-bar">
+          <div class="flex-1 bg-slate-200 animate-pulse"></div>
+        </div>
+
+        <!-- Leyenda 3x2 -->
+        <div class="grid grid-cols-3 gap-x-3 gap-y-3">
+          <div class="flex items-center gap-2">
+            <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:#1565c0;"></div>
+            <div>
+              <p class="text-[10px] text-slate-400 leading-tight">Enviados</p>
+              <p class="text-base font-black text-[#0d1c2e] leading-none" id="stat-enviados">—</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:#534ab7;"></div>
+            <div>
+              <p class="text-[10px] text-slate-400 leading-tight">Cotizando</p>
+              <p class="text-base font-black text-[#0d1c2e] leading-none" id="stat-cotizacion">—</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:#0f6e56;"></div>
+            <div>
+              <p class="text-[10px] text-slate-400 leading-tight">Emitiendo</p>
+              <p class="text-base font-black text-[#0d1c2e] leading-none" id="stat-emision">—</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:#993556;"></div>
+            <div>
+              <p class="text-[10px] text-slate-400 leading-tight">Cobranza</p>
+              <p class="text-base font-black text-[#0d1c2e] leading-none" id="stat-cobranza">—</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:#3b6d11;"></div>
+            <div>
+              <p class="text-[10px] text-slate-400 leading-tight">Completados</p>
+              <p class="text-base font-black text-[#0d1c2e] leading-none" id="stat-completados">—</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:#888780;"></div>
+            <div>
+              <p class="text-[10px] text-slate-400 leading-tight">Cancelados</p>
+              <p class="text-base font-black text-[#0d1c2e] leading-none" id="stat-cancelados">—</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <!-- Resumen de actividad — embudo visual -->
-    <div class="space-y-3">
 
-      <!-- Fila 1: Tu acción — leads que tú moviste -->
-      <div class="flex items-center gap-1.5">
-        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest w-20 flex-shrink-0 hidden lg:block">Tu acción</p>
-        <div class="flex-1 grid grid-cols-1 gap-1.5">
-          <div class="bg-[#e8f0fe] rounded-2xl p-3 lg:p-4 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <span class="material-symbols-outlined text-[#1565c0] text-[20px]">send</span>
-              <div>
-                <p class="text-[10px] font-black text-[#1565c0] uppercase tracking-wider">Enviados</p>
-                <p class="text-[10px] text-[#1565c0]/70">Esperando respuesta del prospecto</p>
-              </div>
-            </div>
-            <p class="text-3xl font-black text-[#1565c0]" id="stat-enviados">—</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Flecha -->
-      <div class="flex justify-center"><span class="material-symbols-outlined text-slate-300 text-[20px]">arrow_downward</span></div>
-
-      <!-- Fila 2: Kinsu trabaja — 3 estatus en proceso -->
-      <div class="flex items-center gap-1.5">
-        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest w-20 flex-shrink-0 hidden lg:block">Kinsu actúa</p>
-        <div class="flex-1 grid grid-cols-3 gap-1.5">
-          <div class="bg-white border border-[#eeedfe] rounded-2xl p-3 flex flex-col gap-1">
-            <span class="material-symbols-outlined text-[#534ab7] text-[18px]">request_quote</span>
-            <p class="text-2xl font-black text-[#0d1c2e]" id="stat-cotizacion">—</p>
-            <p class="text-[9px] font-bold text-[#534ab7] uppercase tracking-wider leading-tight">Cotizando</p>
-          </div>
-          <div class="bg-white border border-[#e1f5ee] rounded-2xl p-3 flex flex-col gap-1">
-            <span class="material-symbols-outlined text-[#0f6e56] text-[18px]">description</span>
-            <p class="text-2xl font-black text-[#0d1c2e]" id="stat-emision">—</p>
-            <p class="text-[9px] font-bold text-[#0f6e56] uppercase tracking-wider leading-tight">Emitiendo</p>
-          </div>
-          <div class="bg-white border border-[#fbeaf0] rounded-2xl p-3 flex flex-col gap-1">
-            <span class="material-symbols-outlined text-[#993556] text-[18px]">payments</span>
-            <p class="text-2xl font-black text-[#0d1c2e]" id="stat-cobranza">—</p>
-            <p class="text-[9px] font-bold text-[#993556] uppercase tracking-wider leading-tight">Cobranza</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Flecha -->
-      <div class="flex justify-center"><span class="material-symbols-outlined text-slate-300 text-[20px]">arrow_downward</span></div>
-
-      <!-- Fila 3: Resultado -->
-      <div class="flex items-center gap-1.5">
-        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest w-20 flex-shrink-0 hidden lg:block">Resultado</p>
-        <div class="flex-1 grid grid-cols-2 gap-1.5">
-          <div class="rounded-2xl p-3 lg:p-4 flex items-center justify-between" style="background:#d4f0a0;">
-            <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-[20px]" style="color:#1a3a0a;font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">verified</span>
-              <div>
-                <p class="text-[10px] font-black uppercase tracking-wider" style="color:#1a3a0a;">Completados</p>
-                <p class="text-[10px]" style="color:#285900;">Póliza emitida ✓</p>
-              </div>
-            </div>
-            <p class="text-3xl font-black" style="color:#1a3a0a;" id="stat-completados">—</p>
-          </div>
-          <div class="bg-white border border-[#f1efe8] rounded-2xl p-3 lg:p-4 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-[#888780] text-[20px]">cancel</span>
-              <div>
-                <p class="text-[10px] font-black text-[#888780] uppercase tracking-wider">Cancelados</p>
-                <p class="text-[10px] text-slate-400">No continuaron</p>
-              </div>
-            </div>
-            <p class="text-3xl font-black text-[#888780]" id="stat-cancelados">—</p>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- Recent prospects + Tips -->
-  <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-    <div class="lg:col-span-2">
-      <div class="flex items-center justify-between mb-6">
+      <!-- Prospectos recientes -->
+      <div class="flex items-center justify-between mb-4 mt-6">
         <h2 class="text-xl font-extrabold tracking-tight text-gray-900">Prospectos recientes</h2>
-        <a href="prospectos.html" class="text-primary text-sm font-bold">Ver todos</a>
+        <a href="prospectos.html" class="text-primary text-sm font-bold flex items-center gap-1">
+          Ver todos<span class="material-symbols-outlined text-sm">chevron_right</span>
+        </a>
       </div>
-      <div class="space-y-3" id="recent-list"></div>
+      <div class="space-y-3 mb-6" id="recent-list"></div>
     </div>
-    <div class="bg-[#e8eeff] p-8 rounded-3xl h-fit">
+    <div class="bg-[#e8eeff] p-8 rounded-3xl h-fit mt-4 lg:mt-0">
       <h2 class="text-lg font-extrabold tracking-tight text-gray-900 mb-4">Tips de referido</h2>
       <ul class="space-y-4">
         <li class="flex items-start gap-3">
@@ -340,7 +334,7 @@ function showSkeleton() {
     '<div class="h-10 w-36 bg-white/20 rounded-xl animate-pulse inline-block"></div>';
 
   // Pipeline cards — números en skeleton
-  ['stat-enviados','stat-cotizacion','stat-emision','stat-cobranza','stat-completados','stat-cancelados'].forEach(id => {
+  ['stat-total','stat-activos','stat-enviados','stat-cotizacion','stat-emision','stat-cobranza','stat-completados','stat-cancelados'].forEach(id => {
     document.getElementById(id).innerHTML =
       '<div class="h-8 w-8 bg-slate-200 rounded-lg animate-pulse"></div>';
   });
@@ -402,13 +396,40 @@ function renderDashboard(data) {
     document.getElementById('nivel-bar').style.width  = Math.max(progreso, 4) + '%';
   }
 
-  // ── Todos los estatus — datos reales del sheet ──
-  document.getElementById('stat-enviados').textContent    = data.prospectos_enviados    ?? '—';
-  document.getElementById('stat-cotizacion').textContent  = data.prospectos_cotizacion  ?? '—';
-  document.getElementById('stat-emision').textContent     = data.prospectos_emision     ?? '—';
-  document.getElementById('stat-cobranza').textContent    = data.prospectos_cobranza    ?? '—';
-  document.getElementById('stat-completados').textContent = data.prospectos_completados ?? '—';
-  document.getElementById('stat-cancelados').textContent  = data.prospectos_cancelados  ?? '—';
+  // ── Stats pipeline ──
+  const env  = data.prospectos_enviados    ?? 0;
+  const cot  = data.prospectos_cotizacion  ?? 0;
+  const emi  = data.prospectos_emision     ?? 0;
+  const cob  = data.prospectos_cobranza    ?? 0;
+  const comp = data.prospectos_completados ?? 0;
+  const can  = data.prospectos_cancelados  ?? 0;
+  const tot  = (data.prospectos_total ?? (env+cot+emi+cob+comp+can));
+  const act  = env + cot + emi + cob;
+
+  const setS = (id, val) => { const e = document.getElementById(id); if(e) e.textContent = val; };
+  setS('stat-total',       tot  || '—');
+  setS('stat-activos',     act  || '—');
+  setS('stat-enviados',    env  || '—');
+  setS('stat-cotizacion',  cot  || '—');
+  setS('stat-emision',     emi  || '—');
+  setS('stat-cobranza',    cob  || '—');
+  setS('stat-completados', comp || '—');
+  setS('stat-cancelados',  can  || '—');
+
+  // Barra apilada proporcional
+  const barTotal = env + cot + emi + cob + comp + can;
+  if (barTotal > 0) {
+    const pct = n => Math.max((n/barTotal)*100, n>0?4:0).toFixed(1) + '%';
+    const bar = document.getElementById('pipeline-bar');
+    if(bar) bar.innerHTML = [
+      env  ? `<div style="width:${pct(env)};background:#1565c0;"></div>` : '',
+      cot  ? `<div style="width:${pct(cot)};background:#534ab7;"></div>` : '',
+      emi  ? `<div style="width:${pct(emi)};background:#0f6e56;"></div>` : '',
+      cob  ? `<div style="width:${pct(cob)};background:#993556;"></div>` : '',
+      comp ? `<div style="width:${pct(comp)};background:#3b6d11;"></div>` : '',
+      can  ? `<div style="width:${pct(can)};background:#888780;"></div>` : '',
+    ].join('');
+  }
 
   // ── Prospectos recientes — los 3 más recientes del Kinsurer ──
   const prospects = data.prospectos_recientes || FALLBACK.prospectos_recientes;
