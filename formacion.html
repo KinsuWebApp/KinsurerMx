@@ -40,13 +40,11 @@
         <p class="text-[13px] font-bold text-[#0d1c2e]">Ana de Kinsu</p>
         <div class="flex items-center gap-1">
           <span class="w-1.5 h-1.5 bg-[#82d14b] rounded-full"></span>
-          <span class="text-[10px] text-slate-500 font-medium uppercase tracking-wider">Tu guía personal</span>
+          <span class="text-[10px] text-slate-500 font-medium">Tu guía personal</span>
         </div>
       </div>
     </div>
-    <div class="flex items-center gap-2">
-      <span class="px-3 py-1 bg-[#d4f0a0] text-[#1a3a0a] rounded-full text-[10px] font-bold uppercase tracking-wider" id="nivel-badge">Certificado</span>
-    </div>
+    <span class="px-3 py-1 bg-[#d4f0a0] text-[#1a3a0a] rounded-full text-[10px] font-bold uppercase tracking-wider" id="nivel-badge">—</span>
   </div>
 </header>
 
@@ -72,80 +70,94 @@
 
 <script src="kinsu-config.js"></script>
 <script>
-const user = JSON.parse(sessionStorage.getItem('user') || '{"nombre":"Kinsurer","nivel":"Kinsurer Certificado","kinsurerID":"KIN-0001"}');
-const userName = user.nombre?.split(' ')[0] || 'Kinsurer';
-const nivel    = user.nivel || 'Kinsurer Certificado';
+// ── CONFIGURACIÓN GEMINI ──
+// Obtén tu API key gratuita en: https://aistudio.google.com
+const GEMINI_API_KEY = 'TU_GEMINI_API_KEY_AQUI';
+const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + GEMINI_API_KEY;
 
-document.getElementById('nivel-badge').textContent = nivel.replace('Kinsurer ','');
+// ── Contexto del Kinsurer ──
+const user     = JSON.parse(sessionStorage.getItem('user') || '{}');
+const userName = (user.nombre || 'Kinsurer').split(' ')[0];
+const nivel    = user.nivel    || 'Kinsurer Nuevo';
+const kid      = user.kinsurerID || '';
+
+document.getElementById('nivel-badge').textContent = nivel.replace('Kinsurer ', '');
+
+// ── System prompt con contexto real ──
+const SYSTEM_PROMPT = `Eres Ana de Kinsu, la guía personal de formación y soporte de los Kinsurers en México.
+
+DATOS DEL KINSURER CON QUIEN HABLAS:
+- Nombre: ${user.nombre || 'Kinsurer'}
+- Nivel actual: ${nivel}
+- ID: ${kid}
+
+SOBRE KINSU (contexto para respuestas):
+Kinsu es una plataforma donde personas normales (Kinsurers) refieren prospectos para Seguro de Gastos Médicos Mayores (GMM) y ganan comisiones según su nivel:
+- Kinsurer Nuevo: Sin comisión. Debe completar formación básica.
+- Kinsurer Certificado (1-4 pólizas): $200 MXN fijos por póliza emitida.
+- Kinsurer Pro (5-14 pólizas): 15% de la prima neta del seguro.
+- Kinsurer Elite (15-29 pólizas): 20% de la prima neta.
+- Kinsurer Embajador (30+ pólizas): 25% de la prima neta.
+
+PROCESO: El Kinsurer registra un prospecto → Kinsu cotiza y emite el seguro → El Kinsurer cobra su comisión cuando el prospecto paga.
+
+TU ROL COMO ANA:
+1. Guía de formación: explica cómo funciona Kinsu, el GMM, cómo hacer el pitch, cómo manejar objeciones.
+2. Coach de ventas: ayuda a ${userName} a conseguir más prospectos y mejorar su tasa de conversión.
+3. Soporte personal: resuelve dudas sobre el proceso, comisiones, niveles, requisitos.
+4. Motivadora: celebra logros y da pasos concretos para avanzar.
+
+PERSONALIDAD: Cálida, directa, experta. Respuestas cortas (máx 4 oraciones). Emojis con moderación. Siempre en español mexicano.
+
+IMPORTANTE: Conoces el nivel de ${userName} (${nivel}). Personaliza tus respuestas en base a eso. Si es Nuevo, enfócate en que complete la formación. Si es Certificado, ayúdale a llegar a Pro. Si es Pro, ayúdale a ser Elite.`;
 
 let history = [];
 let busy    = false;
 
-const ANA_SYSTEM = `Eres Ana de Kinsu, la guía personal de formación y soporte para Kinsurers en México.
+// ── UI ──
+function scrollDown() {
+  setTimeout(function() {
+    var a = document.getElementById('chat-area');
+    a.scrollTo({ top: a.scrollHeight, behavior: 'smooth' });
+  }, 80);
+}
 
-SOBRE KINSU:
-- Kinsu es una plataforma donde personas normales (Kinsurers) refieren prospectos para seguros de Salud (Gastos Médicos Mayores) y ganan comisiones.
-- El proceso: Kinsurer registra un prospecto → Kinsu contacta al prospecto → Si compra, el Kinsurer gana su comisión.
-- Solo se trabaja con Seguro de Salud (GMM).
-- Comisión: $200 MXN fijos (Certificado), 15% (Pro), 20% (Elite), 25%+red (Embajador).
-
-NIVELES KINSURER:
-- Nuevo (0 pólizas): Sin comisión, necesita completar formación
-- Certificado (1-4 pólizas): $200 MXN fijos
-- Pro (5-14 pólizas): 15%
-- Elite (15-29 pólizas): 20%
-- Embajador (30+): 25% + bono de red
-
-EL KINSURER ACTUAL se llama ${userName} y está en nivel ${nivel}.
-
-TU ROL:
-1. Guía de formación: explica cómo funciona Kinsu, el seguro de salud, cómo hacer el pitch, cómo manejar objeciones.
-2. Soporte personal: responde cualquier duda sobre el proceso, comisiones, prospectos, niveles.
-3. Coach de ventas: ayuda a ${userName} a mejorar su tasa de conversión con consejos prácticos.
-4. Motivadora: celebra sus logros y lo impulsa a crecer.
-
-PERSONALIDAD: Cálida, directa, experta. Usa ejemplos del mercado mexicano. Respuestas cortas (máx 4 oraciones). Usa emojis con moderación.
-Responde SIEMPRE en español mexicano.`;
-
-// UI
-function scrollDown() { setTimeout(()=>{ const a=document.getElementById('chat-area'); a.scrollTo({top:a.scrollHeight,behavior:'smooth'}); },80); }
-
-function addBubble(text, side='ana') {
-  const area = document.getElementById('chat-area');
-  const html = text.replace(/\n/g,'<br>').replace(/\*(.*?)\*/g,'<strong>$1</strong>');
-  if(side==='ana') {
-    area.innerHTML += `<div class="flex items-end gap-2 max-w-[88%]">
-      <div class="w-8 h-8 rounded-full flex-shrink-0 self-start mt-1 flex items-center justify-center" style="background:linear-gradient(135deg,#1565c0 0%,#82d14b 100%);">
-        <span class="text-white font-bold text-[11px]">A</span>
-      </div>
-      <div class="bg-white ana-bubble border border-[#b5d4f4] px-4 py-3 text-[14px] text-[#0d1c2e] leading-relaxed shadow-sm">${html}</div>
-    </div>`;
+function addBubble(text, side) {
+  side = side || 'ana';
+  var area = document.getElementById('chat-area');
+  var html = text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<strong>$1</strong>');
+  if (side === 'ana') {
+    area.innerHTML += '<div class="flex items-end gap-2 max-w-[88%]">' +
+      '<div class="w-8 h-8 rounded-full flex-shrink-0 self-start mt-1 flex items-center justify-center" style="background:linear-gradient(135deg,#1565c0 0%,#82d14b 100%);"><span class="text-white font-bold text-[11px]">A</span></div>' +
+      '<div class="bg-white ana-bubble border border-[#b5d4f4] px-4 py-3 text-[14px] text-[#0d1c2e] leading-relaxed shadow-sm">' + html + '</div>' +
+      '</div>';
   } else {
-    area.innerHTML += `<div class="flex justify-end">
-      <div class="bg-[#1565c0] text-white px-4 py-3 text-[14px] leading-relaxed max-w-[80%] user-bubble">${html}</div>
-    </div>`;
+    area.innerHTML += '<div class="flex justify-end"><div class="bg-[#1565c0] text-white px-4 py-3 text-[14px] leading-relaxed max-w-[80%] user-bubble">' + html + '</div></div>';
   }
   scrollDown();
 }
 
 function showTyping() {
-  document.getElementById('chat-area').innerHTML += `<div class="flex items-end gap-2" id="typing-ind">
-    <div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center" style="background:rgba(21,101,192,.15);">
-      <span class="text-[#1565c0] font-bold text-[11px]">A</span>
-    </div>
-    <div class="bg-white px-4 py-3 shadow-sm border border-[#b5d4f4]/40 ana-bubble">
-      <div style="display:flex;gap:4px;align-items:center;"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
-    </div>
-  </div>`;
+  document.getElementById('chat-area').innerHTML +=
+    '<div class="flex items-end gap-2" id="typing-ind">' +
+    '<div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center" style="background:rgba(21,101,192,.15);"><span class="text-[#1565c0] font-bold text-[11px]">A</span></div>' +
+    '<div class="bg-white px-4 py-3 shadow-sm border border-[#b5d4f4]/40 ana-bubble"><div style="display:flex;gap:4px;align-items:center;"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div></div>' +
+    '</div>';
   scrollDown();
 }
 
-function removeTyping() { document.getElementById('typing-ind')?.remove(); }
+function removeTyping() {
+  var t = document.getElementById('typing-ind');
+  if (t) t.remove();
+}
 
 function setQR(replies) {
-  const c = document.getElementById('qr-container');
-  if(!replies?.length) { c.innerHTML=''; return; }
-  c.innerHTML = `<div class="flex gap-2 overflow-x-auto no-scrollbar py-2">${replies.map((r,i)=>`<button class="qr-chip ${i===0?'qr-primary':'qr-secondary'}" onclick="onQR('${r.replace(/'/g,"\\'")}')">${r}</button>`).join('')}</div>`;
+  var c = document.getElementById('qr-container');
+  if (!replies || !replies.length) { c.innerHTML = ''; return; }
+  c.innerHTML = '<div class="flex gap-2 overflow-x-auto no-scrollbar py-2">' +
+    replies.map(function(r, i) {
+      return '<button class="qr-chip ' + (i === 0 ? 'qr-primary' : 'qr-secondary') + '" onclick="onQR(\'' + r.replace(/'/g,"\\'") + '\')">' + r + '</button>';
+    }).join('') + '</div>';
 }
 
 function setDisabled(v) {
@@ -153,74 +165,99 @@ function setDisabled(v) {
   document.getElementById('send-btn').disabled   = v;
 }
 
-// ── Llamar a Ana ──
+// ── Llamar a Gemini ──
 async function callAna(msg) {
+  if (busy) return;
+  busy = true;
   setDisabled(true);
-  document.getElementById('qr-container').innerHTML='';
+  document.getElementById('qr-container').innerHTML = '';
   showTyping();
-  history.push({ role:'user', content:msg });
+
+  // Agregar al historial
+  history.push({ role: 'user', parts: [{ text: msg }] });
 
   try {
-    const res  = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
+    const res = await fetch(GEMINI_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:600,
-        system: ANA_SYSTEM,
-        messages: history
+        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        contents: history,
+        generationConfig: {
+          maxOutputTokens: 400,
+          temperature: 0.8,
+        }
       })
     });
+
     const data  = await res.json();
-    const reply = data.content?.[0]?.text || 'Lo siento, hubo un error. Intenta de nuevo.';
+    const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text
+      || 'Lo siento, no pude procesar tu pregunta. ¿Puedes intentarlo de nuevo?';
 
     removeTyping();
-    history.push({ role:'assistant', content:reply });
+    history.push({ role: 'model', parts: [{ text: reply }] });
     addBubble(reply);
 
-    // Quick replies contextuales
-    if(reply.toLowerCase().includes('prospecto')||reply.toLowerCase().includes('referido')) {
-      setQR(['¿Cómo hago el pitch?','¿Qué objeciones son comunes?','¿Cómo hago seguimiento?']);
-    } else if(reply.toLowerCase().includes('comisión')||reply.toLowerCase().includes('nivel')) {
-      setQR(['¿Cuándo me pagan?','¿Cómo subo de nivel?','Ver mis ganancias']);
-    } else if(reply.toLowerCase().includes('salud')||reply.toLowerCase().includes('seguro')) {
-      setQR(['¿Qué cubre el seguro?','¿Qué son preexistencias?','¿Cuánto cuesta?']);
-    } else {
-      setQR(['Tengo otra duda','Ayúdame a conseguir prospectos','¿Cómo mejoro?']);
-    }
+    // Quick replies contextuales según la respuesta
+    var qrs = [];
+    var r = reply.toLowerCase();
+    if (r.includes('prospecto') || r.includes('referido') || r.includes('cliente'))
+      qrs = ['¿Cómo hago el pitch?','¿Qué hago si no responde?','Dame un ejemplo'];
+    else if (r.includes('comisión') || r.includes('nivel') || r.includes('póliza'))
+      qrs = ['¿Cuándo me pagan?','¿Cómo subo de nivel?','¿Qué es la prima neta?'];
+    else if (r.includes('salud') || r.includes('seguro') || r.includes('gmm'))
+      qrs = ['¿Qué cubre el GMM?','¿Qué son preexistencias?','¿Cuánto cuesta?'];
+    else
+      qrs = ['¿Cómo consigo más prospectos?','¿Qué hago hoy para avanzar?','Tengo una duda'];
+
+    setQR(qrs);
 
   } catch(e) {
     removeTyping();
     addBubble('Tuve un problema de conexión. ¿Puedes intentarlo de nuevo? 🙏');
     setQR(['Intentar de nuevo']);
   } finally {
+    busy = false;
     setDisabled(false);
   }
 }
 
 function sendMsg() {
-  const inp = document.getElementById('chat-input');
-  const val = inp.value.trim();
-  if(!val||busy) return;
+  var inp = document.getElementById('chat-input');
+  var val = inp.value.trim();
+  if (!val || busy) return;
   inp.value = '';
-  addBubble(val,'user');
+  addBubble(val, 'user');
   callAna(val);
 }
 
 function onQR(val) {
-  if(val==='Ver mis ganancias') { window.location.href='ganancias.html'; return; }
-  document.getElementById('chat-input').value='';
-  document.getElementById('qr-container').innerHTML='';
-  addBubble(val,'user');
+  document.getElementById('qr-container').innerHTML = '';
+  addBubble(val, 'user');
   callAna(val);
 }
 
-document.getElementById('chat-input').addEventListener('keydown', e=>{ if(e.key==='Enter') sendMsg(); });
+document.getElementById('chat-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') sendMsg();
+});
 
-// ── Inicio ──
-setTimeout(() => {
-  callAna(`Hola Ana, soy ${userName}. Estoy en nivel ${nivel}. ¿Puedes ayudarme a entender cómo avanzar y ganar más comisiones con Kinsu?`);
-}, 500);
+// ── Mensaje inicial personalizado por nivel ──
+var INTRO_POR_NIVEL = {
+  'Kinsurer Nuevo':      'Hola ' + userName + '! 👋 Soy Ana, tu guía en Kinsu. Para empezar a ganar comisiones necesitas completar tu formación básica. ¿Por dónde quieres empezar?',
+  'Kinsurer Certificado':'Hola ' + userName + '! 👋 Estás en nivel Certificado ganando $200 MXN por póliza. Para llegar a Pro necesitas 5 pólizas emitidas — ¿quieres que te ayude a conseguir más prospectos?',
+  'Kinsurer Pro':        'Hola ' + userName + '! 👋 Vas muy bien en nivel Pro con 15% de comisión. Para ser Elite necesitas 15 pólizas. ¿En qué te puedo ayudar hoy?',
+  'Kinsurer Elite':      'Hola ' + userName + '! 👋 Eres Kinsurer Elite — lo estás haciendo increíble 🎉 ¿Cómo te puedo ayudar a llegar a Embajador?',
+  'Kinsurer Embajador':  'Hola ' + userName + '! 👋 Eres Kinsurer Embajador — el nivel más alto de Kinsu. ¿En qué te puedo apoyar hoy?',
+};
+
+var introMsg = INTRO_POR_NIVEL[nivel] || ('Hola ' + userName + '! 👋 Soy Ana, tu guía personal en Kinsu. ¿En qué te puedo ayudar hoy?');
+
+setTimeout(function() {
+  // No llamamos a la API para el intro — lo mostramos directo para ahorrar tokens
+  addBubble(introMsg);
+  history.push({ role: 'model', parts: [{ text: introMsg }] });
+  setQR(['¿Cómo consigo prospectos?', '¿Cómo funciona el GMM?', '¿Cómo subo de nivel?']);
+}, 400);
 </script>
 </body>
 </html>
