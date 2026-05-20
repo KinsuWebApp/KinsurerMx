@@ -70,10 +70,10 @@
 
 <script src="kinsu-config.js"></script>
 <script>
-// ── CONFIGURACIÓN GEMINI ──
-// Obtén tu API key gratuita en: https://aistudio.google.com
-const GEMINI_API_KEY = 'AIzaSyDLrH-QDp7TNBUUN9u8nwEi0OeHFzSGer8';
-const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=' + GEMINI_API_KEY;
+// ── CONFIGURACIÓN GROQ (gratuito) ──
+// Obtén tu API key gratuita en: https://console.groq.com
+const GROQ_API_KEY = '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';
+const GROQ_URL     = 'https://api.groq.com/openai/v1/chat/completions';
 
 // ── Contexto del Kinsurer ──
 const user     = JSON.parse(sessionStorage.getItem('user') || '{}');
@@ -174,32 +174,33 @@ async function callAna(msg) {
   showTyping();
 
   // Agregar al historial
-  history.push({ role: 'user', parts: [{ text: msg }] });
+  history.push({ role: 'user', content: msg });
 
   try {
-    const res = await fetch(GEMINI_URL, {
+    const res = await fetch(GROQ_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + GROQ_API_KEY
+      },
       body: JSON.stringify({
-        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-        contents: history,
-        generationConfig: {
-          maxOutputTokens: 400,
-          temperature: 0.8,
-        }
+        model: 'llama-3.1-8b-instant',
+        messages: [
+          { role: 'system', content: SYSTEM_PROMPT },
+          ...history
+        ],
+        max_tokens: 400,
+        temperature: 0.8,
       })
     });
 
-    console.log('[Ana/Gemini] Status:', res.status);
     const data  = await res.json();
-    console.log('[Ana/Gemini] Response:', JSON.stringify(data).slice(0, 300));
-    const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text
+    const reply = data?.choices?.[0]?.message?.content
       || data?.error?.message
-      || data?.promptFeedback?.blockReason
       || 'Lo siento, no pude procesar tu pregunta. ¿Puedes intentarlo de nuevo?';
 
     removeTyping();
-    history.push({ role: 'model', parts: [{ text: reply }] });
+    history.push({ role: 'assistant', content: reply });
     addBubble(reply);
 
     // Quick replies contextuales según la respuesta
@@ -218,8 +219,8 @@ async function callAna(msg) {
 
   } catch(e) {
     removeTyping();
-    console.error('[Ana/Gemini] Error:', e);
-    addBubble('Error: ' + e.message + ' — revisa la consola (F12)');
+    console.error('[Ana/Groq] Error:', e);
+    addBubble('Error de conexión: ' + e.message);
     setQR(['Intentar de nuevo']);
   } finally {
     busy = false;
@@ -260,7 +261,7 @@ var introMsg = INTRO_POR_NIVEL[nivel] || ('Hola ' + userName + '! 👋 Soy Ana, 
 setTimeout(function() {
   // No llamamos a la API para el intro — lo mostramos directo para ahorrar tokens
   addBubble(introMsg);
-  history.push({ role: 'model', parts: [{ text: introMsg }] });
+  history.push({ role: 'assistant', content: introMsg });
   setQR(['¿Cómo consigo prospectos?', '¿Cómo funciona el GMM?', '¿Cómo subo de nivel?']);
 }, 400);
 </script>
