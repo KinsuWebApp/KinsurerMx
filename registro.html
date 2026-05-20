@@ -5,6 +5,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 <title>Kinsu - Crear Cuenta</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="kinsu-config.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <script id="tailwind-config">
@@ -202,7 +203,7 @@ function setFieldError(fieldId, errId, show) {
   }
 }
 
-function doRegister() {
+async function doRegister() {
   const name  = document.getElementById('f-name').value.trim();
   const email = document.getElementById('f-email').value.trim();
   const phone = document.getElementById('f-phone').value.trim();
@@ -221,32 +222,61 @@ function doRegister() {
   });
 
   let valid = true;
+  if (name.length < 2)                              { setFieldError('f-name','err-name',true);   valid=false; }
+  if (!email.includes('@') || !email.includes('.')) { setFieldError('f-email','err-email',true);  valid=false; }
+  if (phone.length < 8)                             { setFieldError('f-phone','err-phone',true);  valid=false; }
+  if (pass.length < 6)                              { setFieldError('f-pass','err-pass',true);    valid=false; }
+  if (pass !== pass2 || pass2.length === 0)         { setFieldError('f-pass2','err-pass2',true);  valid=false; }
 
-  if (name.length < 2)                             { setFieldError('f-name','err-name',true);   valid=false; }
-  if (!email.includes('@') || !email.includes('.'))  { setFieldError('f-email','err-email',true);  valid=false; }
-  if (phone.length < 8)                            { setFieldError('f-phone','err-phone',true);  valid=false; }
-  if (pass.length < 6)                             { setFieldError('f-pass','err-pass',true);    valid=false; }
-  if (pass !== pass2 || pass2.length === 0)        { setFieldError('f-pass2','err-pass2',true);  valid=false; }
-
-  if (!valid) {
-    errG.classList.remove('hidden');
-    return;
-  }
+  if (!valid) { errG.classList.remove('hidden'); return; }
 
   // Loading
   btn.disabled = true;
-  btn.classList.add('opacity-75');
-  document.getElementById('btn-txt').textContent = 'Procesando...';
-  document.getElementById('btn-ico').textContent = 'hourglass_empty';
+  btn.style.opacity = '.72';
+  const btnTxt = btn.querySelector('span') || btn;
+  const origText = btnTxt.textContent;
+  btnTxt.textContent = 'Verificando...';
 
-  // Guardar en sessionStorage para usar en OTP y login-exitoso
-  sessionStorage.setItem('reg-name',  name);
-  sessionStorage.setItem('reg-email', email);
+  try {
+    // 1. Verificar que el email no esté registrado
+    const checkResult = await KinsuAPI.checkEmail(email);
+    if (checkResult?.exists) {
+      setFieldError('f-email','err-email',true);
+      document.getElementById('err-email').textContent = 'Este correo ya está registrado';
+      errG.classList.remove('hidden');
+      btn.disabled = false; btn.style.opacity = '1';
+      btnTxt.textContent = origText;
+      return;
+    }
 
-  setTimeout(() => {
-    window.location.href = 'verificar-correo.html';
-  }, 800);
+    // 2. Enviar OTP al email
+    btnTxt.textContent = 'Enviando código...';
+    const otpResult = await KinsuAPI.sendOTP(email, name);
+
+    if (otpResult?.error) {
+      errG.classList.remove('hidden');
+      errG.querySelector('p') && (errG.querySelector('p').textContent = otpResult.error);
+      btn.disabled = false; btn.style.opacity = '1';
+      btnTxt.textContent = origText;
+      return;
+    }
+
+    // 3. Guardar datos en sessionStorage para verificar-correo
+    sessionStorage.setItem('registro-pending', JSON.stringify({
+      nombre: name, email, telefono: phone, password: pass
+    }));
+
+    // 4. Navegar a verificar-correo
+    window.location.href = 'verificar-correo.html?email=' + encodeURIComponent(email);
+
+  } catch(e) {
+    console.warn('Error registro:', e);
+    errG.classList.remove('hidden');
+    btn.disabled = false; btn.style.opacity = '1';
+    btnTxt.textContent = origText;
+  }
 }
+
 </script>
 </body>
 </html>

@@ -182,7 +182,7 @@ inputs.forEach((inp, i) => {
 });
 
 // ── Verificar OTP ──
-function verifyOTP() {
+async function verifyOTP() {
   const code  = inputs.map(el => el.value).join('');
   const errEl = document.getElementById('otp-error');
   const btn   = document.getElementById('verify-btn');
@@ -197,25 +197,69 @@ function verifyOTP() {
   document.getElementById('verify-txt').textContent = 'Verificando...';
   document.getElementById('verify-ico').textContent = 'hourglass_empty';
 
-  setTimeout(() => {
-    if (code === '12345') {
-      // Guardar usuario en sessionStorage
-      const initials = regName.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
-      sessionStorage.setItem('user', JSON.stringify({
-        nombre: regName, email: regEmail, initials
-      }));
-      window.location.href = 'login-exitoso.html';
-    } else {
-      // Error
-      btn.disabled = false;
-      document.getElementById('verify-txt').textContent = 'Verificar y entrar';
-      document.getElementById('verify-ico').textContent = 'arrow_forward';
-      errEl.classList.remove('hidden');
-      inputs.forEach(el => { el.value = ''; el.classList.remove('filled'); el.classList.add('error-inp'); });
+  // Leer email y datos del registro
+  const params  = new URLSearchParams(location.search);
+  const email   = params.get('email') || sessionStorage.getItem('reg-email') || '';
+  const pending = JSON.parse(sessionStorage.getItem('registro-pending') || '{}');
+
+  try {
+    // 1. Verificar OTP con el sheet
+    const result = await KinsuAPI.verifyOTP(email || pending.email, code);
+
+    if (result?.error) {
+      // OTP incorrecto o expirado
+      inputs.forEach(el => { el.value = ''; el.classList.add('error-inp'); });
       inputs[0].focus();
-      setTimeout(() => inputs.forEach(el => el.classList.remove('error-inp')), 2500);
+      errEl.classList.remove('hidden');
+      document.getElementById('otp-error-msg') &&
+        (document.getElementById('otp-error-msg').textContent = result.error);
+      errEl.textContent = result.error;
+      btn.disabled = false;
+      document.getElementById('verify-txt').textContent = 'Verificar código';
+      document.getElementById('verify-ico').textContent = 'arrow_forward';
+      return;
     }
-  }, 800);
+
+    // 2. OTP válido — crear la cuenta en el sheet
+    document.getElementById('verify-txt').textContent = 'Creando cuenta...';
+    const createResult = await KinsuAPI.createKinsurer({
+      nombre:   pending.nombre   || result.nombre || '',
+      email:    pending.email    || email,
+      telefono: pending.telefono || '',
+      password: pending.password || '',
+    });
+
+    if (createResult?.error) {
+      errEl.textContent = createResult.error;
+      errEl.classList.remove('hidden');
+      btn.disabled = false;
+      document.getElementById('verify-txt').textContent = 'Verificar código';
+      document.getElementById('verify-ico').textContent = 'arrow_forward';
+      return;
+    }
+
+    // 3. Guardar en sessionStorage y navegar
+    sessionStorage.removeItem('registro-pending');
+    sessionStorage.setItem('user', JSON.stringify({
+      nombre:      createResult.nombre || pending.nombre,
+      email:       createResult.email  || pending.email,
+      initials:    (createResult.nombre || pending.nombre || '').split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2),
+      kinsurerID:  createResult.kinsurerID,
+      nivel:       'Kinsurer Nuevo',
+      clabe:       '',
+      banco:       '',
+    }));
+
+    window.location.href = 'login-exitoso.html';
+
+  } catch(e) {
+    console.warn('Error verificando OTP:', e);
+    errEl.textContent = 'Error de conexión. Intenta de nuevo.';
+    errEl.classList.remove('hidden');
+    btn.disabled = false;
+    document.getElementById('verify-txt').textContent = 'Verificar código';
+    document.getElementById('verify-ico').textContent = 'arrow_forward';
+  }
 }
 
 // ── Countdown reenvío ──
@@ -239,5 +283,6 @@ function startCountdown() {
 }
 startCountdown();
 </script>
+<script src="kinsu-config.js"></script>
 </body>
 </html>

@@ -29,6 +29,24 @@ const KinsuAPI = {
 
   // ── AUTH ─────────────────────────────────────────
 
+  async checkEmail(email) {
+    const url = `${KINSU_CONFIG.APPS_SCRIPT_URL}?action=checkEmail&email=${encodeURIComponent(email)}`;
+    return this._get(url);
+  },
+
+  async sendOTP(email, nombre) {
+    return this._post({ action:'sendOTP', email, nombre });
+  },
+
+  async verifyOTP(email, otp) {
+    const url = `${KINSU_CONFIG.APPS_SCRIPT_URL}?action=verifyOTP&email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`;
+    return this._get(url);
+  },
+
+  async createKinsurer(data) {
+    return this._post({ action:'createKinsurer', data });
+  },
+
   async login(email, password) {
     const url = `${KINSU_CONFIG.APPS_SCRIPT_URL}?action=login&email=${encodeURIComponent(email)}&pwd=${encodeURIComponent(password)}`;
     return this._get(url);
