@@ -73,7 +73,7 @@
 // ── CONFIGURACIÓN GEMINI ──
 // Obtén tu API key gratuita en: https://aistudio.google.com
 const GEMINI_API_KEY = 'AIzaSyAGNOh9IFlObDj3arET0ArZdK0R_KBb5iw';
-const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + GEMINI_API_KEY;
+const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + GEMINI_API_KEY;
 
 // ── Contexto del Kinsurer ──
 const user     = JSON.parse(sessionStorage.getItem('user') || '{}');
@@ -190,8 +190,12 @@ async function callAna(msg) {
       })
     });
 
+    console.log('[Ana/Gemini] Status:', res.status);
     const data  = await res.json();
+    console.log('[Ana/Gemini] Response:', JSON.stringify(data).slice(0, 300));
     const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text
+      || data?.error?.message
+      || data?.promptFeedback?.blockReason
       || 'Lo siento, no pude procesar tu pregunta. ¿Puedes intentarlo de nuevo?';
 
     removeTyping();
@@ -214,7 +218,8 @@ async function callAna(msg) {
 
   } catch(e) {
     removeTyping();
-    addBubble('Tuve un problema de conexión. ¿Puedes intentarlo de nuevo? 🙏');
+    console.error('[Ana/Gemini] Error:', e);
+    addBubble('Error: ' + e.message + ' — revisa la consola (F12)');
     setQR(['Intentar de nuevo']);
   } finally {
     busy = false;
