@@ -1,655 +1,206 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="h-full bg-slate-50">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Kinsu - Iniciar Sesión</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<style>
-*, *::before, *::after { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; min-height: 100dvh; font-family: 'Inter', sans-serif; }
-.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-
-/* ── LAYOUT ── */
-.split { display: flex; min-height: 100dvh; }
-
-/* ── LEFT PANEL ── */
-.panel-l {
-  width: 52%;
-  flex-shrink: 0;
-  background: #0d1c2e;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 40px 52px;
-  position: relative;
-  overflow: hidden;
-}
-
-/* dot grid */
-.panel-l::before {
-  content: '';
-  position: absolute; inset: 0;
-  background-image: radial-gradient(circle, rgba(21,101,192,.12) 1px, transparent 1px);
-  background-size: 26px 26px;
-  pointer-events: none;
-}
-
-/* blue glow top-right */
-.panel-l::after {
-  content: '';
-  position: absolute;
-  top: -120px; right: -120px;
-  width: 440px; height: 440px;
-  background: radial-gradient(circle, rgba(21,101,192,.22) 0%, transparent 65%);
-  pointer-events: none;
-}
-
-/* green glow bottom-left */
-.glow-green {
-  position: absolute;
-  bottom: -80px; left: -60px;
-  width: 320px; height: 320px;
-  background: radial-gradient(circle, rgba(130,209,75,.12) 0%, transparent 65%);
-  pointer-events: none;
-}
-
-.l-top {
-  position: relative; z-index: 2;
-}
-.kinsu-logo {
-  height: 28px;
-  width: auto;
-  /* The logo PNG has dark bg so we invert to white */
-  filter: brightness(0) invert(1);
-}
-
-.l-center {
-  position: relative; z-index: 2;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 20px 0;
-}
-
-.l-headline {
-  font-size: 32px;
-  font-weight: 800;
-  color: #fff;
-  line-height: 1.25;
-  letter-spacing: -.5px;
-  text-align: center;
-  max-width: 340px;
-  margin-bottom: 14px;
-}
-/* only the last word in green */
-.l-headline .accent { color: #82d14b; }
-
-.l-sub {
-  font-size: 14px;
-  color: rgba(255,255,255,.45);
-  text-align: center;
-  max-width: 280px;
-  line-height: 1.65;
-  margin-bottom: 32px;
-}
-
-.hero-img {
-  width: 100%;
-  max-width: 340px;
-  border-radius: 50%;
-}
-
-.l-bottom {
-  position: relative; z-index: 2;
-  font-size: 11px;
-  color: rgba(255,255,255,.2);
-}
-
-/* ── RIGHT PANEL ── */
-.panel-r {
-  flex: 1;
-  background: #ffffff;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 52px 44px;
-  position: relative;
-}
-
-/* very subtle dot grid on right */
-.panel-r::before {
-  content: '';
-  position: absolute; inset: 0;
-  background-image: radial-gradient(circle, rgba(21,101,192,.04) 1px, transparent 1px);
-  background-size: 22px 22px;
-  pointer-events: none;
-}
-
-.r-inner {
-  width: 100%;
-  max-width: 380px;
-  position: relative; z-index: 2;
-}
-
-.eyebrow {
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .15em;
-  color: #1565c0;
-  margin-bottom: 8px;
-}
-
-.r-title {
-  font-size: 28px;
-  font-weight: 800;
-  color: #0d1c2e;
-  letter-spacing: -.5px;
-  line-height: 1.2;
-  margin-bottom: 6px;
-}
-
-.r-sub {
-  font-size: 14px;
-  color: #8899bb;
-  margin-bottom: 28px;
-  line-height: 1.5;
-}
-
-/* ── ERROR BANNER ── */
-.err-banner {
-  display: none;
-  margin-bottom: 16px;
-  padding: 11px 14px;
-  background: #fff0f0;
-  border: 1px solid #fca5a5;
-  border-radius: 12px;
-  font-size: 13px;
-  color: #b91c1c;
-  align-items: center;
-  gap: 8px;
-}
-.err-banner.show { display: flex; }
-
-/* ── FIELD ── */
-.f-label {
-  display: block;
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .12em;
-  color: #8899bb;
-  margin-bottom: 7px;
-}
-
-.f-wrap {
-  position: relative;
-  margin-bottom: 18px;
-}
-
-/*
-  KEY FIX: padding-left large enough so typed text
-  never overlaps the left icon.
-  Icon is at left:14px, size ~20px → safe zone ends at ~38px.
-  We use padding-left:50px to leave comfortable clearance.
-*/
-.f-inp {
-  display: block;
-  width: 100%;
-  height: 52px;
-  background: #f4f6fb;
-  border: 1.5px solid #e2e8f5;
-  border-radius: 12px;
-  /*
-    !important necesario para que Tailwind forms plugin
-    no sobreescriba el padding y el ícono izquierdo
-    no quede encima del texto escrito.
-    Ícono: left 15px, size 20px → zona segura termina en ~38px
-    Usamos 50px para clearance cómodo.
-  */
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  padding-left: 50px !important;
-  padding-right: 48px !important;
-  font-size: 14px;
-  font-weight: 500;
-  color: #0d1c2e;
-  outline: none;
-  transition: background .15s, border-color .15s, box-shadow .15s;
-  font-family: 'Inter', sans-serif;
-  line-height: 52px;
-  box-sizing: border-box;
-}
-.f-inp:focus {
-  background: #ffffff;
-  border-color: #1565c0;
-  box-shadow: 0 0 0 3px rgba(21,101,192,.1);
-}
-.f-inp.err {
-  background: #fff8f8;
-  border-color: #ef4444;
-  box-shadow: 0 0 0 3px rgba(239,68,68,.08);
-}
-.f-inp::placeholder {
-  color: #b8c4d8;
-  font-weight: 400;
-}
-
-/* Left icon — purely decorative, pointer-events none */
-.f-icon-l {
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #b8c4d8;
-  font-size: 20px;
-  pointer-events: none;
-  user-select: none;
-  line-height: 1;
-}
-
-/* Right icon (visibility toggle) */
-.f-icon-r {
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #b8c4d8;
-  font-size: 20px;
-  cursor: pointer;
-  user-select: none;
-  line-height: 1;
-  transition: color .15s;
-}
-.f-icon-r:hover { color: #1565c0; }
-
-/* Forgot password */
-.forgot-row {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: -10px;
-  margin-bottom: 24px;
-}
-.forgot-btn {
-  font-size: 12px;
-  font-weight: 600;
-  color: #1565c0;
-  cursor: pointer;
-  background: none;
-  border: none;
-  font-family: 'Inter', sans-serif;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  padding: 0;
-}
-.forgot-btn:hover { color: #0d4fa0; }
-
-/* ── BUTTONS ── */
-.btn-primary {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  height: 52px;
-  background: #1565c0;
-  color: #fff;
-  font-size: 15px;
-  font-weight: 700;
-  border: none;
-  border-radius: 99px;
-  cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  transition: background .15s, transform .1s, opacity .15s;
-  margin-bottom: 12px;
-  letter-spacing: -.1px;
-}
-.btn-primary:hover { background: #1255a8; }
-.btn-primary:active { transform: scale(.98); }
-
-.btn-secondary {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 52px;
-  background: transparent;
-  color: #1565c0;
-  font-size: 15px;
-  font-weight: 700;
-  border: 1.5px solid #d4dcf5;
-  border-radius: 99px;
-  cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  transition: background .15s, border-color .15s, transform .1s;
-  margin-bottom: 24px;
-}
-.btn-secondary:hover { background: #f0f4ff; border-color: #1565c0; }
-.btn-secondary:active { transform: scale(.98); }
-
-/* ── DIVIDER ── */
-.divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 14px;
-}
-.div-line { flex: 1; height: 1px; background: #edf0f7; }
-.div-txt { font-size: 11px; color: #c0cad8; font-weight: 500; white-space: nowrap; }
-
-/* ── WHATSAPP BUTTON ── */
-.btn-wa {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  width: 100%;
-  height: 48px;
-  background: #f0fdf4;
-  color: #166534;
-  font-size: 13px;
-  font-weight: 600;
-  border: 1.5px solid #bbf7d0;
-  border-radius: 99px;
-  cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  text-decoration: none;
-  transition: background .15s, border-color .15s, transform .1s;
-}
-.btn-wa:hover { background: #dcfce7; border-color: #86efac; }
-.btn-wa:active { transform: scale(.98); }
-.wa-circle {
-  width: 22px; height: 22px;
-  border-radius: 50%;
-  background: #25d366;
-  flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-}
-
-/* ── DEMO HINT ── */
-.demo-hint {
-  margin-top: 18px;
-  padding: 10px 14px;
-  background: #f4f6fb;
-  border: 1px solid #e2e8f5;
-  border-radius: 10px;
-  font-size: 11px;
-  color: #8899bb;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-.demo-hint strong { color: #1565c0; font-weight: 600; }
-
-/* ── TERMS ── */
-.terms {
-  margin-top: 18px;
-  font-size: 11px;
-  color: #b8c4d8;
-  text-align: center;
-  line-height: 1.6;
-}
-.terms a { color: #1565c0; text-decoration: underline; cursor: pointer; }
-
-/* ── RESPONSIVE ── */
-@media (max-width: 768px) {
-  .split { flex-direction: column; }
-  .panel-l {
-    width: 100%;
-    padding: 28px 24px 20px;
-    min-height: auto;
-  }
-  .l-headline { font-size: 22px; }
-  .l-sub { font-size: 13px; margin-bottom: 20px; }
-  .l-center { padding: 10px 0; }
-  .hero-img { max-width: 200px; }
-  .panel-r { padding: 32px 24px 48px; }
-  .r-title { font-size: 22px; }
-  .r-sub { margin-bottom: 20px; }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Kinsu — Acceso Kinsurer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        kinsu: {
+                            50: '#f0f5ff',
+                            100: '#e0ebff',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body>
-<div class="split">
+<body class="h-full flex flex-col justify-between bg-slate-50 text-slate-800 font-sans antialiased">
 
-  <!-- ════ LEFT PANEL ════ -->
-  <div class="panel-l">
-    <div class="glow-green"></div>
+    <main class="flex-1 flex items-center justify-center p-4 sm:p-6 md:p-8">
+        <div class="w-full max-w-md bg-white rounded-2xl shadow-xl shadow-slate-100 border border-slate-100 p-6 sm:p-8 transition-all">
+            
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-14 h-14 bg-kinsu-50 text-kinsu-600 rounded-2xl mb-4 shadow-sm">
+                    <span class="material-symbols-outlined style='font-size:32px; font-weight:700;'">shield_heart</span>
+                </div>
+                <h1 class="text-2xl font-extrabold text-slate-950 tracking-tight">Bienvenido a Kinsu</h1>
+                <p class="text-sm text-slate-500 mt-1">Ingresa a tu cuenta para gestionar tus comisiones</p>
+            </div>
 
-    <!-- Logo -->
-    <div class="l-top">
-      <div style="display:flex;align-items:center;gap:2px;">
-        <span style="font-family:'Inter',sans-serif;font-size:22px;font-weight:900;color:#ffffff;letter-spacing:-0.5px;">kinsu</span>
-        <span style="font-family:'Inter',sans-serif;font-size:24px;font-weight:200;color:#82d14b;line-height:1;margin-left:1px;">›</span>
-      </div>
-    </div>
+            <div id="error-banner" class="hidden flex items-start gap-3 bg-rose-50 border border-rose-100 text-rose-700 p-4 rounded-xl mb-6 text-sm transition-all animate-shake">
+                <span class="material-symbols-outlined text-rose-500 flex-shrink-0 mt-0.5">error</span>
+                <div>
+                    <span class="font-semibold block">Error de autenticación</span>
+                    <span id="error-message">El correo o la contraseña son incorrectos. Por favor, verifica tus datos.</span>
+                </div>
+            </div>
 
-    <!-- Center content -->
-    <div class="l-center">
-      <h1 class="l-headline">
-        Recomienda seguros.<br>
-        <span class="accent">Genera ganancias</span> adicionales.
-      </h1>
-      <p class="l-sub">
-        La plataforma para Kinsurers que convierte tus contactos en ingresos — sin ser agente, sin complicaciones.
-      </p>
-      <img src="kinsu-hero.png" alt="Kinsurer trabajando" class="hero-img"/>
-    </div>
+            <form id="login-form" onsubmit="handleFormSubmit(event)" class="space-y-5">
+                
+                <div>
+                    <label for="email" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Correo Electrónico</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xl">mail</span>
+                        <input type="email" id="email" required autocomplete="email"
+                            class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-medium placeholder-slate-400 focus:outline-none focus:border-kinsu-600 focus:ring-4 focus:ring-kinsu-50 transition-all text-sm"
+                            placeholder="ejemplo@correo.com">
+                    </div>
+                </div>
 
-    <!-- Footer -->
-    <div class="l-bottom">© 2026 Kinsu · Insurance Referrals</div>
-  </div>
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <label for="password" class="block text-xs font-semibold uppercase tracking-wider text-slate-600">Contraseña</label>
+                        <a href="recuperar-contrasena.html" class="text-xs font-semibold text-kinsu-600 hover:text-kinsu-700 transition">¿La olvidaste?</a>
+                    </div>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xl">lock</span>
+                        <input type="password" id="password" required autocomplete="current-password"
+                            class="w-full pl-11 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-medium placeholder-slate-400 focus:outline-none focus:border-kinsu-600 focus:ring-4 focus:ring-kinsu-50 transition-all text-sm"
+                            placeholder="••••••••">
+                        <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition flex items-center justify-center">
+                            <span id="password-icon" class="material-symbols-outlined text-xl">visibility</span>
+                        </button>
+                    </div>
+                </div>
 
-  <!-- ════ RIGHT PANEL ════ -->
-  <div class="panel-r">
-    <div class="r-inner">
+                <button type="submit" id="submit-btn"
+                    class="w-full bg-kinsu-600 hover:bg-kinsu-700 text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg shadow-kinsu-100 active:scale-[0.98] transition-all text-sm mt-2 flex items-center justify-center gap-2">
+                    <span>Ingresar a mi Cuenta</span>
+                    <span class="material-symbols-outlined text-xl">arrow_forward</span>
+                </button>
+            </form>
 
-      <p class="eyebrow">Portal Kinsurer</p>
-      <h2 class="r-title">Bienvenido de vuelta</h2>
-      <p class="r-sub">Ingresa tus datos para continuar a tu panel.</p>
+            <div class="text-center mt-8 pt-6 border-t border-slate-100">
+                <p class="text-sm text-slate-500">
+                    ¿Aún no eres un Kinsurer? 
+                    <a href="registro.html" class="font-bold text-kinsu-600 hover:text-kinsu-700 transition whitespace-nowrap">Regístrate aquí</a>
+                </p>
+            </div>
 
-      <!-- Error banner -->
-      <div class="err-banner" id="err-banner">
-        <span class="material-symbols-outlined" style="font-size:18px;flex-shrink:0;">error</span>
-        <span>Correo o contraseña incorrectos. Intenta de nuevo.</span>
-      </div>
-
-      <!-- Email field -->
-      <label class="f-label" for="email">Correo electrónico</label>
-      <div class="f-wrap">
-        <span class="material-symbols-outlined f-icon-l" aria-hidden="true">mail</span>
-        <input
-          class="f-inp"
-          id="email"
-          type="email"
-          placeholder="nombre@ejemplo.com"
-          autocomplete="email"
-          onkeydown="if(event.key==='Enter')doLogin()"
-          style="padding-left:50px !important;padding-right:48px !important;"
-        />
-      </div>
-
-      <!-- Password field -->
-      <label class="f-label" for="password">Contraseña</label>
-      <div class="f-wrap" style="margin-bottom:10px;">
-        <span class="material-symbols-outlined f-icon-l" aria-hidden="true">lock</span>
-        <input
-          class="f-inp"
-          id="password"
-          type="password"
-          placeholder="••••••••"
-          autocomplete="current-password"
-          onkeydown="if(event.key==='Enter')doLogin()"
-          style="padding-left:50px !important;padding-right:48px !important;"
-        />
-        <span
-          class="material-symbols-outlined f-icon-r"
-          id="eye-icon"
-          onclick="togglePass()"
-          role="button"
-          aria-label="Mostrar contraseña"
-        >visibility</span>
-      </div>
-
-      <!-- Forgot password -->
-      <div class="forgot-row">
-        <button class="forgot-btn" onclick="window.location.href='recuperar-contrasena.html'">
-          Olvidé mi contraseña
-        </button>
-      </div>
-
-      <!-- Primary CTA -->
-      <div class="btn-primary" id="btn-login" onclick="doLogin()" role="button">
-        <span id="btn-txt">Iniciar sesión</span>
-        <span class="material-symbols-outlined" id="btn-ico" style="font-size:18px;">arrow_forward</span>
-      </div>
-
-      <!-- Secondary CTA -->
-      <div class="btn-secondary" onclick="window.location.href='registro.html'" role="button">
-        Crear cuenta
-      </div>
-
-      <!-- Divider -->
-      <div class="divider">
-        <div class="div-line"></div>
-        <span class="div-txt">¿Necesitas ayuda?</span>
-        <div class="div-line"></div>
-      </div>
-
-      <!-- WhatsApp -->
-      <a
-        href="https://wa.me/521234567890?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20Kinsu"
-        target="_blank"
-        class="btn-wa"
-      >
-        <div class="wa-circle">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="white">
-            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.18-2.587-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.522-2.961-2.638-.087-.117-.708-.941-.708-1.794 0-.852.448-1.271.607-1.446.159-.175.347-.22.463-.22s.231.001.332.005c.109.004.253-.042.396.3.145.348.491 1.196.534 1.282.043.087.072.188.014.303-.058.117-.087.188-.173.289-.087.101-.188.225-.268.303-.09.087-.183.181-.079.359.103.179.46.759.986 1.229.677.605 1.247.794 1.42.882.174.088.275.073.377-.043.101-.117.434-.506.549-.68.116-.174.232-.145.39-.087s1.012.477 1.186.564c.174.087.289.13.332.202.045.072.045.419-.1.824z"/>
-          </svg>
         </div>
-        Contactar soporte por WhatsApp
-      </a>
+    </main>
 
-      <!-- Demo hint -->
-      <div class="demo-hint">
-        <span class="material-symbols-outlined" style="font-size:14px;color:#82d14b;flex-shrink:0;">info</span>
-        Demo: <strong>kinsurer@kinsu.mx</strong> &nbsp;·&nbsp; contraseña <strong>1234</strong>
-      </div>
+    <footer class="py-4 text-center text-xs text-slate-400 border-t border-slate-100 bg-white">
+        &copy; 2026 Kinsu. Todos los derechos reservados. v1.1 Segura
+    </footer>
 
-      <!-- Terms -->
-      <p class="terms">
-        Al continuar aceptas los <a>Términos de uso</a> y la <a>Política de privacidad</a> de Kinsu.
-      </p>
+    <script src="kinsu-config.js"></script>
+    <script>
+        // Verificación de sesión previa activa al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            if (sessionStorage.getItem('user')) {
+                window.location.href = 'dashboard.html';
+            }
+        });
 
-    </div>
-  </div>
+        // Alternar visualización de caracteres de contraseña
+        function togglePasswordVisibility() {
+            const pwdInput = document.getElementById('password');
+            const pwdIcon  = document.getElementById('password-icon');
+            if (pwdInput.type === 'password') {
+                pwdInput.type = 'text';
+                pwdIcon.textContent = 'visibility_off';
+            } else {
+                pwdInput.type = 'password';
+                pwdIcon.textContent = 'visibility';
+            }
+        }
 
-</div>
+        // Manejador del evento de envío del formulario
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            doLogin();
+        }
 
-<script>
-function togglePass() {
-  const p   = document.getElementById('password');
-  const ico = document.getElementById('eye-icon');
-  const isHidden = p.type === 'password';
-  p.type = isHidden ? 'text' : 'password';
-  ico.textContent = isHidden ? 'visibility_off' : 'visibility';
-}
+        // FUNCIÓN CORE: Proceso seguro de login contra el Apps Script
+        async function doLogin() {
+            const emailField = document.getElementById('email');
+            const passField  = document.getElementById('password');
+            const submitBtn  = document.getElementById('submit-btn');
+            const errorBanner= document.getElementById('error-banner');
+            const errorMsg   = document.getElementById('error-message');
 
-async function doLogin() {
-  const email   = document.getElementById('email').value.trim();
-  const pass    = document.getElementById('password').value.trim();
-  const btn     = document.getElementById('btn-login');
-  const errBanner = document.getElementById('err-banner');
-  const emailEl = document.getElementById('email');
-  const passEl  = document.getElementById('password');
+            const email = emailField.value.trim();
+            const pass  = passField.value;
 
-  // Reset
-  errBanner.classList.remove('show');
-  emailEl.classList.remove('err');
-  passEl.classList.remove('err');
+            if (!email || !pass) return;
 
-  // Validación básica
-  if (!email) { emailEl.classList.add('err'); emailEl.focus(); return; }
-  if (!pass)  { passEl.classList.add('err');  passEl.focus();  return; }
+            // Bloqueo visual de carga del botón
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
+            submitBtn.innerHTML = `
+                <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Validando credenciales...</span>
+            `;
+            errorBanner.classList.add('hidden');
 
-  // Loading
-  btn.style.pointerEvents = 'none';
-  btn.style.opacity = '.72';
-  document.getElementById('btn-txt').textContent = 'Verificando...';
-  document.getElementById('btn-ico').textContent = 'hourglass_empty';
+            try {
+                // Consumo de tu API centralizada en kinsu-config.js
+                const result = await KinsuAPI.login(email, pass);
 
-  function resetBtn() {
-    btn.style.pointerEvents = 'auto';
-    btn.style.opacity = '1';
-    document.getElementById('btn-txt').textContent = 'Iniciar sesión';
-    document.getElementById('btn-ico').textContent = 'arrow_forward';
-  }
+                // Validación estricta del éxito del backend
+                if (result && result.success && result.kinsurer) {
+                    const k = result.kinsurer;
+                    const nombre = k['Nombre Completo'] || 'Kinsurer';
+                    const initials = nombre.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 
-  function showError() {
-    resetBtn();
-    emailEl.classList.add('err');
-    passEl.classList.add('err');
-    errBanner.classList.add('show');
-    passEl.value = '';
-    passEl.focus();
-  }
+                    // Mapeo seguro de la sesión en el navegador
+                    sessionStorage.setItem('user', JSON.stringify({
+                        nombre:      nombre,
+                        email:       k['Email'] || email,
+                        initials:    initials,
+                        kinsurerID:  k['ID_Kinsurer'] || 'KIN-0001',
+                        nivel:       k['Nivel'] || 'Kinsurer Nuevo',
+                        clabe:       k['CLABE Bancaria'] || '',
+                        banco:       k['Banco'] || '',
+                    }));
 
-  try {
-    // 1. Intentar login con el sheet
-    const result = await KinsuAPI.login(email, pass);
+                    // Redirección inmediata por éxito
+                    window.location.href = 'login-exitoso.html';
+                } else {
+                    // Manejo de rechazo controlado de contraseñas por el servidor
+                    const servidorError = (result && result.error) ? result.error : 'Correo o contraseña incorrectos.';
+                    showLoginError(servidorError);
+                }
+            } catch (err) {
+                console.error("Fallo crítico de conexión de red:", err);
+                showLoginError('Error de red. No se pudo conectar con el servidor de bases de datos.');
+            } finally {
+                // Restablecer estado operativo del botón
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+                submitBtn.innerHTML = `
+                    <span>Ingresar a mi Cuenta</span>
+                    <span class="material-symbols-outlined text-xl">arrow_forward</span>
+                `;
+            }
+        }
 
-    if (result && result.success && result.kinsurer) {
-      const k        = result.kinsurer;
-      const nombre   = k['Nombre Completo'] || 'Kinsurer';
-      const initials = nombre.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
-
-      sessionStorage.setItem('user', JSON.stringify({
-        nombre,
-        email:       k['Email']        || email,
-        initials,
-        kinsurerID:  k['ID_Kinsurer']  || 'KIN-0001',
-        nivel:       k['Nivel']        || 'Kinsurer Certificado',
-        clabe:       k['CLABE Bancaria']|| '',
-        banco:       k['Banco']        || '',
-      }));
-      window.location.href = 'login-exitoso.html';
-
-    } else if (result && result.error) {
-      // Error específico del sheet (email no encontrado, contraseña incorrecta)
-      showError();
-
-    } else {
-      // API no respondió — fallback al login demo
-      if (email === 'kinsurer@kinsu.mx' && pass === '1234') {
-        sessionStorage.setItem('user', JSON.stringify({
-          nombre: 'Jimena Ríos', email, initials: 'JR',
-          kinsurerID: 'KIN-0001', nivel: 'Kinsurer Certificado'
-        }));
-        window.location.href = 'login-exitoso.html';
-      } else {
-        showError();
-      }
-    }
-  } catch(err) {
-    // Error de red — fallback demo
-    if (email === 'kinsurer@kinsu.mx' && pass === '1234') {
-      sessionStorage.setItem('user', JSON.stringify({
-        nombre: 'Jimena Ríos', email, initials: 'JR',
-        kinsurerID: 'KIN-0001', nivel: 'Kinsurer Certificado'
-      }));
-      window.location.href = 'login-exitoso.html';
-    } else {
-      showError();
-    }
-  }
-}
-</script>
-<script src="kinsu-config.js"></script>
+        // Mostrar errores dinámicos en la UI
+        function showLoginError(msg) {
+            const errorBanner = document.getElementById('error-banner');
+            const errorMsg    = document.getElementById('error-message');
+            errorMsg.textContent = msg;
+            errorBanner.classList.remove('hidden');
+            
+            // Animación de rebote visual para alertas
+            errorBanner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
 </body>
 </html>
