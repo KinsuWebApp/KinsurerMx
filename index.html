@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="es" class="h-full bg-slate-50">
+<html lang="es" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Kinsu — Acceso Kinsurer</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+    <title>Kinsu - Iniciar Sesión</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
     
     <script>
         tailwind.config = {
@@ -14,193 +15,252 @@
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
                         kinsu: {
-                            50: '#f0f5ff',
-                            100: '#e0ebff',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            900: '#1e3a8a'
+                            blue: '#4575BA',
+                            blueDark: '#355c94',
+                            green: '#BFFD70',
+                            navy: '#0d1c2e'
                         }
                     }
                 }
             }
         }
     </script>
+    
+    <style>
+        body {
+            background-color: #0d1c2e;
+            position: relative;
+            overflow-x: hidden;
+        }
+        /* Cuadrícula de puntos usando el azul corporativo */
+        body::before {
+            content: '';
+            position: absolute; inset: 0;
+            background-image: radial-gradient(circle, rgba(69, 117, 186, 0.08) 1px, transparent 1px);
+            background-size: 24px 24px;
+            pointer-events: none;
+            z-index: 1;
+        }
+        /* Resplandor Azul Superior Derecho */
+        body::after {
+            content: '';
+            position: absolute;
+            top: -10%; right: -10%;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(69, 117, 186, 0.18) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        /* Resplandor Verde Inferior Izquierdo */
+        .glow-green {
+            position: absolute;
+            bottom: -10%; left: -10%;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(191, 253, 112, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        /* Target táctil óptimo para inputs en mobile sin zoom automático */
+        .f-inp {
+            font-size: 16px !important; /* Evita que iOS haga zoom automático al dar tap */
+        }
+        @media (min-width: 640px) {
+            .f-inp { font-size: 14px !important; }
+        }
+    </style>
 </head>
-<body class="h-full flex flex-col justify-between bg-slate-50 text-slate-800 font-sans antialiased">
+<body class="min-h-full flex flex-col justify-between antialiased selection:bg-kinsu-blue selection:text-white">
+    
+    <div class="glow-green"></div>
 
-    <main class="flex-1 flex items-center justify-center p-4 sm:p-6 md:p-8">
-        <div class="w-full max-w-md bg-white rounded-2xl shadow-xl shadow-slate-100 border border-slate-100 p-6 sm:p-8 transition-all">
+    <main class="flex-1 flex items-center justify-center p-4 sm:p-6 md:p-8 relative z-10">
+        <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-slate-100 p-6 sm:p-8 transition-all duration-300">
             
-            <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-14 h-14 bg-kinsu-50 text-kinsu-600 rounded-2xl mb-4 shadow-sm">
-                    <span class="material-symbols-outlined style='font-size:32px; font-weight:700;'">shield_heart</span>
+            <div class="text-center mb-6">
+                <div class="inline-flex items-center gap-1 mb-2">
+                    <span class="font-black text-2xl text-kinsu-navy tracking-tight">kinsu</span>
+                    <span class="text-2xl font-light text-kinsu-blue leading-none select-none">›</span>
                 </div>
-                <h1 class="text-2xl font-extrabold text-slate-950 tracking-tight">Bienvenido a Kinsu</h1>
-                <p class="text-sm text-slate-500 mt-1">Ingresa a tu cuenta para gestionar tus comisiones</p>
+                <h2 class="text-xl font-extrabold text-kinsu-navy tracking-tight sm:text-2xl">Bienvenido de vuelta</h2>
+                <p class="text-xs text-slate-400 mt-1">Ingresa tus credenciales para acceder a tu panel de comisiones</p>
             </div>
 
-            <div id="error-banner" class="hidden flex items-start gap-3 bg-rose-50 border border-rose-100 text-rose-700 p-4 rounded-xl mb-6 text-sm transition-all animate-shake">
-                <span class="material-symbols-outlined text-rose-500 flex-shrink-0 mt-0.5">error</span>
-                <div>
-                    <span class="font-semibold block">Error de autenticación</span>
-                    <span id="error-message">El correo o la contraseña son incorrectos. Por favor, verifica tus datos.</span>
-                </div>
+            <div id="err-banner" class="hidden flex items-center gap-2.5 bg-rose-50 border border-rose-100 text-rose-700 p-3.5 rounded-xl mb-5 text-xs font-medium">
+                <span class="material-symbols-outlined text-rose-500 text-lg flex-shrink-0">error</span>
+                <span>Correo o contraseña incorrectos. Intenta de nuevo.</span>
             </div>
 
-            <form id="login-form" onsubmit="handleFormSubmit(event)" class="space-y-5">
+            <div class="space-y-4">
                 
                 <div>
-                    <label for="email" class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-2">Correo Electrónico</label>
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5" for="email">Correo electrónico</label>
                     <div class="relative">
-                        <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xl">mail</span>
-                        <input type="email" id="email" required autocomplete="email"
-                            class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-medium placeholder-slate-400 focus:outline-none focus:border-kinsu-600 focus:ring-4 focus:ring-kinsu-50 transition-all text-sm"
-                            placeholder="ejemplo@correo.com">
+                        <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-300 text-xl pointer-events-none select-none">mail</span>
+                        <input
+                            class="f-inp w-full h-12 pl-11 pr-4 bg-slate-50 border border-slate-200 rounded-xl font-medium text-kinsu-navy placeholder-slate-300 focus:outline-none focus:border-kinsu-blue focus:ring-4 focus:ring-blue-50 transition-all border-1.5"
+                            id="email"
+                            type="email"
+                            placeholder="nombre@ejemplo.com"
+                            autocomplete="email"
+                            onkeydown="if(event.key==='Enter')doLogin()"
+                        />
                     </div>
                 </div>
 
                 <div>
-                    <div class="flex justify-between items-center mb-2">
-                        <label for="password" class="block text-xs font-semibold uppercase tracking-wider text-slate-600">Contraseña</label>
-                        <a href="recuperar-contrasena.html" class="text-xs font-semibold text-kinsu-600 hover:text-kinsu-700 transition">¿La olvidaste?</a>
-                    </div>
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5" for="password">Contraseña</label>
                     <div class="relative">
-                        <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xl">lock</span>
-                        <input type="password" id="password" required autocomplete="current-password"
-                            class="w-full pl-11 pr-12 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-medium placeholder-slate-400 focus:outline-none focus:border-kinsu-600 focus:ring-4 focus:ring-kinsu-50 transition-all text-sm"
-                            placeholder="••••••••">
-                        <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition flex items-center justify-center">
-                            <span id="password-icon" class="material-symbols-outlined text-xl">visibility</span>
-                        </button>
+                        <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-300 text-xl pointer-events-none select-none">lock</span>
+                        <input
+                            class="f-inp w-full h-12 pl-11 pr-12 bg-slate-50 border border-slate-200 rounded-xl font-medium text-kinsu-navy placeholder-slate-300 focus:outline-none focus:border-kinsu-blue focus:ring-4 focus:ring-blue-50 transition-all border-1.5"
+                            id="password"
+                            type="password"
+                            placeholder="••••••••"
+                            autocomplete="current-password"
+                            onkeydown="if(event.key==='Enter')doLogin()"
+                        />
+                        <span
+                            class="material-symbols-outlined absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-300 text-xl cursor-pointer hover:text-kinsu-blue select-none transition-colors"
+                            id="eye-icon"
+                            onclick="togglePass()"
+                            role="button"
+                            aria-label="Mostrar contraseña"
+                        >visibility</span>
                     </div>
                 </div>
 
-                <button type="submit" id="submit-btn"
-                    class="w-full bg-kinsu-600 hover:bg-kinsu-700 text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg shadow-kinsu-100 active:scale-[0.98] transition-all text-sm mt-2 flex items-center justify-center gap-2">
-                    <span>Ingresar a mi Cuenta</span>
-                    <span class="material-symbols-outlined text-xl">arrow_forward</span>
-                </button>
-            </form>
+                <div class="flex justify-end">
+                    <button class="text-xs font-semibold text-kinsu-blue hover:text-kinsu-blueDark underline underline-offset-2 transition-colors" onclick="window.location.href='recuperar-contrasena.html'">
+                        Olvidé mi contraseña
+                    </button>
+                </div>
 
-            <div class="text-center mt-8 pt-6 border-t border-slate-100">
-                <p class="text-sm text-slate-500">
-                    ¿Aún no eres un Kinsurer? 
-                    <a href="registro.html" class="font-bold text-kinsu-600 hover:text-kinsu-700 transition whitespace-nowrap">Regístrate aquí</a>
+                <div class="pt-2 space-y-2">
+                    <button 
+                        id="btn-login" 
+                        onclick="doLogin()" 
+                        class="w-full h-12 bg-kinsu-blue hover:bg-kinsu-blueDark text-white font-bold text-sm rounded-full flex items-center justify-center gap-2 active:scale-[0.98] transition-all shadow-lg shadow-blue-900/10"
+                    >
+                        <span id="btn-txt">Iniciar sesión</span>
+                        <span class="material-symbols-outlined text-lg" id="btn-ico">arrow_forward</span>
+                    </button>
+
+                    <button 
+                        onclick="window.location.href='registro.html'" 
+                        class="w-full h-12 bg-transparent text-kinsu-blue border-1.5 border-slate-200 hover:border-kinsu-blue hover:bg-slate-50 font-bold text-sm rounded-full flex items-center justify-center active:scale-[0.98] transition-all"
+                    >
+                        Crear cuenta
+                    </button>
+                </div>
+
+                <div class="flex items-center gap-3 py-2">
+                    <div class="flex-1 h-[1px] bg-slate-100"></div>
+                    <span class="text-[10px] text-slate-300 font-bold uppercase tracking-wider">¿Necesitas ayuda?</span>
+                    <div class="flex-1 h-[1px] bg-slate-100"></div>
+                </div>
+
+                <a
+                    href="https://wa.me/521234567890?text=Hola%2C%20necesito%20ayuda%20con%20mi%20cuenta%20Kinsu"
+                    target="_blank"
+                    class="w-full h-12 bg-emerald-50 text-emerald-800 border border-emerald-100 hover:bg-emerald-100 rounded-full flex items-center justify-center gap-2 text-xs font-bold active:scale-[0.98] transition-all text-center"
+                >
+                    <div class="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center flex-shrink-0 shadow-sm">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="white">
+                            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766 0-3.18-2.587-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.522-2.961-2.638-.087-.117-.708-.941-.708-1.794 0-.852.448-1.271.607-1.446.159-.175.347-.22.463-.22s.231.001.332.005c.109.004.253-.042.396.3.145.348.491 1.196.534 1.282.043.087.072.188.014.303-.058.117-.087.188-.173.289-.087.101-.188.225-.268.303-.09.087-.183.181-.079.359.103.179.46.759.986 1.229.677.605 1.247.794 1.42.882.174.088.275.073.377-.043.101-.117.434-.506.549-.68.116-.174.232-.145.39-.087s1.012.477 1.186.564c.174.087.289.13.332.202.045.072.045.419-.1.824z"/>
+                        </svg>
+                    </div>
+                    Contactar soporte por WhatsApp
+                </a>
+
+                <p class="text-[10px] text-slate-400 text-center line-heading-relaxed pt-2">
+                    Al continuar aceptas nuestros <a class="text-kinsu-blue hover:text-kinsu-blueDark underline cursor-pointer">Términos de uso</a> y <a class="text-kinsu-blue hover:text-kinsu-blueDark underline cursor-pointer">Política de privacidad</a>.
                 </p>
-            </div>
 
+            </div>
         </div>
     </main>
 
-    <footer class="py-4 text-center text-xs text-slate-400 border-t border-slate-100 bg-white">
-        &copy; 2026 Kinsu. Todos los derechos reservados. v1.1 Segura
+    <footer class="py-4 text-center text-[10px] text-slate-500 bg-kinsu-navy/40 relative z-10 border-t border-slate-900/50">
+        &copy; 2026 Kinsu · Prospección Inteligente de Seguros · v1.2 Canónica
     </footer>
 
-    <script src="kinsu-config.js"></script>
     <script>
-        // Verificación de sesión previa activa al cargar la página
-        document.addEventListener('DOMContentLoaded', () => {
-            if (sessionStorage.getItem('user')) {
-                window.location.href = 'dashboard.html';
-            }
-        });
+    function togglePass() {
+        const p = document.getElementById('password');
+        const ico = document.getElementById('eye-icon');
+        const isHidden = p.type === 'password';
+        p.type = isHidden ? 'text' : 'password';
+        ico.textContent = isHidden ? 'visibility_off' : 'visibility';
+    }
 
-        // Alternar visualización de caracteres de contraseña
-        function togglePasswordVisibility() {
-            const pwdInput = document.getElementById('password');
-            const pwdIcon  = document.getElementById('password-icon');
-            if (pwdInput.type === 'password') {
-                pwdInput.type = 'text';
-                pwdIcon.textContent = 'visibility_off';
+    // LÓGICA DE PRODUCCIÓN SEGURA (SHA-256)
+    async function doLogin() {
+        const email = document.getElementById('email').value.trim();
+        const pass = document.getElementById('password').value.trim();
+        const btn = document.getElementById('btn-login');
+        const errBanner = document.getElementById('err-banner');
+        const emailEl = document.getElementById('email');
+        const passEl = document.getElementById('password');
+
+        // Reinicio de estados visuales de error
+        errBanner.classList.add('hidden');
+        emailEl.classList.remove('border-rose-500', 'bg-rose-50');
+        passEl.classList.remove('border-rose-500', 'bg-rose-50');
+
+        if (!email) { emailEl.classList.add('border-rose-500', 'bg-rose-50'); emailEl.focus(); return; }
+        if (!pass)  { passEl.classList.add('border-rose-500', 'bg-rose-50');  passEl.focus();  return; }
+
+        // Bloqueo de UI por carga
+        btn.style.pointerEvents = 'none';
+        btn.style.opacity = '.7';
+        document.getElementById('btn-txt').textContent = 'Verificando...';
+        document.getElementById('btn-ico').textContent = 'hourglass_empty';
+
+        function resetBtn() {
+            btn.style.pointerEvents = 'auto';
+            btn.style.opacity = '1';
+            document.getElementById('btn-txt').textContent = 'Iniciar sesión';
+            document.getElementById('btn-ico').textContent = 'arrow_forward';
+        }
+
+        function showError() {
+            resetBtn();
+            emailEl.classList.add('border-rose-500', 'bg-rose-50');
+            passEl.classList.add('border-rose-500', 'bg-rose-50');
+            errBanner.classList.remove('hidden');
+            passEl.value = '';
+            passEl.focus();
+        }
+
+        try {
+            // Consumo directo del módulo de red unificado
+            const result = await KinsuAPI.login(email, pass);
+
+            if (result && result.success && result.kinsurer) {
+                const k = result.kinsurer;
+                const nombre = k['Nombre Completo'] || 'Kinsurer';
+                const initials = nombre.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
+
+                // Persistencia limpia de la sesión activa
+                sessionStorage.setItem('user', JSON.stringify({
+                    nombre,
+                    email: k['Email'] || email,
+                    initials,
+                    kinsurerID: k['ID_Kinsurer'] || 'KIN-0001',
+                    nivel: k['Nivel'] || 'Kinsurer Nuevo',
+                    clabe: k['CLABE Bancaria'] || '',
+                    banco: k['Banco'] || '',
+                }));
+                window.location.href = 'login-exitoso.html';
             } else {
-                pwdInput.type = 'password';
-                pwdIcon.textContent = 'visibility';
+                showError();
             }
+        } catch(err) {
+            console.error("Fallo crítico en solicitud de login:", err);
+            showError();
         }
-
-        // Manejador del evento de envío del formulario
-        function handleFormSubmit(event) {
-            event.preventDefault();
-            doLogin();
-        }
-
-        // FUNCIÓN CORE: Proceso seguro de login contra el Apps Script
-        async function doLogin() {
-            const emailField = document.getElementById('email');
-            const passField  = document.getElementById('password');
-            const submitBtn  = document.getElementById('submit-btn');
-            const errorBanner= document.getElementById('error-banner');
-            const errorMsg   = document.getElementById('error-message');
-
-            const email = emailField.value.trim();
-            const pass  = passField.value;
-
-            if (!email || !pass) return;
-
-            // Bloqueo visual de carga del botón
-            submitBtn.disabled = true;
-            submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
-            submitBtn.innerHTML = `
-                <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                <span>Validando credenciales...</span>
-            `;
-            errorBanner.classList.add('hidden');
-
-            try {
-                // Consumo de tu API centralizada en kinsu-config.js
-                const result = await KinsuAPI.login(email, pass);
-
-                // Validación estricta del éxito del backend
-                if (result && result.success && result.kinsurer) {
-                    const k = result.kinsurer;
-                    const nombre = k['Nombre Completo'] || 'Kinsurer';
-                    const initials = nombre.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-
-                    // Mapeo seguro de la sesión en el navegador
-                    sessionStorage.setItem('user', JSON.stringify({
-                        nombre:      nombre,
-                        email:       k['Email'] || email,
-                        initials:    initials,
-                        kinsurerID:  k['ID_Kinsurer'] || 'KIN-0001',
-                        nivel:       k['Nivel'] || 'Kinsurer Nuevo',
-                        clabe:       k['CLABE Bancaria'] || '',
-                        banco:       k['Banco'] || '',
-                    }));
-
-                    // Redirección inmediata por éxito
-                    window.location.href = 'login-exitoso.html';
-                } else {
-                    // Manejo de rechazo controlado de contraseñas por el servidor
-                    const servidorError = (result && result.error) ? result.error : 'Correo o contraseña incorrectos.';
-                    showLoginError(servidorError);
-                }
-            } catch (err) {
-                console.error("Fallo crítico de conexión de red:", err);
-                showLoginError('Error de red. No se pudo conectar con el servidor de bases de datos.');
-            } finally {
-                // Restablecer estado operativo del botón
-                submitBtn.disabled = false;
-                submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
-                submitBtn.innerHTML = `
-                    <span>Ingresar a mi Cuenta</span>
-                    <span class="material-symbols-outlined text-xl">arrow_forward</span>
-                `;
-            }
-        }
-
-        // Mostrar errores dinámicos en la UI
-        function showLoginError(msg) {
-            const errorBanner = document.getElementById('error-banner');
-            const errorMsg    = document.getElementById('error-message');
-            errorMsg.textContent = msg;
-            errorBanner.classList.remove('hidden');
-            
-            // Animación de rebote visual para alertas
-            errorBanner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
+    }
     </script>
+    <script src="kinsu-config.js"></script>
 </body>
 </html>
