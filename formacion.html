@@ -2,268 +2,461 @@
 <html class="light" lang="es">
 <head>
 <meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport">
 <title>Kinsu - Formación con Ana</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
 <style>
-  body { font-family:'Inter',sans-serif; background:#eef2f9; }
-  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
+  body { font-family:'Inter',sans-serif; background:#f8fafc; padding-bottom:env(safe-area-inset-bottom); }
+  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; vertical-align:middle; }
+  .no-scrollbar::-webkit-scrollbar { display:none; }
+  .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
   .ana-bubble  { border-radius:16px 16px 16px 4px; }
   .user-bubble { border-radius:16px 16px 4px 16px; }
-  .no-scrollbar::-webkit-scrollbar{display:none}
-  .no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
-  .dot{width:6px;height:6px;border-radius:50%;background:#1565c0;display:inline-block;animation:blink 1.2s infinite}
-  .dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
-  @keyframes blink{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
-  .qr-chip{flex-shrink:0;padding:8px 18px;border-radius:99px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
-  .qr-primary{background:#1565c0;color:#fff}.qr-primary:hover{background:#1255a8}
-  .qr-secondary{background:#fff;color:#1565c0;border:1.5px solid rgba(21,101,192,.2)}.qr-secondary:hover{background:#e8f0fe}
-</style>
-</head>
-<body class="min-h-screen flex flex-col">
 
-<!-- TOPBAR -->
-<header class="bg-white/90 backdrop-blur-md fixed top-0 w-full z-50 border-b border-[#e8f0fe]">
-  <div class="flex items-center justify-between px-4 h-16 max-w-2xl mx-auto">
-    <div class="flex items-center gap-3">
-      <button onclick="window.location.href='dashboard.html'" class="text-[#1565c0] hover:bg-slate-100 p-2 rounded-full transition-all">
-        <span class="material-symbols-outlined">arrow_back</span>
-      </button>
-      <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 relative"
-        style="background:linear-gradient(135deg,#1565c0 0%,#82d14b 100%);">
-        <span class="text-white font-black text-base">A</span>
-        <div class="absolute bottom-0 right-0 w-3 h-3 bg-[#82d14b] border-2 border-white rounded-full"></div>
+  /* Animación de esferas de escritura conversacional de Ana */
+  .dot { width:6px; height:6px; border-radius:50%; background:#4575BA; display:inline-block; animation:blink 1.2s infinite; }
+  .dot:nth-child(2) { animation-delay:.2s; }
+  .dot:nth-child(3) { animation-delay:.4s; }
+  @keyframes blink { 0%,100%{ opacity:.3; transform:scale(.8); } 50%{ opacity:1; transform:scale(1); } }
+
+  /* Chips táctiles para interactuar con el chatbot */
+  .qr-chip {
+    flex-shrink:0; padding:10px 18px; border-radius:99px;
+    font-size:13px; font-weight:700; cursor:pointer;
+    transition:all .15s; white-space:nowrap;
+  }
+  .qr-primary { background:#4575BA; color:#fff; box-shadow:0 4px 12px rgba(69,117,186,.2); }
+  .qr-primary:hover { background:#355c94; }
+  .qr-secondary { background:#fff; color:#4575BA; border:1.5px solid rgba(69,117,186,.2); }
+  .qr-secondary:hover { background:#f4f7fc; }
+</style>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          kinsu: {
+            blue: '#4575BA',
+            blueDark: '#355c94',
+            green: '#BFFD70',
+            navy: '#0d1c2e'
+          }
+        }
+      }
+    }
+  }
+</script>
+</head>
+<body class="min-h-screen text-kinsu-navy antialiased bg-slate-50 flex">
+
+  <aside class="hidden md:flex flex-col w-64 bg-white border-r border-slate-100 fixed inset-y-0 left-0 z-50 p-5 justify-between">
+    <div class="space-y-8">
+      <div class="flex items-center px-2">
+        <span class="font-black text-2xl text-kinsu-blue tracking-tight select-none">Kinsu</span>
       </div>
-      <div>
-        <p class="text-[13px] font-bold text-[#0d1c2e]">Ana de Kinsu</p>
-        <div class="flex items-center gap-1">
-          <span class="w-1.5 h-1.5 bg-[#82d14b] rounded-full"></span>
-          <span class="text-[10px] text-slate-500 font-medium">Tu guía personal</span>
+      <nav class="space-y-1.5">
+        <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-kinsu-blue hover:bg-slate-50 font-semibold text-sm rounded-xl transition-all">
+          <span class="material-symbols-outlined text-[22px]">home</span>
+          <span>Inicio</span>
+        </a>
+        <a href="prospectos.html" class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-kinsu-blue hover:bg-slate-50 font-semibold text-sm rounded-xl transition-all">
+          <span class="material-symbols-outlined text-[22px]">group</span>
+          <span>Prospectos</span>
+        </a>
+        <a href="ganancias.html" class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-kinsu-blue hover:bg-slate-50 font-semibold text-sm rounded-xl transition-all">
+          <span class="material-symbols-outlined text-[22px]">payments</span>
+          <span>Ganancias</span>
+        </a>
+        <a href="perfil.html" class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-kinsu-blue hover:bg-slate-50 font-semibold text-sm rounded-xl transition-all">
+          <span class="material-symbols-outlined text-[22px]">person</span>
+          <span>Perfil</span>
+        </a>
+      </nav>
+    </div>
+    <div>
+      <a href="nuevo-prospecto.html" class="w-full h-11 bg-kinsu-blue hover:bg-kinsu-blueDark text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-all uppercase tracking-wider shadow-sm shadow-blue-900/10">
+        <span class="material-symbols-outlined text-base">person_add</span>
+        <span>Nuevo Prospecto</span>
+      </a>
+    </div>
+  </aside>
+
+  <div class="flex-1 flex flex-col md:pl-64 min-w-0">
+
+    <header class="bg-white sticky top-0 w-full z-40 border-b border-slate-100 h-16 flex items-center">
+      <div class="flex items-center justify-between px-4 w-full max-w-2xl mx-auto md:mx-0 md:max-w-none md:px-6">
+        <div class="flex items-center md:hidden">
+          <span class="font-black text-2xl text-kinsu-blue tracking-tight select-none">Kinsu</span>
+        </div>
+        <div class="hidden md:block"></div>
+
+        <div class="flex items-center gap-4">
+          <div class="w-9 h-9 bg-blue-50 text-kinsu-blue rounded-full flex items-center justify-center font-bold text-sm uppercase tracking-wide select-none border border-blue-100/40">
+            KS
+          </div>
         </div>
       </div>
-    </div>
-    <span class="px-3 py-1 bg-[#d4f0a0] text-[#1a3a0a] rounded-full text-[10px] font-bold uppercase tracking-wider" id="nivel-badge">—</span>
+    </header>
+
+    <main class="flex-1 w-full max-w-2xl mx-auto px-4 pb-28 md:pb-8 md:mx-0 md:max-w-none md:px-6 flex flex-col">
+
+      <div class="pt-6 pb-4">
+        <h2 class="text-3xl font-black text-kinsu-navy tracking-tight">Capacitación Kinsu 🎓</h2>
+        <p class="text-sm text-slate-500 mt-1 leading-relaxed">Interactúa con Ana para completar tu inducción operativa.</p>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-100 shadow-sm flex flex-col h-[520px] overflow-hidden w-full max-w-xl">
+        
+        <div class="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-center justify-between flex-shrink-0">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center relative bg-gradient-to-tr from-kinsu-blue to-[#6c97d6]">
+              <span class="text-white font-black text-[11px]">A</span>
+              <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-[#BFFD70] border-2 border-white rounded-full"></div>
+            </div>
+            <div>
+              <h4 class="text-xs font-black text-kinsu-navy leading-none">Ana</h4>
+              <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider block mt-0.5">Asistente de Inteligencia Artificial</span>
+            </div>
+          </div>
+          <span id="quiz-attempts-tag" class="text-[9px] bg-amber-50 border border-amber-200 text-amber-600 font-extrabold px-2.5 py-0.5 rounded uppercase tracking-wider">
+            Intentos: 3 de 3
+          </span>
+        </div>
+
+        <div id="chat-area" class="flex-1 p-4 overflow-y-auto space-y-4 no-scrollbar bg-slate-50/40"></div>
+
+        <div id="quick-replies-container" class="px-4 py-3 bg-white border-t border-slate-100 flex-shrink-0 min-h-[56px]"></div>
+      </div>
+
+    </main>
   </div>
-</header>
 
-<!-- CHAT -->
-<main class="flex-1 w-full max-w-2xl mx-auto pt-20 pb-44 px-4 flex flex-col gap-4 no-scrollbar overflow-y-auto" id="chat-area"></main>
-
-<!-- QUICK REPLIES -->
-<div class="fixed w-full max-w-2xl left-1/2 -translate-x-1/2 px-4 z-40" id="qr-container" style="bottom:100px;"></div>
-
-<!-- INPUT -->
-<div class="fixed bottom-0 left-0 w-full z-50">
-  <div class="max-w-2xl mx-auto px-4 pb-6 pt-2">
-    <div class="bg-white/90 backdrop-blur-xl rounded-3xl p-2 shadow-lg flex items-center gap-2 border border-white">
-      <input id="chat-input" type="text" placeholder="Escribe tu pregunta a Ana..."
-        class="flex-1 bg-transparent border-none focus:ring-0 text-[14px] text-[#0d1c2e] placeholder:text-slate-400 px-2 outline-none">
-      <button onclick="sendMsg()" id="send-btn"
-        class="w-10 h-10 bg-[#1565c0] text-white rounded-full flex items-center justify-center shadow active:scale-90 transition-transform flex-shrink-0">
-        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">arrow_upward</span>
-      </button>
+  <nav class="md:hidden fixed bottom-0 left-0 w-full h-16 bg-white/90 backdrop-blur-md flex justify-around items-center px-2 z-50 border-t border-slate-100 rounded-t-2xl shadow-lg">
+    <a href="dashboard.html" class="flex flex-col items-center justify-center text-slate-400">
+      <span class="material-symbols-outlined">home</span>
+      <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Inicio</span>
+    </a>
+    <a href="prospectos.html" class="flex flex-col items-center justify-center text-slate-400">
+      <span class="material-symbols-outlined">group</span>
+      <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Prospectos</span>
+    </a>
+    <div class="flex flex-col items-center -mt-8">
+      <a href="nuevo-prospecto.html"
+        class="w-14 h-14 bg-kinsu-blue text-white rounded-xl shadow-lg flex items-center justify-center active:scale-95 transition-transform">
+        <span class="material-symbols-outlined text-3xl">add</span>
+      </a>
     </div>
-  </div>
-</div>
+    <a href="ganancias.html" class="flex flex-col items-center justify-center text-slate-400">
+      <span class="material-symbols-outlined">payments</span>
+      <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Ganancias</span>
+    </a>
+    <a href="perfil.html" class="flex flex-col items-center justify-center text-slate-400">
+      <span class="material-symbols-outlined">person</span>
+      <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Perfil</span>
+    </a>
+  </nav>
 
 <script src="kinsu-config.js"></script>
 <script>
-// ── CONFIGURACIÓN GROQ (gratuito) ──
-// Obtén tu API key gratuita en: https://console.groq.com
-const GROQ_API_KEY = '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';
-const GROQ_URL     = 'https://api.groq.com/openai/v1/chat/completions';
+// Validar e inicializar sesión de seguridad
+const userRaw = sessionStorage.getItem('user');
+if (!userRaw) window.location.href = 'index.html';
+const user = JSON.parse(userRaw || '{}');
 
-// ── Contexto del Kinsurer ──
-const user     = JSON.parse(sessionStorage.getItem('user') || '{}');
-const userName = (user.nombre || 'Kinsurer').split(' ')[0];
-const nivel    = user.nivel    || 'Kinsurer Nuevo';
-const kid      = user.kinsurerID || '';
+const storageKey = `kinsu_quiz_attempts_${user.kinsurerID || 'GEN'}`;
+let intentosGastados = parseInt(localStorage.getItem(storageKey) || '0');
 
-document.getElementById('nivel-badge').textContent = nivel.replace('Kinsurer ', '');
+// ── MÁQUINA DE ESTADOS CONVERSACIONAL DEL CHATBOT DE FORMACIÓN ──
+const chatState = {
+    currentStep: 'WELCOME',
+    quizAnswers: [],
+    currentQuestionIndex: 0
+};
 
-// ── System prompt con contexto real ──
-const SYSTEM_PROMPT = `Eres Ana de Kinsu, la guía personal de formación y soporte de los Kinsurers en México.
+const ANA_CONVERSATION = {
+    'WELCOME': {
+        q: () => `¡Hola de nuevo! 👋 Soy Ana, tu guía con IA en Kinsu.\n\nPara promover tu perfil a **Kinsurer Certificado** y desbloquear el cobro de tus comisiones bancarias directas, completaremos una inducción express muy rápida sobre nuestras Reglas de Oro.\n\n¿Estás listo para comenzar?`,
+        replies: ['¡Excelente, vamos! 🚀'],
+        next: 'RULE_1'
+    },
+    'RULE_1': {
+        q: () => `🎯 **Regla 1: Tú Compartes**\n\nTu única tarea dentro de Kinsu es identificar amigos o conocidos que requieran un seguro de gastos médicos. **Ingresas su nombre y celular en esta app interactuando conmigo**.\n\n¡Listo! No tienes que vender pólizas complejas ni redactar contratos teóricos.`,
+        replies: ['Entendido. ¿Cuál es la regla 2? 🏢'],
+        next: 'RULE_2'
+    },
+    'RULE_2': {
+        q: () => `⚙️ **Regla 2: Kinsu Cierra**\n\nEn cuanto tú guardas el contacto del referido, el staff experto de operaciones de Kinsu toma el control.\n\n**Nosotros cotizamos con las aseguradoras, llamamos al cliente, le damos asesoría médica personalizada y cerramos la venta** por ti.`,
+        replies: ['Perfecto. ¿Y la regla 3? 💳'],
+        next: 'RULE_3'
+    },
+    'RULE_3': {
+        q: () => `💰 **Regla 3: Tú Cobras**\n\nEn cuanto el cliente acepta la propuesta y liquida el pago de su seguro de salud, **tu comisión base se calcula e inyecta al instante** en tu saldo.\n\nPodrás transferir tu dinero acumulado a tu cuenta CLABE en cualquier momento.`,
+        replies: ['¡Entendido todo! Iniciar examen 📝'],
+        next: 'QUIZ_START'
+    }
+};
 
-DATOS DEL KINSURER CON QUIEN HABLAS:
-- Nombre: ${user.nombre || 'Kinsurer'}
-- Nivel actual: ${nivel}
-- ID: ${kid}
+const QUIZ_QUESTIONS = [
+  {
+    q: "Pregunta 1: ¿Cuál es la responsabilidad operativa principal de un Kinsurer en la plataforma?",
+    options: [
+      "Diseñar cotizaciones avanzadas en múltiples portales y armar los contratos.",
+      "Compartir el nombre y el WhatsApp del prospecto con el chatbot Ana.",
+      "Cobrar las primas en efectivo a los clientes y emitir los recibos."
+    ],
+    correct: 1
+  },
+  {
+    q: "Pregunta 2: ¿Quién se encarga de contactar al referido, estructurar la asesoría y realizar el cierre comercial?",
+    options: [
+      "El Kinsurer de forma independiente mediante llamadas directas.",
+      "El staff corporativo de asesores especialistas de Kinsu.",
+      "La compañía aseguradora de forma automática sin intermediación."
+    ],
+    correct: 1
+  },
+  {
+    q: "Pregunta 3: ¿En qué momento exacto se genera tu comisión y puedes disponer de ella en tu balance?",
+    options: [
+      "En cuanto guardas la ficha con los datos básicos del referido en el chat.",
+      "A los 30 días hábiles de haber registrado el contacto en el sistema.",
+      "En cuanto el seguro de salud queda liquidado y pagado por el cliente."
+    ],
+    correct: 2
+  }
+];
 
-SOBRE KINSU (contexto para respuestas):
-Kinsu es una plataforma donde personas normales (Kinsurers) refieren prospectos para Seguro de Gastos Médicos Mayores (GMM) y ganan comisiones según su nivel:
-- Kinsurer Nuevo: Sin comisión. Debe completar formación básica.
-- Kinsurer Certificado (1-4 pólizas): $200 MXN fijos por póliza emitida.
-- Kinsurer Pro (5-14 pólizas): 15% de la prima neta del seguro.
-- Kinsurer Elite (15-29 pólizas): 20% de la prima neta.
-- Kinsurer Embajador (30+ pólizas): 25% de la prima neta.
-
-PROCESO: El Kinsurer registra un prospecto → Kinsu cotiza y emite el seguro → El Kinsurer cobra su comisión cuando el prospecto paga.
-
-TU ROL COMO ANA:
-1. Guía de formación: explica cómo funciona Kinsu, el GMM, cómo hacer el pitch, cómo manejar objeciones.
-2. Coach de ventas: ayuda a ${userName} a conseguir más prospectos y mejorar su tasa de conversión.
-3. Soporte personal: resuelve dudas sobre el proceso, comisiones, niveles, requisitos.
-4. Motivadora: celebra logros y da pasos concretos para avanzar.
-
-PERSONALIDAD: Cálida, directa, experta. Respuestas cortas (máx 4 oraciones). Emojis con moderación. Siempre en español mexicano.
-
-IMPORTANTE: Conoces el nivel de ${userName} (${nivel}). Personaliza tus respuestas en base a eso. Si es Nuevo, enfócate en que complete la formación. Si es Certificado, ayúdale a llegar a Pro. Si es Pro, ayúdale a ser Elite.`;
-
-let history = [];
-let busy    = false;
-
-// ── UI ──
-function scrollDown() {
-  setTimeout(function() {
-    var a = document.getElementById('chat-area');
-    a.scrollTo({ top: a.scrollHeight, behavior: 'smooth' });
-  }, 80);
+// ── UI Conversational Mechanics ──
+function scrollBottom() {
+  const area = document.getElementById('chat-area');
+  setTimeout(() => area.scrollTo({ top: area.scrollHeight, behavior: 'smooth' }), 50);
 }
 
-function addBubble(text, side) {
-  side = side || 'ana';
-  var area = document.getElementById('chat-area');
-  var html = text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<strong>$1</strong>');
+function addBubble(html, side = 'ana') {
+  const area = document.getElementById('chat-area');
   if (side === 'ana') {
-    area.innerHTML += '<div class="flex items-end gap-2 max-w-[88%]">' +
-      '<div class="w-8 h-8 rounded-full flex-shrink-0 self-start mt-1 flex items-center justify-center" style="background:linear-gradient(135deg,#1565c0 0%,#82d14b 100%);"><span class="text-white font-bold text-[11px]">A</span></div>' +
-      '<div class="bg-white ana-bubble border border-[#b5d4f4] px-4 py-3 text-[14px] text-[#0d1c2e] leading-relaxed shadow-sm">' + html + '</div>' +
-      '</div>';
+    area.innerHTML += `
+    <div class="flex items-end gap-2 max-w-[88%] animate-fade-in">
+      <div class="w-7 h-7 rounded-full flex-shrink-0 self-start mt-0.5 flex items-center justify-center bg-gradient-to-tr from-kinsu-blue to-[#6c97d6]">
+        <span class="text-white font-bold text-[10px]">A</span>
+      </div>
+      <div class="bg-white ana-bubble border border-slate-200/80 px-3.5 py-2.5 text-xs text-kinsu-navy leading-relaxed shadow-sm whitespace-pre-wrap">${html}</div>
+    </div>`;
   } else {
-    area.innerHTML += '<div class="flex justify-end"><div class="bg-[#1565c0] text-white px-4 py-3 text-[14px] leading-relaxed max-w-[80%] user-bubble">' + html + '</div></div>';
+    area.innerHTML += `
+    <div class="flex justify-end animate-fade-in">
+      <div class="bg-kinsu-blue text-white px-3.5 py-2.5 text-xs leading-relaxed max-w-[80%] user-bubble shadow-sm font-semibold">${html}</div>
+    </div>`;
   }
-  scrollDown();
+  scrollBottom();
 }
 
 function showTyping() {
-  document.getElementById('chat-area').innerHTML +=
-    '<div class="flex items-end gap-2" id="typing-ind">' +
-    '<div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center" style="background:rgba(21,101,192,.15);"><span class="text-[#1565c0] font-bold text-[11px]">A</span></div>' +
-    '<div class="bg-white px-4 py-3 shadow-sm border border-[#b5d4f4]/40 ana-bubble"><div style="display:flex;gap:4px;align-items:center;"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div></div>' +
-    '</div>';
-  scrollDown();
+  const area = document.getElementById('chat-area');
+  area.innerHTML += `
+  <div class="flex items-end gap-2" id="typing-indicator">
+    <div class="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center bg-blue-50">
+      <span class="text-kinsu-blue font-bold text-[10px]">A</span>
+    </div>
+    <div class="bg-white px-3.5 py-2.5 shadow-sm border border-slate-200/60 ana-bubble">
+      <div style="display:flex;gap:4px;align-items:center;">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      </div>
+    </div>
+  </div>`;
+  scrollBottom();
 }
 
 function removeTyping() {
-  var t = document.getElementById('typing-ind');
+  const t = document.getElementById('typing-indicator');
   if (t) t.remove();
 }
 
-function setQR(replies) {
-  var c = document.getElementById('qr-container');
-  if (!replies || !replies.length) { c.innerHTML = ''; return; }
-  c.innerHTML = '<div class="flex gap-2 overflow-x-auto no-scrollbar py-2">' +
-    replies.map(function(r, i) {
-      return '<button class="qr-chip ' + (i === 0 ? 'qr-primary' : 'qr-secondary') + '" onclick="onQR(\'' + r.replace(/'/g,"\\'") + '\')">' + r + '</button>';
-    }).join('') + '</div>';
-}
+function setQuickReplies(replies, isQuiz = false) {
+  const container = document.getElementById('quick-replies-container');
+  container.innerHTML = '';
+  
+  if (!replies || !replies.length) return;
 
-function setDisabled(v) {
-  document.getElementById('chat-input').disabled = v;
-  document.getElementById('send-btn').disabled   = v;
-}
-
-// ── Llamar a Gemini ──
-async function callAna(msg) {
-  if (busy) return;
-  busy = true;
-  setDisabled(true);
-  document.getElementById('qr-container').innerHTML = '';
-  showTyping();
-
-  // Agregar al historial
-  history.push({ role: 'user', content: msg });
-
-  try {
-    const res = await fetch(GROQ_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + GROQ_API_KEY
-      },
-      body: JSON.stringify({
-        model: 'llama-3.1-8b-instant',
-        messages: [
-          { role: 'system', content: SYSTEM_PROMPT },
-          ...history
-        ],
-        max_tokens: 400,
-        temperature: 0.8,
-      })
-    });
-
-    const data  = await res.json();
-    const reply = data?.choices?.[0]?.message?.content
-      || data?.error?.message
-      || 'Lo siento, no pude procesar tu pregunta. ¿Puedes intentarlo de nuevo?';
-
-    removeTyping();
-    history.push({ role: 'assistant', content: reply });
-    addBubble(reply);
-
-    // Quick replies contextuales según la respuesta
-    var qrs = [];
-    var r = reply.toLowerCase();
-    if (r.includes('prospecto') || r.includes('referido') || r.includes('cliente'))
-      qrs = ['¿Cómo hago el pitch?','¿Qué hago si no responde?','Dame un ejemplo'];
-    else if (r.includes('comisión') || r.includes('nivel') || r.includes('póliza'))
-      qrs = ['¿Cuándo me pagan?','¿Cómo subo de nivel?','¿Qué es la prima neta?'];
-    else if (r.includes('salud') || r.includes('seguro') || r.includes('gmm'))
-      qrs = ['¿Qué cubre el GMM?','¿Qué son preexistencias?','¿Cuánto cuesta?'];
-    else
-      qrs = ['¿Cómo consigo más prospectos?','¿Qué hago hoy para avanzar?','Tengo una duda'];
-
-    setQR(qrs);
-
-  } catch(e) {
-    removeTyping();
-    console.error('[Ana/Groq] Error:', e);
-    addBubble('Error de conexión: ' + e.message);
-    setQR(['Intentar de nuevo']);
-  } finally {
-    busy = false;
-    setDisabled(false);
+  if (!isQuiz) {
+    // Modo Lectura: Botón horizontal elástico
+    container.innerHTML = `<div class="flex gap-2 overflow-x-auto no-scrollbar py-1">${
+      replies.map(r => `<button class="qr-chip qr-primary mx-auto" onclick="handleAnswer('${r.replace(/'/g,"\\'")}')">${r}</button>`).join('')
+    }</div>`;
+  } else {
+    // Modo Examen: Botones verticales estructurados de alta densidad táctil
+    container.innerHTML = `<div class="flex flex-col gap-2 py-1 w-full">${
+      replies.map((r, idx) => `<button class="w-full text-left p-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 font-bold text-xs leading-relaxed active:scale-[0.99] transition-all hover:border-kinsu-blue hover:bg-blue-50/20" onclick="handleQuizSelection(${idx}, '${r.replace(/'/g,"\\'")}')">${r}</button>`).join('')
+    }</div>`;
   }
 }
 
-function sendMsg() {
-  var inp = document.getElementById('chat-input');
-  var val = inp.value.trim();
-  if (!val || busy) return;
-  inp.value = '';
-  addBubble(val, 'user');
-  callAna(val);
+// ── Motor Conversacional Inteligente ──
+function askNextStep() {
+    document.getElementById('quiz-attempts-tag').textContent = `Intentos: ${3 - intentosGastados} restantes`;
+    
+    // Validamos si ya agotó sus cartuchos antes de hablar
+    if (intentosGastados >= 3) {
+        renderFinalBlockedState();
+        return;
+    }
+
+    const currentConfig = ANA_CONVERSATION[chatState.currentStep];
+    
+    if (!currentConfig) {
+        if (chatState.currentStep === 'QUIZ_START') {
+            startQuizConversational();
+        }
+        return;
+    }
+
+    showTyping();
+    setTimeout(() => {
+        removeTyping();
+        addBubble(currentConfig.q());
+        setQuickReplies(currentConfig.replies, false);
+    }, 700);
 }
 
-function onQR(val) {
-  document.getElementById('qr-container').innerHTML = '';
-  addBubble(val, 'user');
-  callAna(val);
+function handleAnswer(answer) {
+    addBubble(answer, 'user');
+    const currentConfig = ANA_CONVERSATION[chatState.currentStep];
+    chatState.currentStep = currentConfig.next;
+    
+    setTimeout(askNextStep, 400);
 }
 
-document.getElementById('chat-input').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') sendMsg();
-});
+// ── Quiz en Interfaz Conversacional Estricta ──
+function startQuizConversational() {
+    chatState.currentQuestionIndex = 0;
+    chatState.quizAnswers = [];
+    askQuizQuestion();
+}
 
-// ── Mensaje inicial personalizado por nivel ──
-var INTRO_POR_NIVEL = {
-  'Kinsurer Nuevo':      'Hola ' + userName + '! 👋 Soy Ana, tu guía en Kinsu. Para empezar a ganar comisiones necesitas completar tu formación básica. ¿Por dónde quieres empezar?',
-  'Kinsurer Certificado':'Hola ' + userName + '! 👋 Estás en nivel Certificado ganando $200 MXN por póliza. Para llegar a Pro necesitas 5 pólizas emitidas — ¿quieres que te ayude a conseguir más prospectos?',
-  'Kinsurer Pro':        'Hola ' + userName + '! 👋 Vas muy bien en nivel Pro con 15% de comisión. Para ser Elite necesitas 15 pólizas. ¿En qué te puedo ayudar hoy?',
-  'Kinsurer Elite':      'Hola ' + userName + '! 👋 Eres Kinsurer Elite — lo estás haciendo increíble 🎉 ¿Cómo te puedo ayudar a llegar a Embajador?',
-  'Kinsurer Embajador':  'Hola ' + userName + '! 👋 Eres Kinsurer Embajador — el nivel más alto de Kinsu. ¿En qué te puedo apoyar hoy?',
-};
+function askQuizQuestion() {
+    const qData = QUIZ_QUESTIONS[chatState.currentQuestionIndex];
+    showTyping();
+    
+    setTimeout(() => {
+        removeTyping();
+        addBubble(`📝 **Pregunta ${chatState.currentQuestionIndex + 1} de 3:**\n\n${qData.q}`);
+        setQuickReplies(qData.options, true);
+    }, 800);
+}
 
-var introMsg = INTRO_POR_NIVEL[nivel] || ('Hola ' + userName + '! 👋 Soy Ana, tu guía personal en Kinsu. ¿En qué te puedo ayudar hoy?');
+function handleQuizSelection(optionIdx, textOption) {
+    addBubble(textOption, 'user');
+    chatState.quizAnswers.push(optionIdx);
+    document.getElementById('quick-replies-container').innerHTML = ''; // Limpieza
 
-setTimeout(function() {
-  // No llamamos a la API para el intro — lo mostramos directo para ahorrar tokens
-  addBubble(introMsg);
-  history.push({ role: 'assistant', content: introMsg });
-  setQR(['¿Cómo consigo prospectos?', '¿Cómo funciona el GMM?', '¿Cómo subo de nivel?']);
-}, 400);
+    if (chatState.currentQuestionIndex < QUIZ_QUESTIONS.length - 1) {
+        chatState.currentQuestionIndex++;
+        setTimeout(askQuizQuestion, 500);
+    } else {
+        setTimeout(evaluarQuizConversational, 600);
+    }
+}
+
+// ── Evaluación y Afectación en Cascada de la Fila del Sheets ──
+async function evaluarQuizConversational() {
+    intentosGastados++;
+    localStorage.setItem(storageKey, intentosGastados);
+    document.getElementById('quiz-attempts-tag').textContent = `Intentos: ${3 - intentosGastados} restantes`;
+
+    const aprobado = chatState.quizAnswers.every((ans, idx) => ans === QUIZ_QUESTIONS[idx].correct);
+
+    showTyping();
+    setTimeout(async () => {
+        removeTyping();
+        
+        if (aprobado) {
+            addBubble(`🎉 ¡Excelente! Has respondido de forma correcta todas las preguntas operativas.\n\nDame un segundo mientras emito tus credenciales y actualizo tu rango en el servidor...`);
+            showTyping();
+
+            try {
+                // Petición remota para parchar la celda Nivel en el Google Sheet
+                await fetch(KINSU_CONFIG.APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'updatePerfil',
+                        kinsurerID: user.kinsurerID || 'KIN-0001',
+                        fields: { 'Nivel': 'Kinsurer Certificado' }
+                    })
+                });
+            } catch (e) {
+                console.error("Fallo controlado en persistencia remota:", e);
+            }
+
+            // Sincronización en caliente del sessionStorage para habilitar comisiones de forma inmediata
+            user.nivel = "Kinsurer Certificado";
+            sessionStorage.setItem('user', JSON.stringify(user));
+
+            setTimeout(() => {
+                removeTyping();
+                addBubble(`🏆 ¡Listo! Ya eres oficialmente un **Kinsurer Certificado**.\n\nHemos actualizado tu expediente en la base de datos de Google Sheets de forma permanente. A partir de este momento tienes acceso a las comisiones completas por catálogo.`);
+                
+                document.getElementById('quick-replies-container').innerHTML = `
+                    <button onclick="window.location.href='dashboard.html'" class="w-full h-11 bg-kinsu-blue text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md active:scale-95 transition-transform flex items-center justify-center gap-1">
+                        <span>Ir a mi panel de inicio</span>
+                        <span class="material-symbols-outlined text-base">arrow_forward</span>
+                    </button>
+                `;
+            }, 1200);
+
+        } else {
+            const restantes = 3 - intentosGastados;
+            if (restantes > 0) {
+                addBubble(`❌ Vaya, algunas de tus respuestas no coinciden con las Reglas de Oro de Kinsu.\n\nNo te preocupes, repasemos los conceptos clave y realicemos un nuevo intento. ¡Tú puedes!`);
+                
+                document.getElementById('quick-replies-container').innerHTML = `
+                    <button onclick="restartConversationalFlow()" class="w-full h-11 bg-kinsu-blue text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md active:scale-95 transition-transform flex items-center justify-center gap-1">
+                        <span class="material-symbols-outlined text-base">replay</span>
+                        <span>Volver a repasar e intentar</span>
+                    </button>
+                `;
+            } else {
+                renderFinalBlockedState();
+            }
+        }
+    }, 1000);
+}
+
+function renderFinalBlockedState() {
+    addBubble(`🔒 **Intentos Agotados**\n\nHas alcanzado el límite de 3 intentos permitidos para tu certificación express. Por políticas de cumplimiento del C-level, tu expediente requiere una liberación manual.\n\nPonte en contacto con la mesa de soporte para reactivar tu acceso.`);
+    
+    document.getElementById('quick-replies-container').innerHTML = `
+        <a href="https://wa.me/525512345678?text=${encodeURIComponent('Hola Soporte Kinsu, agoté mis 3 intentos de certificación express en el chatbot Ana. ¿Me podrían ayudar a validar mi ID y liberar mi perfil por favor?')}" target="_blank" 
+           class="w-full h-11 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md flex items-center justify-center gap-1 active:scale-95 transition-transform text-center font-bold">
+          <span class="material-symbols-outlined text-base">support_agent</span>
+          <span>Contactar Soporte Kinsu</span>
+        </a>
+    `;
+}
+
+function restartConversationalFlow() {
+    document.getElementById('chat-area').innerHTML = ''; // Limpiamos pantalla
+    chatState.currentStep = 'WELCOME';
+    askNextStep();
+}
+
+// Inicialización Automática Conversacional Directa
+const nivelActual = user.nivel || 'Kinsurer Nuevo';
+if (nivelActual !== 'Kinsurer Nuevo' && nivelActual !== 'Kinsurer Conectado' && nivelActual !== '') {
+    // Si ya está aprobado, mitigamos afectaciones dándole pantalla directa de bienvenida certificada
+    addBubble(`¡Hola! Tu perfil ya se encuentra validado y activo como **${nivelActual}** en el servidor. ✓\n\nNo requieres volver a presentar tu evaluación express de inducción.`);
+    document.getElementById('quick-replies-container').innerHTML = `
+        <button onclick="window.location.href='dashboard.html'" class="w-full h-11 bg-kinsu-blue text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md flex items-center justify-center gap-1">
+            <span>Ir a mi panel de inicio</span>
+            <span class="material-symbols-outlined text-base">arrow_forward</span>
+        </button>
+    `;
+} else {
+    askNextStep();
+}
 </script>
 </body>
 </html>
