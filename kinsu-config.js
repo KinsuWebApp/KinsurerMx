@@ -1,7 +1,6 @@
 /**
  * KINSU — Configuración de conexión con Google Sheets
- * 
- * INSTRUCCIONES:
+ * * INSTRUCCIONES:
  * 1. Después de instalar el Apps Script, copia la URL de implementación
  * 2. Pégala en APPS_SCRIPT_URL abajo
  * 3. Sube este archivo a GitHub junto con los demás HTMLs
@@ -9,7 +8,7 @@
  */
 
 const KINSU_CONFIG = {
-  // ← PEGA AQUÍ tu URL de Apps Script después de implementar
+  // URL de Apps Script después de implementar
   APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbyEQcXcLxCbNXWTBiDTL0K-cd4KjPK0WcC-HyDDAHKa_p6d9M3jyUdsre7AfVBbb3h5_g/exec',
 
   // ID del Kinsurer demo (se reemplaza con el login real)
@@ -35,61 +34,37 @@ const KinsuAPI = {
   },
 
   async sendOTP(email, nombre) {
-    return this._post({ action:'sendOTP', email, nombre });
+    return this._post({
+      action: 'sendOTP',
+      data: { email, nombre }
+    });
   },
 
   async verifyOTP(email, otp) {
-    const url = `${KINSU_CONFIG.APPS_SCRIPT_URL}?action=verifyOTP&email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`;
-    return this._get(url);
-  },
-
-  async createKinsurer(data) {
-    return this._post({ action:'createKinsurer', data });
+    return this._post({
+      action: 'verifyOTP',
+      data: { email, otp }
+    });
   },
 
   async login(email, password) {
-    const url = `${KINSU_CONFIG.APPS_SCRIPT_URL}?action=login&email=${encodeURIComponent(email)}&pwd=${encodeURIComponent(password)}`;
-    return this._get(url);
+    return this._post({
+      action: 'login',
+      data: { email, password }
+    });
   },
 
-  // ── GET ──────────────────────────────────────────
-
-  async getDashboard() {
-    const id  = this.getKinsurerID();
-    const url = `${KINSU_CONFIG.APPS_SCRIPT_URL}?action=getDashboard&id=${id}`;
-    return this._get(url);
-  },
+  // ── PROSPECTOS ───────────────────────────────────
 
   async getProspectos() {
-    const id  = this.getKinsurerID();
-    const url = `${KINSU_CONFIG.APPS_SCRIPT_URL}?action=getProspectos&id=${id}`;
+    const url = `${KINSU_CONFIG.APPS_SCRIPT_URL}?action=getProspectos&kinsurerID=${this.getKinsurerID()}`;
     return this._get(url);
   },
 
   async getProspecto(folio) {
-    const url = `${KINSU_CONFIG.APPS_SCRIPT_URL}?action=getProspecto&id=${folio}`;
+    const url = `${KINSU_CONFIG.APPS_SCRIPT_URL}?action=getProspecto&folio=${folio}`;
     return this._get(url);
   },
-
-  async getGanancias() {
-    const id  = this.getKinsurerID();
-    const url = `${KINSU_CONFIG.APPS_SCRIPT_URL}?action=getGanancias&id=${id}`;
-    return this._get(url);
-  },
-
-  async getPerfil() {
-    const id  = this.getKinsurerID();
-    const url = `${KINSU_CONFIG.APPS_SCRIPT_URL}?action=getPerfil&id=${id}`;
-    return this._get(url);
-  },
-
-  async getFormacion() {
-    const id  = this.getKinsurerID();
-    const url = `${KINSU_CONFIG.APPS_SCRIPT_URL}?action=getFormacion&id=${id}`;
-    return this._get(url);
-  },
-
-  // ── POST ─────────────────────────────────────────
 
   async createProspecto(data) {
     return this._post({
@@ -98,12 +73,28 @@ const KinsuAPI = {
     });
   },
 
-  async updateEstatus(folio, estatus) {
+  async updateProspectoEstatus(folio, estatus) {
     return this._post({
       action: 'updateEstatus',
       data: { folio, estatus }
     });
   },
+
+  /**
+   * ACTUALIZA LAS NOTAS / PLAN DE SEGUIMIENTO EN LA BD PIVOTE
+   * Envía de forma segura el folio y el string concatenado al Apps Script.
+   */
+  async updateProspectoNotes(folio, nuevasNotas) {
+    return this._post({
+      action: 'updateProspectoNotes',
+      data: { 
+        folio: folio, 
+        notas: nuevasNotas 
+      }
+    });
+  },
+
+  // ── OTROS ────────────────────────────────────────
 
   async createTransaccion(data) {
     return this._post({
@@ -149,13 +140,11 @@ const KinsuAPI = {
         headers: { 'Content-Type': 'text/plain' },
         body:    JSON.stringify(body),
       });
-      const text = await res.text();
-      const data = JSON.parse(text);
-      if (data.error) throw new Error(data.error);
+      const data = await res.json();
       return data;
     } catch (err) {
       console.warn('[KinsuAPI] Error POST:', err.message);
-      return null;
+      return { error: err.message };
     }
-  },
+  }
 };
