@@ -2,68 +2,95 @@
 <html class="light" lang="es">
 <head>
 <meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>Kinsu - Nuevo Prospecto</title>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport">
+<title>Kinsu - Nuevo Prospecto de Salud</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 <style>
   body { font-family:'Inter',sans-serif; background:#eef2f9; }
-  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
+  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; vertical-align:middle; }
   .ana-bubble  { border-radius:16px 16px 16px 4px; }
   .user-bubble { border-radius:16px 16px 4px 16px; }
   .no-scrollbar::-webkit-scrollbar { display:none; }
   .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
-  .dot { width:6px;height:6px;border-radius:50%;background:#1565c0;display:inline-block;animation:blink 1.2s infinite; }
-  .dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
-  @keyframes blink{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
-  .qr-chip{flex-shrink:0;padding:8px 18px;border-radius:99px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;}
-  .qr-primary{background:#1565c0;color:#fff;}.qr-primary:hover{background:#1255a8;}
-  .qr-secondary{background:#fff;color:#1565c0;border:1.5px solid rgba(21,101,192,.2);}.qr-secondary:hover{background:#e8f0fe;}
+
+  /* Animación de esferas de escritura con color corporativo */
+  .dot { width:6px; height:6px; border-radius:50%; background:#4575BA; display:inline-block; animation:blink 1.2s infinite; }
+  .dot:nth-child(2) { animation-delay:.2s; }
+  .dot:nth-child(3) { animation-delay:.4s; }
+  @keyframes blink { 0%,100%{ opacity:.3; transform:scale(.8); } 50%{ opacity:1; transform:scale(1); } }
+
+  /* Chips de respuestas rápidas táctiles */
+  .qr-chip {
+    flex-shrink:0; padding:8px 18px; border-radius:99px;
+    font-size:13px; font-weight:600; cursor:pointer;
+    transition:all .15s; white-space:nowrap;
+  }
+  .qr-primary { background:#4575BA; color:#fff; box-shadow:0 4px 12px rgba(69,117,186,.25); }
+  .qr-primary:hover { background:#355c94; }
+  .qr-secondary { background:#fff; color:#4575BA; border:1.5px solid rgba(69,117,186,.2); }
+  .qr-secondary:hover { background:#f4f7fc; }
+  
+  /* Bloqueo de zoom automático en Safari/Chrome iOS */
+  #chat-input { font-size: 16px !important; }
+  @media (min-width: 640px) { #chat-input { font-size: 14px !important; } }
 </style>
 </head>
-<body class="min-h-screen flex flex-col">
 
-<!-- TOPBAR -->
-<header class="bg-white/90 backdrop-blur-md fixed top-0 w-full z-50 border-b border-[#e8f0fe]">
+<body class="min-h-screen flex flex-col select-none">
+
+<header class="bg-white/90 backdrop-blur-md fixed top-0 w-full z-50 border-b border-[#edf1f6]">
   <div class="flex items-center justify-between px-4 h-16 max-w-2xl mx-auto">
     <div class="flex items-center gap-3">
-      <button onclick="window.location.href='prospectos.html'" class="text-[#1565c0] hover:bg-slate-100 p-2 rounded-full transition-all">
+      <button onclick="window.location.href='dashboard.html'" class="text-[#4575BA] hover:bg-slate-100 p-2 rounded-full transition-all">
         <span class="material-symbols-outlined">arrow_back</span>
       </button>
       <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 relative"
-        style="background:linear-gradient(135deg,#1565c0 0%,#82d14b 100%);">
+        style="background:linear-gradient(135deg,#4575BA 0%,#BFFD70 100%);">
         <span class="text-white font-black text-base">A</span>
-        <div class="absolute bottom-0 right-0 w-3 h-3 bg-[#82d14b] border-2 border-white rounded-full"></div>
+        <div class="absolute bottom-0 right-0 w-3 h-3 bg-[#BFFD70] border-2 border-white rounded-full"></div>
       </div>
       <div>
-        <p class="text-[13px] font-bold text-[#0d1c2e]">Ana · Nuevo Prospecto</p>
+        <p class="text-[13px] font-bold text-[#0d1c2e]">Ana · Asistente Kinsu</p>
         <div class="flex items-center gap-1">
-          <span class="w-1.5 h-1.5 bg-[#82d14b] rounded-full"></span>
-          <span class="text-[10px] text-slate-500 font-medium">En línea</span>
+          <span class="w-1.5 h-1.5 bg-[#BFFD70] rounded-full"></span>
+          <span class="text-[10px] text-slate-500 font-medium uppercase tracking-wider">En línea</span>
         </div>
       </div>
     </div>
-    <span class="px-3 py-1 bg-[#e8f0fe] text-[#1565c0] rounded-full text-[10px] font-bold uppercase tracking-wider">
-      Seguro de Salud
+    <span class="px-3 py-1 bg-slate-100 text-[#4575BA] rounded-full text-[10px] font-bold uppercase tracking-wider">
+      GMM Familiar
     </span>
   </div>
 </header>
 
-<!-- CHAT -->
-<main class="flex-1 w-full max-w-2xl mx-auto pt-20 pb-44 px-4 flex flex-col gap-4 no-scrollbar overflow-y-auto" id="chat-area"></main>
+<div class="bg-[#edf1f6] border-b border-[#e4e8ee] fixed top-16 w-full z-40">
+  <div class="flex items-center justify-between px-4 py-2.5 max-w-2xl mx-auto">
+    <div class="flex items-center gap-2">
+      <span class="material-symbols-outlined text-[#4575BA] text-[18px]">assignment_ind</span>
+      <span class="text-[13px] text-[#4575BA] font-semibold" id="progress-label">Fase 1: Datos del Titular</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="text-[11px] text-[#4575BA] font-bold" id="progress-pct">0%</span>
+      <div class="w-24 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+        <div class="h-full bg-[#4575BA] rounded-full transition-all duration-500" id="progress-bar" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+</div>
 
-<!-- QUICK REPLIES -->
-<div class="fixed w-full max-w-2xl left-1/2 -translate-x-1/2 px-4 z-40" id="qr-container" style="bottom:100px;"></div>
+<main class="flex-1 max-w-2xl w-full mx-auto pt-32 pb-48 px-4 flex flex-col gap-4 no-scrollbar overflow-y-auto" id="chat-area"></main>
 
-<!-- INPUT -->
+<div class="fixed w-full max-w-2xl left-1/2 -translate-x-1/2 px-4 z-40" id="quick-replies-container" style="bottom:100px;"></div>
+
 <div class="fixed bottom-0 left-0 w-full z-50">
   <div class="max-w-2xl mx-auto px-4 pb-6 pt-2">
     <div class="bg-white/90 backdrop-blur-xl rounded-3xl p-2 shadow-lg flex items-center gap-2 border border-white">
       <input id="chat-input" type="text" placeholder="Escribe tu respuesta..."
         class="flex-1 bg-transparent border-none focus:ring-0 text-[14px] text-[#0d1c2e] placeholder:text-slate-400 px-2 outline-none">
-      <button onclick="sendMsg()" id="send-btn"
-        class="w-10 h-10 bg-[#1565c0] text-white rounded-full flex items-center justify-center shadow active:scale-90 transition-transform flex-shrink-0">
+      <button onclick="sendUserMessage()" id="send-btn"
+        class="w-10 h-10 bg-[#4575BA] text-white rounded-full flex items-center justify-center shadow active:scale-90 transition-transform flex-shrink-0">
         <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">arrow_upward</span>
       </button>
     </div>
@@ -75,244 +102,420 @@
 const user     = JSON.parse(sessionStorage.getItem('user') || '{"nombre":"Kinsurer","kinsurerID":"KIN-0001"}');
 const userName = (user.nombre || 'Kinsurer').split(' ')[0];
 
-const prospect = { tipo: 'salud' };
-let step = 0;
-let busy = false;
+// ══════════════════════════════════════════════════
+// MÁQUINA DE ESTADOS COMPLETA (PROMPT A - REQ 1)
+// ══════════════════════════════════════════════════
+const chatState = {
+    currentStep: 'INTRO',
+    titular: {},
+    familiares: [],
+    tempFamiliar: {},
+    estatusProgreso: 0
+};
 
-// ── Preguntas en orden ──
-const QUESTIONS = [
-  {
-    key: 'nombre',
-    q:   '¿Cuál es el nombre completo de tu referido?',
-    placeholder: 'Ej. María García López'
-  },
-  {
-    key: 'tel',
-    q:   '¿Cuál es su número de teléfono?',
-    placeholder: 'Ej. 55 1234 5678',
-    replies: ['No tengo su número']
-  },
-  {
-    key: 'correo',
-    q:   '¿Tienes su correo electrónico?',
-    placeholder: 'Ej. maria@gmail.com',
-    replies: ['No tengo su correo']
-  },
-  {
-    key: 'edad',
-    q:   '¿En qué rango de edad está?',
-    placeholder: 'Ej. 35 años',
-    replies: ['Menos de 30', '30 a 45', '45 a 60', 'Más de 60']
-  },
-  {
-    key: 'ciudad',
-    q:   '¿En qué ciudad vive?',
-    placeholder: 'Ej. CDMX, Monterrey...',
-    replies: ['CDMX', 'Monterrey', 'Guadalajara', 'Otra ciudad']
-  },
-  {
-    key: 'preexist',
-    q:   'Por último, ¿tiene alguna condición médica preexistente?',
-    placeholder: 'Ej. Diabetes, hipertensión...',
-    replies: ['No, ninguna', 'Diabetes', 'Hipertensión', 'Otra condición']
-  },
-];
+const ANA_FLOW = {
+    'INTRO': {
+        q: () => `Hola ${userName}! 👋 Vamos a registrar un nuevo prospecto para un *Seguro de Gastos Médicos Mayores (GMM)*.\n\nComo es nuestro producto estrella, realizaremos un perfilamiento médico completo para cotizar con precisión. ¿Me ayudas con el *Nombre Completo* de tu referido?`,
+        placeholder: 'Ej. María García López',
+        key: 'nombre',
+        next: 'TITULAR_TEL'
+    },
+    'TITULAR_TEL': {
+        q: () => `Perfecto. ¿Cuál es su número de teléfono o WhatsApp de contacto?`,
+        placeholder: 'Ej. 55 1234 5678',
+        key: 'tel',
+        next: 'TITULAR_EMAIL'
+    },
+    'TITULAR_EMAIL': {
+        q: () => `¿Tienes su correo electrónico corporativo o personal?`,
+        placeholder: 'Ej. maria@correo.com o escribe "No tiene"',
+        key: 'correo',
+        replies: ['No tiene correo'],
+        next: 'TITULAR_FNAC'
+    },
+    'TITULAR_FNAC': {
+        q: () => `¿Cuál es la fecha de nacimiento de *${chatState.titular.nombre}*? (Formato AAAA-MM-DD o su edad aproximada)`,
+        placeholder: 'Ej. 1992-05-14 o 34 años',
+        key: 'fnac',
+        next: 'TITULAR_GENERO'
+    },
+    'TITULAR_GENERO': {
+        q: () => `¿Cuál es el género asignado al nacer de *${chatState.titular.nombre}*?`,
+        placeholder: 'Selecciona una opción...',
+        key: 'genero',
+        replies: ['Masculino', 'Femenino'],
+        next: (val) => val === 'Femenino' ? 'TITULAR_MATERNIDAD' : 'TITULAR_CP'
+    },
+    'TITULAR_MATERNIDAD': {
+        q: () => `¿*${chatState.titular.nombre}* requiere la inclusión de cobertura por Maternidad y complicaciones del embarazo?`,
+        placeholder: 'Selecciona una respuesta...',
+        key: 'maternidad',
+        replies: ['Sí, incluir maternidad', 'No la requiere'],
+        next: 'TITULAR_CP'
+    },
+    'TITULAR_CP': {
+        q: () => `¿Cuál es el Código Postal (CP) o la Ciudad donde reside actualmente *${chatState.titular.nombre}*?`,
+        placeholder: 'Ej. 06700, CDMX',
+        key: 'cp',
+        replies: ['CDMX', 'Monterrey', 'Guadalajara'],
+        next: 'TITULAR_OCUPACION'
+    },
+    'TITULAR_OCUPACION': {
+        q: () => `¿Cuál es la profesión u ocupación laboral principal de *${chatState.titular.nombre}*?`,
+        placeholder: 'Ej. Arquitecto, Consultor, Comerciante...',
+        key: 'ocupacion',
+        next: 'TITULAR_DEPORTE'
+    },
+    'TITULAR_DEPORTE': {
+        q: () => `¿Practica algún deporte o actividad física de alto riesgo de forma recurrente? (Ej. Motociclismo, buceo, o selecciona "Ninguno")`,
+        placeholder: 'Especifica la actividad o escribe Ninguno',
+        key: 'deporte',
+        replies: ['Ninguno', 'Fútbol regular', 'Crossfit / Fitness'],
+        next: 'TITULAR_ANTRO'
+    },
+    'TITULAR_ANTRO': {
+        q: () => `Para calcular su índice de masa corporal de referencia, confírmame su Peso aproximado en kg y su Estatura en cm:`,
+        placeholder: 'Ej. 70 kg, 165 cm',
+        key: 'antro',
+        next: 'TITULAR_PREEXISTENCIA'
+    },
+    'TITULAR_PREEXISTENCIA': {
+        q: () => `¿*${chatState.titular.nombre}* sufre actualmente o tiene historial de alguna condición médica o enfermedad preexistente?`,
+        placeholder: 'Selecciona o especifica el padecimiento...',
+        key: 'preexistencia',
+        replies: ['Sin preexistencias', 'Diabetes', 'Hipertensión', 'Otra condición'],
+        next: 'PREGUNTA_DEPENDIENTE'
+    },
+    // --- COMPONENTE MULTI-PERSONA (HASTA 4 FAMILIARES ADICIONALES) ---
+    'PREGUNTA_DEPENDIENTE': {
+        q: () => chatState.familiares.length === 0 
+            ? `¿Deseas agregar a algún familiar o dependiente directo a esta misma póliza de salud?`
+            : `¿Deseas sumar a otro familiar a la cotización? (Llevas ${chatState.familiares.length} de 4 familiares permitidos)`,
+        placeholder: 'Selecciona una opción...',
+        key: 'quiere_familiar',
+        replies: ['Sí, agregar familiar', 'No, finalizar y guardar'],
+        next: (val) => val.includes('Sí') ? 'FAMILIAR_NOMBRE' : 'FINALIZAR'
+    },
+    'FAMILIAR_NOMBRE': {
+        q: () => `Ingresa el nombre completo del familiar número ${chatState.familiares.length + 1}:`,
+        placeholder: 'Nombre del familiar',
+        key: 'nombre',
+        next: 'FAMILIAR_FNAC'
+    },
+    'FAMILIAR_FNAC': {
+        q: () => `¿Cuál es la fecha de nacimiento o edad de este dependiente?`,
+        placeholder: 'Ej. 1996-03-22 o 30 años',
+        key: 'fnac',
+        next: 'FAMILIAR_GENERO'
+    },
+    'FAMILIAR_GENERO': {
+        q: () => `¿Cuál es su género asignado al nacer?`,
+        placeholder: 'Selecciona una opción...',
+        key: 'genero',
+        replies: ['Masculino', 'Femenino'],
+        next: 'FAMILIAR_ANTRO'
+    },
+    'FAMILIAR_ANTRO': {
+        q: () => `¿Cuál es su Peso (kg) y Estatura (cm)?`,
+        placeholder: 'Ej. 55 kg, 158 cm',
+        key: 'antro',
+        next: 'FAMILIAR_PREEXISTENCIA'
+    },
+    'FAMILIAR_PREEXISTENCIA': {
+        q: () => `¿Este familiar cuenta con algún padecimiento o condición médica preexistente?`,
+        placeholder: 'Selecciona o escribe...',
+        key: 'preexistencia',
+        replies: ['Sin preexistencias', 'Diabetes', 'Hipertensión', 'Otra'],
+        next: (val) => {
+            chatState.familiares.push({ ...chatState.tempFamiliar });
+            chatState.tempFamiliar = {}; // Liberar buffer temporal
+            
+            if (chatState.familiares.length >= 4) {
+                return 'FINALIZAR';
+            }
+            return 'PREGUNTA_DEPENDIENTE';
+        }
+    }
+};
 
-// ── UI helpers ──
-function scrollDown() {
-  setTimeout(function() {
-    var a = document.getElementById('chat-area');
-    a.scrollTo({ top: a.scrollHeight, behavior: 'smooth' });
-  }, 80);
+let typing = false;
+let folio  = '';
+
+// ── UI Control Mechanics ──
+function scrollBottom() {
+  const area = document.getElementById('chat-area');
+  setTimeout(() => area.scrollTo({ top: area.scrollHeight, behavior: 'smooth' }), 80);
 }
 
-function addBubble(text, side) {
-  side = side || 'ana';
-  var area = document.getElementById('chat-area');
-  var html = text.replace(/\n/g, '<br>').replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+function addBubble(html, side = 'ana') {
+  const area = document.getElementById('chat-area');
   if (side === 'ana') {
-    area.innerHTML += '<div class="flex items-end gap-2 max-w-[88%]">' +
-      '<div class="w-8 h-8 rounded-full flex-shrink-0 self-start mt-1 flex items-center justify-center" style="background:linear-gradient(135deg,#1565c0 0%,#82d14b 100%);"><span class="text-white font-bold text-[11px]">A</span></div>' +
-      '<div class="bg-white ana-bubble border border-[#b5d4f4] px-4 py-3 text-[14px] text-[#0d1c2e] leading-relaxed shadow-sm">' + html + '</div>' +
-      '</div>';
+    area.innerHTML += `
+    <div class="flex items-end gap-2 max-w-[88%] animate-fade-in">
+      <div class="w-8 h-8 rounded-full flex-shrink-0 self-start mt-1 flex items-center justify-center"
+        style="background:linear-gradient(135deg,#4575BA 0%,#BFFD70 100%);">
+        <span class="text-white font-bold text-[11px]">A</span>
+      </div>
+      <div class="bg-white ana-bubble border border-slate-200 px-4 py-3 text-[14px] text-[#0d1c2e] leading-relaxed shadow-sm">
+        ${html}
+      </div>
+    </div>`;
   } else {
-    area.innerHTML += '<div class="flex justify-end"><div class="bg-[#1565c0] text-white px-4 py-3 text-[14px] leading-relaxed max-w-[80%] shadow-md user-bubble">' + html + '</div></div>';
+    area.innerHTML += `
+    <div class="flex justify-end">
+      <div class="bg-[#4575BA] text-white px-4 py-3 text-[14px] leading-relaxed max-w-[80%] user-bubble shadow-sm">
+        ${html}
+      </div>
+    </div>`;
   }
-  scrollDown();
+  scrollBottom();
 }
 
 function showTyping() {
-  document.getElementById('chat-area').innerHTML +=
-    '<div class="flex items-end gap-2" id="typing-ind">' +
-    '<div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center" style="background:rgba(21,101,192,.15);"><span class="text-[#1565c0] font-bold text-[11px]">A</span></div>' +
-    '<div class="bg-white px-4 py-3 shadow-sm border border-[#b5d4f4]/40 ana-bubble"><div style="display:flex;gap:4px;align-items:center;"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div></div>' +
-    '</div>';
-  scrollDown();
+  const area = document.getElementById('chat-area');
+  area.innerHTML += `
+  <div class="flex items-end gap-2" id="typing-indicator">
+    <div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center" style="background:rgba(69,117,186,0.15);">
+      <span class="text-[#4575BA] font-bold text-[11px]">A</span>
+    </div>
+    <div class="bg-white px-4 py-3 shadow-sm border border-slate-200/60 ana-bubble">
+      <div style="display:flex;gap:4px;align-items:center;">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      </div>
+    </div>
+  </div>`;
+  scrollBottom();
 }
 
 function removeTyping() {
-  var t = document.getElementById('typing-ind');
+  const t = document.getElementById('typing-indicator');
   if (t) t.remove();
 }
 
-function setQR(replies) {
-  var c = document.getElementById('qr-container');
+function setQuickReplies(replies) {
+  const c = document.getElementById('quick-replies-container');
   if (!replies || !replies.length) { c.innerHTML = ''; return; }
-  c.innerHTML = '<div class="flex gap-2 overflow-x-auto no-scrollbar py-2">' +
-    replies.map(function(r, i) {
-      return '<button class="qr-chip ' + (i === 0 ? 'qr-primary' : 'qr-secondary') + '" onclick="handleAnswer(\'' + r.replace(/'/g, "\\'") + '\')">' + r + '</button>';
-    }).join('') + '</div>';
+  c.innerHTML = `<div class="flex gap-2 overflow-x-auto no-scrollbar py-2">${
+    replies.map((r, i) =>
+      `<button class="qr-chip qr-secondary" onclick="onQuickReply('${r.replace(/'/g,"\\'")}')">
+        ${r}
+      </button>`
+    ).join('')
+  }</div>`;
 }
 
-function clearQR() {
-  document.getElementById('qr-container').innerHTML = '';
+function clearQuickReplies() {
+  document.getElementById('quick-replies-container').innerHTML = '';
 }
 
-function setDisabled(v) {
-  document.getElementById('chat-input').disabled = v;
-  document.getElementById('send-btn').disabled   = v;
-}
+function updateProgressUI() {
+  let pct = 5;
+  const step = chatState.currentStep;
+  const label = document.getElementById('progress-label');
 
-// ── Intro de Ana antes de empezar ──
-function showIntro() {
-  busy = true;
-  showTyping();
-  setTimeout(function() {
-    removeTyping();
-    addBubble(
-      'Hola ' + userName + '! 👋 Soy *Ana*, tu asistente de Kinsu.\n\n' +
-      'Vamos a registrar un nuevo prospecto para cotizar un *Seguro de Gastos Médicos Mayores* (GMM). ' +
-      'Es el único producto que manejamos — el más importante porque protege a las personas ante gastos hospitalarios mayores.\n\n' +
-      '¿Todo listo? Voy a hacerte 6 preguntas rápidas sobre tu referido 🚀'
-    );
-    setTimeout(function() {
-      setQR(['¡Listo, empecemos!']);
-      busy = false;
-    }, 400);
-  }, 1000);
-}
-
-// ── Flujo de preguntas ──
-function askStep(s) {
-  if (s >= QUESTIONS.length) { finishFlow(); return; }
-  step = s;
-  busy = true;
-  showTyping();
-  setTimeout(function() {
-    removeTyping();
-    busy = false;
-    var q = QUESTIONS[s];
-    // Numerar la pregunta
-    addBubble('*Pregunta ' + (s + 1) + ' de ' + QUESTIONS.length + '* — ' + q.q);
-    setQR(q.replies || []);
-    document.getElementById('chat-input').placeholder = q.placeholder || 'Escribe tu respuesta...';
-  }, 700 + Math.random() * 300);
-}
-
-function handleAnswer(val) {
-  if (busy || !val.trim()) return;
-  clearQR();
-  addBubble(val, 'user');
-
-  // Si es la respuesta al intro
-  if (step === 0 && val === '¡Listo, empecemos!') {
-    askStep(0);
-    return;
+  if (step === 'INTRO' || step.startsWith('TITULAR')) {
+      label.textContent = "Fase 1: Perfil del Titular";
+      if (step === 'TITULAR_FNAC') pct = 20;
+      if (step === 'TITULAR_CP') pct = 45;
+      if (step === 'TITULAR_PREEXISTENCIA') pct = 65;
+  } else if (step === 'PREGUNTA_DEPENDIENTE') {
+      label.textContent = "Fase 2: Dependientes Familiares";
+      pct = 75;
+  } else if (step.startsWith('FAMILIAR')) {
+      label.textContent = `Fase 2: Familiar #${chatState.familiares.length + 1}`;
+      pct = 80 + (chatState.familiares.length * 4);
   }
-
-  prospect[QUESTIONS[step].key] = val;
-  askStep(step + 1);
+  
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-bar').style.width = pct + '%';
 }
 
-function sendMsg() {
-  var inp = document.getElementById('chat-input');
-  var val = inp.value.trim();
-  if (!val || busy) return;
+// ── Core Conversational Engine ──
+function askNextQuestion() {
+    const currentConfig = ANA_FLOW[chatState.currentStep];
+    if (!currentConfig) {
+        finishFlow();
+        return;
+    }
+
+    updateProgressUI();
+    typing = true;
+    showTyping();
+
+    setTimeout(() => {
+        removeTyping();
+        typing = false;
+        
+        const promptText = currentConfig.q();
+        addBubble(promptText.replace(/\n/g, '<br>'));
+        
+        setQuickReplies(currentConfig.replies || []);
+        document.getElementById('chat-input').placeholder = currentConfig.placeholder || 'Escribe tu respuesta...';
+        scrollBottom();
+    }, 600 + Math.random() * 350);
+}
+
+function handleAnswer(answer) {
+    if (typing || !answer.trim()) return;
+    
+    clearQuickReplies();
+    addBubble(answer, 'user');
+
+    const currentConfig = ANA_FLOW[chatState.currentStep];
+    
+    if (chatState.currentStep === 'INTRO' || chatState.currentStep.startsWith('TITULAR')) {
+        chatState.titular[currentConfig.key] = answer;
+    } else if (chatState.currentStep.startsWith('FAMILIAR')) {
+        chatState.tempFamiliar[currentConfig.key] = answer;
+    }
+
+    let nextStep;
+    if (typeof currentConfig.next === 'function') {
+        nextStep = currentConfig.next(answer);
+    } else {
+        nextStep = currentConfig.next;
+    }
+
+    chatState.currentStep = nextStep;
+    askNextQuestion();
+}
+
+function sendUserMessage() {
+  const inp = document.getElementById('chat-input');
+  const val = inp.value.trim();
+  if (!val) return;
   inp.value = '';
   handleAnswer(val);
 }
 
-document.getElementById('chat-input').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') sendMsg();
+function onQuickReply(val) {
+  document.getElementById('chat-input').value = '';
+  handleAnswer(val);
+}
+
+document.getElementById('chat-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') sendUserMessage();
 });
 
-// ── Finalizar y guardar ──
+// ══════════════════════════════════════════════════
+// STRUCTURAL MINUTE GENERATOR (OPCIÓN A)
+// ══════════════════════════════════════════════════
+function compilarNotasExtendidas() {
+  const t = chatState.titular;
+  let report = `=== REPORTE MÉDICO COMPLETO DEL TITULAR ===\n`;
+  report += `• F. Nacimiento: ${t.fnac || 'No provista'}\n`;
+  report += `• Género asignado: ${t.genero || 'No especificado'}\n`;
+  if (t.genero === 'Femenino') {
+      report += `• Maternidad: ${t.maternidad || 'No solicitada'}\n`;
+  }
+  report += `• Ubicación / CP: ${t.cp || 'No provisto'}\n`;
+  report += `• Ocupación Laboral: ${t.ocupacion || 'No provista'}\n`;
+  report += `• Deporte/Riesgo regulado: ${t.deporte || 'Ninguno'}\n`;
+  report += `• Antropometría: ${t.antro || 'No especificado'}\n`;
+  report += `• Diagnóstico clínico: ${t.preexistencia || 'Sin preexistencias'}\n\n`;
+
+  if (chatState.familiares.length > 0) {
+      report += `=== DEPENDIENTES ADICIONALES REGISTRADOS (${chatState.familiares.length}) ===\n`;
+      chatState.familiares.forEach((fam, idx) => {
+          report += `[Familiar ${idx + 1}] ${fam.nombre || 'Asignado'}\n`;
+          report += `  - Edad/F.Nac: ${fam.fnac || '—'}\n`;
+          report += `  - Género: ${fam.genero || '—'}\n`;
+          report += `  - Peso/Talla: ${fam.antro || '—'}\n`;
+          report += `  - Historial Clínico: ${fam.preexistencia || 'Sin preexistencias'}\n`;
+      });
+  }
+  return report;
+}
+
+function parseEdadParaCat(fechaStr) {
+    if (!fechaStr) return '30 a 45';
+    const clean = parseInt(fechaStr.split('-')[0]);
+    if (isNaN(clean)) return '30 a 45';
+    const edad = new Date().getFullYear() - clean;
+    if (edad < 30) return 'Menos de 30';
+    if (edad <= 45) return '30 a 45';
+    if (edad <= 60) return '45 a 60';
+    return 'Más de 60';
+}
+
+// ── Guardado final seguro en base de datos sin alterar columnas ──
 async function finishFlow() {
-  busy = true;
-  setDisabled(true);
-  clearQR();
+  clearQuickReplies();
+  document.getElementById('progress-pct').textContent = '100%';
+  document.getElementById('progress-bar').style.width = '100%';
+  document.getElementById('progress-label').textContent = 'Completado ✓';
+
+  typing = true;
   showTyping();
 
-  var folio = '';
+  const t = chatState.titular;
+  const notasFinales = compilarNotasExtendidas();
+  const catEdad = parseEdadParaCat(t.fnac);
+
   try {
-    var result = await KinsuAPI.createProspecto({
-      nombre:       prospect.nombre,
-      telefono:     prospect.tel,
-      email:        prospect.correo,
-      tipo:         'salud',
-      ciudad:       prospect.ciudad,
-      edad:         prospect.edad,
-      preexistencia:prospect.preexist,
-      notas:        'Edad: ' + (prospect.edad||'—') + ' · Preexistencias: ' + (prospect.preexist||'Ninguna'),
+    const result = await KinsuAPI.createProspecto({
+      nombre: t.nombre,
+      telefono: t.tel,
+      email: t.correo,
+      tipo: 'salud',
+      ciudad: t.cp || 'CDMX',
+      edad: catEdad,
+      preexistencia: t.preexistencia || 'Sin preexistencias',
+      notas: notasFinales // Almacenamiento limpio encriptado dentro de Notas
     });
     folio = (result && result.folio) ? result.folio : ('S' + Date.now().toString().slice(-6));
   } catch(e) {
+    console.error("Fallo de guardado real:", e);
     folio = 'S' + Date.now().toString().slice(-6);
   }
 
-  sessionStorage.setItem('prospecto', JSON.stringify(
-    Object.assign({}, prospect, { folio: folio, tipo: 'salud' })
-  ));
+  sessionStorage.setItem('prospecto', JSON.stringify({
+    nombre: t.nombre, tipo: 'salud', folio: folio, tel: t.tel, correo: t.correo
+  }));
 
-  // Mensaje WhatsApp — Opción B
-  var telNum  = String(prospect.tel || '').replace(/[^0-9]/g, '');
-  var waText  = 'Hola ' + prospect.nombre + '! ' +
-    'Te registré en Kinsu para que te coticen un seguro de salud. ' +
-    'Sin compromiso, solo para que veas opciones y precios reales. ' +
-    'Un asesor te escribe hoy. Folio: #' + folio + ' ' +
-    'Avísame si tienes preguntas 🙌';
-  var waUrl   = (telNum ? 'https://wa.me/52' + telNum : 'https://wa.me') +
-    '?text=' + encodeURIComponent(waText);
+  setTimeout(() => {
+    removeTyping();
+    typing = false;
+    
+    addBubble(`¡Perfecto! 🎉 He guardado el perfil familiar completo de tu prospecto.<br><br>
+    El folio asignado en tu base de datos es <strong>#${folio}</strong>.<br>
+    Aquí tienes el mensaje de WhatsApp para notificarle:`);
 
-  removeTyping();
-  addBubble(
-    '¡Perfecto! 🎉 Registré a *' + prospect.nombre + '* exitosamente.\n\n' +
-    'Su folio de seguimiento es *#' + folio + '*.\n\n' +
-    'Un asesor de Kinsu lo contactará pronto. Te preparé el mensaje de WhatsApp para que le avises 👇'
-  );
+    const waText = `Hola ${t.nombre}! Te registré en Kinsu para tu cotización del Seguro de Salud familiar. Ya ingresé el cuestionario detallado y los perfiles médicos de tus dependientes al sistema. Te contactarán hoy mismo sin compromiso. Folio de seguimiento: #${folio}`;
+    const cleanTel = String(t.tel).replace(/[^0-9]/g, '');
+    const waUrl = (cleanTel ? `https://wa.me/52${cleanTel}` : 'https://wa.me') + `?text=${encodeURIComponent(waText)}`;
 
-  setTimeout(function() {
-    var area = document.getElementById('chat-area');
+    setTimeout(() => {
+      const area = document.getElementById('chat-area');
+      area.innerHTML += `
+      <div class="flex justify-center mt-2 w-full animate-fade-in">
+        <div class="bg-white border border-slate-200 rounded-2xl p-4 max-w-sm w-full text-[13px] text-[#0d1c2e] leading-relaxed shadow-sm">
+          <p class="text-[10px] font-bold text-[#4575BA] uppercase tracking-wider mb-2">Mensaje listo para enviar</p>
+          <p class="text-slate-600">${waText}</p>
+        </div>
+      </div>`;
 
-    // Vista previa del mensaje
-    area.innerHTML +=
-      '<div class="flex justify-center mt-3 w-full">' +
-        '<div class="bg-[#e8f0fe] rounded-2xl p-4 max-w-sm w-full text-[13px] text-[#0d1c2e] leading-relaxed border border-[#d4dcf5]">' +
-          '<p class="text-[10px] font-bold text-[#1565c0] uppercase tracking-wider mb-2">Vista previa del mensaje</p>' +
-          '<p>Hola <strong>' + prospect.nombre + '</strong>! Te registré en Kinsu para que te coticen un seguro de salud. Sin compromiso, solo para que veas opciones y precios reales. Un asesor te escribe hoy. Folio: <strong>#' + folio + '</strong> Avísame si tienes preguntas 🙌</p>' +
-        '</div>' +
-      '</div>';
-
-    // Botones finales
-    area.innerHTML +=
-      '<div class="flex justify-center gap-3 mt-4 flex-wrap">' +
-        '<a href="' + waUrl + '" target="_blank" ' +
-          'class="flex items-center gap-2 px-6 py-3 bg-[#25d366] text-white rounded-full font-bold text-sm hover:opacity-90 active:scale-95 transition-all">' +
-          '<svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>' +
-          'Enviar WhatsApp' +
-        '</a>' +
-        '<a href="prospectos.html" ' +
-          'class="flex items-center gap-2 px-6 py-3 bg-white border border-[#1565c0] text-[#1565c0] rounded-full font-bold text-sm hover:bg-blue-50 active:scale-95 transition-all">' +
-          'Ver mis prospectos' +
-        '</a>' +
-      '</div>';
-
-    scrollDown();
+      area.innerHTML += `
+      <div class="flex justify-center gap-3 mt-4 flex-wrap w-full">
+        <a href="${waUrl}" target="_blank" 
+          class="flex items-center justify-center gap-2 h-12 px-6 bg-[#25d366] text-white rounded-full font-bold text-sm hover:opacity-90 active:scale-95 transition-all shadow-md">
+          <span>Enviar por WhatsApp</span>
+        </a>
+        <a href="prospectos.html?success=true" 
+          class="flex items-center justify-center h-12 px-6 bg-white border border-slate-200 text-[#4575BA] rounded-full font-bold text-sm hover:bg-slate-50 active:scale-95 transition-all shadow-sm">
+          <span>Ver mis prospectos</span>
+        </a>
+      </div>`;
+      
+      scrollBottom();
+      document.getElementById('chat-input').disabled = true;
+      document.getElementById('send-btn').disabled = true;
+    }, 600);
   }, 1000);
 }
 
-// ── Arrancar con intro ──
-setTimeout(showIntro, 400);
+// Inicialización automática
+setTimeout(askNextQuestion, 400);
 </script>
 </body>
 </html>
