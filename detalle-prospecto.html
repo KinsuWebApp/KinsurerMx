@@ -91,13 +91,13 @@
         <span class="material-symbols-outlined text-kinsu-blue text-xl">vitals</span>
         <h3 class="text-xs font-bold uppercase tracking-wider text-kinsu-navy">Diagnóstico Colectivo y Perfil</h3>
       </div>
-      <pre id="p-notas" class="text-xs text-slate-600 font-medium leading-relaxed font-sans whitespace-pre-wrap bg-slate-50 p-4 rounded-xl border border-slate-100/60 overflow-x-hidden"></pre>
+      <pre id="p-notes" class="text-xs text-slate-600 font-medium leading-relaxed font-sans whitespace-pre-wrap bg-slate-50 p-4 rounded-xl border border-slate-100/60 overflow-x-hidden"></pre>
     </div>
 
     <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600">
-          <span class="material-symbols-outlined style='font-variation-settings:\"FILL\" 1;'">payments</span>
+          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">payments</span>
         </div>
         <div>
           <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Tu Comisión Estimada</span>
@@ -109,11 +109,35 @@
       </span>
     </div>
 
-    <div id="action-container" class="pt-4">
-        </div>
+    <div id="action-container" class="pt-4"></div>
 
   </div>
 </main>
+
+<nav class="lg:hidden fixed bottom-0 left-0 w-full h-16 bg-white/85 backdrop-blur-xl flex justify-around items-center px-2 z-50 border-t border-slate-100 shadow-sm rounded-t-2xl">
+  <a href="dashboard.html" class="flex flex-col items-center justify-center text-slate-400">
+    <span class="material-symbols-outlined">home</span>
+    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Inicio</span>
+  </a>
+  <a href="prospectos.html" class="flex flex-col items-center justify-center text-kinsu-blue">
+    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">group</span>
+    <span class="text-[10px] font-bold uppercase tracking-wider mt-0.5">Prospectos</span>
+  </a>
+  <div class="flex flex-col items-center -mt-8">
+    <a href="nuevo-prospecto.html"
+      class="w-14 h-14 bg-kinsu-blue text-white rounded-xl shadow-lg flex items-center justify-center active:scale-95 transition-transform">
+      <span class="material-symbols-outlined text-3xl">add</span>
+    </a>
+  </div>
+  <a href="ganancias.html" class="flex flex-col items-center justify-center text-slate-400">
+    <span class="material-symbols-outlined">payments</span>
+    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Ganancias</span>
+  </a>
+  <a href="perfil.html" class="flex flex-col items-center justify-center text-slate-400">
+    <span class="material-symbols-outlined">person</span>
+    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Perfil</span>
+  </a>
+</nav>
 
 <script src="kinsu-config.js"></script>
 <script>
@@ -135,12 +159,10 @@ async function cargarDetalleProspecto(folio) {
     const contentEl = document.getElementById('content-state');
     
     try {
-        // Consumo de tu endpoint nativo del backend para traer la ficha del lead
-        const res = await fetch(`${SCRIPT_URL}?action=getProspecto&id=${folio}`);
-        const data = await res.json();
+        // ✅ CORRECCIÓN SOLUCIONADA: Llamamos a la API unificada del kinsu-config
+        const data = await KinsuAPI.getProspecto(folio);
 
         if (data && !data.error) {
-            // Mapeo de datos en pantalla
             document.getElementById('header-folio').textContent = `Folio: #${data['Folio'] || folio}`;
             document.getElementById('p-nombre').textContent = data['Nombre Prospecto'] || '—';
             document.getElementById('p-tel').textContent = data['Teléfono'] || '—';
@@ -149,15 +171,14 @@ async function cargarDetalleProspecto(folio) {
             document.getElementById('p-ciudad').textContent = data['Ciudad'] || '—';
             document.getElementById('p-comision').textContent = data['Comisión Estimada'] || '$0 MXN';
             
-            // Inyección del reporte médico consolidado (Titular + Dependientes adicionales)
-            document.getElementById('p-notas').textContent = data['Notas'] || 'Sin notas complementarias asentadas.';
+            // Renderizado de las Notas Médicas Extendidas (Titular + Familiares)
+            document.getElementById('p-notes').textContent = data['Notas'] || 'Sin notas complementarias asentadas.';
 
-            // Renderizado estético del Badge de Estatus de Avance
             const estatus = data['Estatus'] || 'Enviado';
             const badge = document.getElementById('status-badge');
             badge.textContent = estatus;
 
-            // Mapeo de paleta de colores de estatus para mantener consistencia visual
+            // Mapeo estético de badges
             if (estatus === 'Enviado') {
                 badge.className = "px-3 py-1 bg-blue-50 text-blue-600 border border-blue-100 rounded-full text-[10px] font-extrabold uppercase tracking-wider";
             } else if (estatus === 'En Cotización') {
@@ -173,28 +194,23 @@ async function cargarDetalleProspecto(folio) {
             // El botón de seguimiento SOLO aparece si el estatus es 'Enviado'
             // ══════════════════════════════════════════════════
             const actionContainer = document.getElementById('action-container');
-            actionContainer.innerHTML = ''; // Limpieza de seguridad
+            actionContainer.innerHTML = '';
 
             if (estatus.trim() === 'Enviado') {
                 const nombreProspecto = data['Nombre Prospecto'] || 'Hola';
                 const telefonoLimpio  = String(data['Teléfono'] || '').replace(/[^0-9]/g, '');
                 
-                // Mensaje exacto de seguimiento estructurado por la dirección
                 const textoWhatsApp = `Hola ${nombreProspecto}, ¿cómo estás? Te escribe tu Kinsurer de confianza. Quería darte seguimiento para saber si tuviste oportunidad de revisar la propuesta del Seguro de Salud familiar que te enviamos y conocer qué te gustaría hacer. ¡Quedo a tus órdenes!`;
-                
-                // Construcción de la URL universal de WhatsApp Business
                 const urlWhatsApp = `https://wa.me/52${telefonoLimpio}?text=${encodeURIComponent(textoWhatsApp)}`;
 
-                // Inyección del botón táctil de alta densidad (52px de alto, bordes redondeados)
                 actionContainer.innerHTML = `
                     <a href="${urlWhatsApp}" target="_blank"
-                       class="w-full h-13 bg-kinsu-blue hover:bg-kinsu-blueDark text-white font-bold text-sm rounded-full flex items-center justify-center gap-2 active:scale-[0.98] transition-all shadow-lg shadow-blue-900/10 text-center py-3.5">
+                       class="w-full h-12 bg-kinsu-blue hover:bg-kinsu-blueDark text-white font-bold text-sm rounded-full flex items-center justify-center gap-2 active:scale-[0.98] transition-all shadow-lg shadow-blue-900/10 text-center py-3">
                         <span class="material-symbols-outlined text-lg">chat_bubble</span>
                         <span>Hacer seguimiento por WhatsApp</span>
                     </a>
                 `;
             } else {
-                // Si la póliza ya avanzó de fase o fue cancelada, se bloquea cualquier acción del Kinsurer
                 actionContainer.innerHTML = `
                     <div class="bg-slate-50 border border-slate-100 text-slate-400 p-4 rounded-xl text-center text-xs font-semibold">
                         <span class="material-symbols-outlined text-base mr-1">lock</span>
@@ -203,7 +219,6 @@ async function cargarDetalleProspecto(folio) {
                 `;
             }
 
-            // Swapping de vistas de carga a contenido activo
             loadingEl.classList.add('hidden');
             contentEl.classList.remove('hidden');
         } else {
@@ -212,7 +227,7 @@ async function cargarDetalleProspecto(folio) {
         }
     } catch (err) {
         console.error('Fallo de conexión de red al recuperar expediente:', err);
-        alert('Error de red. No se pudo conectar con el servidor.');
+        alert('Error de red al consultar la base de datos de Sheets.');
         window.location.href = 'prospectos.html';
     }
 }
