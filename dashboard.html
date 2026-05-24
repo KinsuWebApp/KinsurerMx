@@ -76,7 +76,7 @@
         <div class="hidden md:block"></div>
 
         <div class="flex items-center gap-4">
-          <a href="chat-ana.html" class="text-slate-400 hover:text-kinsu-blue flex items-center justify-center transition-colors p-1.5 rounded-full hover:bg-slate-50" title="Asistente de IA Ana">
+          <a href="formacion.html" class="text-slate-400 hover:text-kinsu-blue flex items-center justify-center transition-colors p-1.5 rounded-full hover:bg-slate-50" title="Asistente de IA Ana">
             <span class="material-symbols-outlined text-[24px]">smart_toy</span>
           </a>
           <div id="user-avatar" class="w-9 h-9 bg-blue-50 text-kinsu-blue rounded-full flex items-center justify-center font-bold text-sm uppercase tracking-wide select-none border border-blue-100/40">
@@ -253,8 +253,22 @@ async function cargarDatosDashboard(kinsurerID) {
         if (data && !data.error) {
             document.getElementById('dash-ganancias').textContent = data.ganancias_total || '$0.00 MXN';
 
+            // ═══════════════════════════════════════════════════
+            // MOTOR DE GAMIFICACIÓN CON HOTFIX DE EVALUACIÓN EXAMEN
+            // ═══════════════════════════════════════════════════
             if (data.nivel && data.nivel.actual) {
-                const lvl = data.nivel;
+                let lvl = data.nivel;
+                
+                // 🔥 EL AJUSTE CLAVE: Si la base de datos de Google Sheets dice que ya es Certificado,
+                // pero tiene 0 pólizas emitidas, forzamos el piso visual del nivel para Ana.
+                const nivelRealEnBD = data.kinsurer['Nivel'] || '';
+                if (nivelRealEnBD === 'Kinsurer Certificado' && lvl.actual.id === 0) {
+                    lvl.actual.nombre = 'Kinsurer Certificado';
+                    lvl.siguiente = { min: 5, nombre: 'Kinsurer Pro' };
+                    lvl.faltanParaSiguiente = 5 - lvl.polizas;
+                    lvl.progresoEnNivel = Math.round((lvl.polizas / 5) * 100);
+                }
+
                 const cleanNombre = lvl.actual.nombre.replace('Kinsurer ', '');
                 document.getElementById('lvl-nombre').textContent = cleanNombre;
                 
@@ -264,7 +278,8 @@ async function cargarDatosDashboard(kinsurerID) {
                 const pWord = lvl.faltanParaSiguiente === 1 ? 'póliza' : 'pólizas';
 
                 if (lvl.siguiente) {
-                    document.getElementById('lvl-meta').textContent = `Faltan ${lvl.faltanParaSiguiente} ${pWord} para el siguiente nivel`;
+                    const cleanSiguiente = lvl.siguiente.nombre.replace('Kinsurer ', '');
+                    document.getElementById('lvl-meta').textContent = `Faltan ${lvl.faltanParaSiguiente} ${pWord} para el nivel ${cleanSiguiente}`;
                     document.getElementById('lvl-progreso-texto').textContent = `${lvl.polizas} de ${lvl.siguiente.min} pólizas`;
                 } else {
                     document.getElementById('lvl-meta').textContent = '¡Rango Máximo alcanzado! 🏆';
@@ -272,6 +287,7 @@ async function cargarDatosDashboard(kinsurerID) {
                 }
             }
 
+            // Pipeline Metrics
             document.getElementById('p-enviados').textContent    = data.prospectos_enviados || 0;
             document.getElementById('p-cotizando').textContent   = data.prospectos_cotizacion || 0;
             document.getElementById('p-emitiendo').textContent   = data.prospectos_emision || 0;
