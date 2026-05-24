@@ -30,160 +30,206 @@
   }
 </script>
 </head>
-<body class="min-h-screen flex flex-col text-kinsu-navy antialiased bg-slate-50">
+<body class="min-h-screen text-kinsu-navy antialiased bg-slate-50 flex">
 
-<header class="bg-white sticky top-0 w-full z-50 border-b border-slate-100">
-  <div class="flex items-center justify-between px-4 h-16 max-w-2xl mx-auto">
-    <div class="flex items-center">
-      <span class="font-black text-2xl text-kinsu-blue tracking-tight select-none">Kinsu</span>
+  <aside class="hidden md:flex flex-col w-64 bg-white border-r border-slate-100 fixed inset-y-0 left-0 z-50 p-5 justify-between">
+    <div class="space-y-8">
+      <div class="flex items-center px-2">
+        <span class="font-black text-2xl text-kinsu-blue tracking-tight select-none">Kinsu</span>
+      </div>
+      
+      <nav class="space-y-1.5">
+        <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2.5 bg-blue-50/60 text-kinsu-blue font-bold text-sm rounded-xl transition-all">
+          <span class="material-symbols-outlined text-[22px]" style="font-variation-settings:'FILL' 1;">home</span>
+          <span>Inicio</span>
+        </a>
+        <a href="prospectos.html" class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-kinsu-blue hover:bg-slate-50 font-semibold text-sm rounded-xl transition-all">
+          <span class="material-symbols-outlined text-[22px]">group</span>
+          <span>Prospectos</span>
+        </a>
+        <a href="ganancias.html" class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-kinsu-blue hover:bg-slate-50 font-semibold text-sm rounded-xl transition-all">
+          <span class="material-symbols-outlined text-[22px]">payments</span>
+          <span>Ganancias</span>
+        </a>
+        <a href="perfil.html" class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-kinsu-blue hover:bg-slate-50 font-semibold text-sm rounded-xl transition-all">
+          <span class="material-symbols-outlined text-[22px]">person</span>
+          <span>Perfil</span>
+        </a>
+      </nav>
     </div>
-    <div class="flex items-center gap-4">
-      <a href="chat-ana.html" class="text-slate-400 hover:text-kinsu-blue flex items-center justify-center transition-colors p-1 rounded-full hover:bg-slate-50">
-        <span class="material-symbols-outlined text-[24px]">smart_toy</span>
+
+    <div>
+      <a href="nuevo-prospecto.html" class="w-full h-11 bg-kinsu-blue hover:bg-kinsu-blueDark text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-all uppercase tracking-wider shadow-sm shadow-blue-900/10">
+        <span class="material-symbols-outlined text-base">add</span>
+        <span>Nuevo Prospecto</span>
       </a>
-      <div id="user-avatar" class="w-9 h-9 bg-blue-50 text-kinsu-blue rounded-full flex items-center justify-center font-bold text-sm uppercase tracking-wide select-none">
-        KS
-      </div>
     </div>
-  </div>
-</header>
+  </aside>
 
-<main class="flex-1 w-full max-w-2xl mx-auto px-4 pb-28">
+  <div class="flex-1 flex flex-col md:pl-64 min-w-0">
 
-  <div class="pt-6 pb-4">
-    <h1 class="text-3xl font-black text-kinsu-navy tracking-tight">Hola, Kinsurer 👋🏻</h1>
-    <p class="text-sm text-slate-500 mt-1 leading-relaxed">Gestiona tus comisiones y referidos en tiempo real.</p>
-  </div>
-
-  <div class="space-y-4">
-
-    <div class="bg-[#0d1c2e] text-white rounded-3xl p-6 shadow-xl border border-slate-800/60 space-y-3.5 relative overflow-hidden">
-      <div>
-        <span class="inline-block bg-[#1565c0] text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full">
-          KINSURER
-        </span>
-      </div>
-      <div>
-        <h2 id="lvl-nombre" class="text-3xl font-extrabold tracking-tight">Cargando...</h2>
-      </div>
-      <div>
-        <p id="lvl-meta" class="text-sm font-semibold text-slate-300">Calculando tus metas operativas...</p>
-      </div>
-      <div class="space-y-2 pt-2">
-        <div class="flex justify-between items-center text-xs font-bold tracking-wide text-slate-400">
-          <span id="lvl-progreso-texto">0 de 0 pólizas</span>
-          <span id="lvl-porcentaje">0%</span>
+    <header class="bg-white sticky top-0 w-full z-40 border-b border-slate-100 h-16 flex items-center">
+      <div class="flex items-center justify-between px-4 w-full max-w-2xl mx-auto md:mx-0 md:max-w-none md:px-6">
+        <div class="flex items-center md:hidden">
+          <span class="font-black text-2xl text-kinsu-blue tracking-tight select-none">Kinsu</span>
         </div>
-        <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-          <div id="lvl-bar" class="h-full bg-kinsu-blue rounded-full transition-all duration-700" style="width:0%"></div>
-        </div>
-      </div>
-    </div>
+        <div class="hidden md:block"></div>
 
-    <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm relative overflow-hidden">
-      <div class="absolute -right-12 -top-12 w-32 h-32 bg-kinsu-blue/5 rounded-full blur-xl pointer-events-none"></div>
-      <div class="relative z-10 space-y-3.5">
-        <div>
-          <span class="text-[9px] bg-blue-50 text-kinsu-blue font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider border border-blue-100/60">¿Cómo funciona Kinsu?</span>
-          <h3 class="text-sm font-black tracking-tight mt-1.5 text-kinsu-navy">Ganar es muy fácil:</h3>
-        </div>
-
-        <div class="space-y-1.5 text-xs font-medium border-l-2 border-kinsu-blue/30 pl-3 text-slate-600">
-          <p><strong>1. Tú compartes:</strong> Registras el contacto de tu referido con tu asistente de IA Ana.</p>
-          <p><strong>2. Kinsu cierra:</strong> Nuestro equipo experto cotiza, emite y cobra el seguro.</p>
-          <p class="text-emerald-600"><strong>3. Tú ganas :</strong> En cuanto la póliza esté pagada, recibes tu dinero.</p>
-        </div>
-
-        <div class="grid grid-cols-2 gap-2.5 pt-1">
-          <a href="chat-ana.html" class="h-10 bg-kinsu-blue hover:bg-kinsu-blueDark text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all text-center">
-            <span class="material-symbols-outlined text-base">school</span>
-            <span>Capacitación</span>
+        <div class="flex items-center gap-4">
+          <a href="chat-ana.html" class="text-slate-400 hover:text-kinsu-blue flex items-center justify-center transition-colors p-1.5 rounded-full hover:bg-slate-50" title="Asistente de IA Ana">
+            <span class="material-symbols-outlined text-[24px]">smart_toy</span>
           </a>
-          <a href="formacion.html" class="h-10 bg-slate-50 text-slate-600 border border-slate-200/80 font-bold text-xs rounded-xl flex items-center justify-center gap-1 hover:bg-slate-100 active:scale-95 transition-all text-center">
-            <span class="material-symbols-outlined text-base">folder_open</span>
-            <span>Kit de Venta</span>
-          </a>
+          <div id="user-avatar" class="w-9 h-9 bg-blue-50 text-kinsu-blue rounded-full flex items-center justify-center font-bold text-sm uppercase tracking-wide select-none border border-blue-100/40">
+            KS
+          </div>
         </div>
       </div>
-    </div>
+    </header>
 
-    <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex items-center justify-between">
-      <div class="space-y-0.5">
-        <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Comisiones Acumuladas</span>
-        <h2 id="dash-ganancias" class="text-2xl font-black text-kinsu-navy tracking-tight">$0.00 MXN</h2>
-      </div>
-      <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center shadow-sm border border-emerald-100/40">
-        <span class="material-symbols-outlined text-2xl" style="font-variation-settings:'FILL' 1;">account_balance_wallet</span>
-      </div>
-    </div>
+    <main class="flex-1 w-full max-w-2xl mx-auto px-4 pb-28 md:pb-8 md:mx-0 md:max-w-none md:px-6">
 
-    <div class="space-y-2">
-      <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider block px-1">Resumen de actividad</span>
-      <div class="grid grid-cols-3 gap-2">
-        <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm text-center">
-          <p id="p-enviados" class="text-base font-black text-blue-600">0</p>
-          <span class="text-[9px] text-slate-400 font-bold block uppercase tracking-wide mt-0.5">Enviados</span>
-        </div>
-        <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm text-center">
-          <p id="p-cotizando" class="text-base font-black text-amber-500">0</p>
-          <span class="text-[9px] text-slate-400 font-bold block uppercase tracking-wide mt-0.5">Cotizando</span>
-        </div>
-        <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm text-center">
-          <p id="p-emitiendo" class="text-base font-black text-purple-600">0</p>
-          <span class="text-[9px] text-slate-400 font-bold block uppercase tracking-wide mt-0.5">Emitiendo</span>
-        </div>
-        <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm text-center">
-          <p id="p-cobranza" class="text-base font-black text-indigo-600">0</p>
-          <span class="text-[9px] text-slate-400 font-bold block uppercase tracking-wide mt-0.5">Cobranza</span>
-        </div>
-        <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm text-center">
-          <p id="p-completados" class="text-base font-black text-emerald-600">0</p>
-          <span class="text-[9px] text-slate-400 font-bold block uppercase tracking-wide mt-0.5">Cerrados</span>
-        </div>
-        <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm text-center">
-          <p id="p-cancelados" class="text-base font-black text-slate-400">0</p>
-          <span class="text-[9px] text-slate-400 font-bold block uppercase tracking-wide mt-0.5">Cancelados</span>
-        </div>
+      <div class="pt-6 pb-4">
+        <h1 class="text-3xl font-black text-kinsu-navy tracking-tight">Hola, Kinsurer 👋🏻</h1>
+        <p class="text-sm text-slate-500 mt-1 leading-relaxed">Gestiona tus comisiones y referidos en tiempo real.</p>
       </div>
-    </div>
 
-    <div class="space-y-2">
-      <div class="flex justify-between items-center px-1">
-        <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider block">Prospectos Recientes</span>
-        <a href="prospectos.html" class="text-[10px] font-bold text-kinsu-blue hover:underline">Ver todos</a>
-      </div>
-      <div id="recientes-container" class="space-y-2">
-        <div class="bg-white p-4 rounded-xl border border-slate-100 animate-pulse h-14"></div>
-      </div>
-    </div>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+        
+        <div class="space-y-4 lg:col-span-7">
+          
+          <div class="bg-[#0d1c2e] text-white rounded-3xl p-6 shadow-xl border border-slate-800/60 space-y-3.5 relative overflow-hidden">
+            <div>
+              <span class="inline-block bg-[#1565c0] text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full">
+                KINSURER
+              </span>
+            </div>
+            <div>
+              <h2 id="lvl-nombre" class="text-3xl font-extrabold tracking-tight">Cargando...</h2>
+            </div>
+            <div>
+              <p id="lvl-meta" class="text-sm font-semibold text-slate-300">Calculando tus metas operativas...</p>
+            </div>
+            <div class="space-y-2 pt-2">
+              <div class="flex justify-between items-center text-xs font-bold tracking-wide text-slate-400">
+                <span id="lvl-progreso-texto">0 de 0 pólizas</span>
+                <span id="lvl-porcentaje">0%</span>
+              </div>
+              <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                <div id="lvl-bar" class="h-full bg-kinsu-blue rounded-full transition-all duration-700" style="width:0%"></div>
+              </div>
+            </div>
+          </div>
 
+          <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm relative overflow-hidden">
+            <div class="absolute -right-12 -top-12 w-32 h-32 bg-kinsu-blue/5 rounded-full blur-xl pointer-events-none"></div>
+            <div class="relative z-10 space-y-3.5">
+              <div>
+                <span class="text-[9px] bg-blue-50 text-kinsu-blue font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider border border-blue-100/60">¿Cómo funciona Kinsu?</span>
+                <h3 class="text-sm font-black tracking-tight mt-1.5 text-kinsu-navy">Ganar comisiones es muy fácil:</h3>
+              </div>
+
+              <div class="space-y-1.5 text-xs font-medium border-l-2 border-kinsu-blue/30 pl-3 text-slate-600">
+                <p><strong>1. Tú compartes:</strong> Registras el contacto de tu referido con Ana.</p>
+                <p><strong>2. Kinsu cierra:</strong> Nuestro equipo experto cotiza, emite y cobra el seguro.</p>
+                <p class="text-emerald-600"><strong>3. Tú cobras:</strong> En cuanto la póliza esté liquidada, recibes tu dinero.</p>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2.5 pt-1">
+                <a href="chat-ana.html" class="h-10 bg-kinsu-blue hover:bg-kinsu-blueDark text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all text-center">
+                  <span class="material-symbols-outlined text-base">school</span>
+                  <span>Capacitación</span>
+                </a>
+                <a href="formacion.html" class="h-10 bg-slate-50 text-slate-600 border border-slate-200/80 font-bold text-xs rounded-xl flex items-center justify-center gap-1 hover:bg-slate-100 active:scale-95 transition-all text-center">
+                  <span class="material-symbols-outlined text-base">folder_open</span>
+                  <span>Kit de Venta</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="space-y-4 lg:col-span-5">
+          
+          <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex items-center justify-between">
+            <div class="space-y-0.5">
+              <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Comisiones Acumuladas</span>
+              <h2 id="dash-ganancias" class="text-xl font-black text-kinsu-navy tracking-tight">$0.00 MXN</h2>
+            </div>
+            <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center shadow-sm border border-emerald-100/40">
+              <span class="material-symbols-outlined text-2xl" style="font-variation-settings:'FILL' 1;">account_balance_wallet</span>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider block px-1">Pipeline de Conversión</span>
+            <div class="grid grid-cols-3 gap-2">
+              <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm text-center">
+                <p id="p-enviados" class="text-base font-black text-blue-600">0</p>
+                <span class="text-[9px] text-slate-400 font-bold block uppercase tracking-wide mt-0.5">Enviados</span>
+              </div>
+              <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm text-center">
+                <p id="p-cotizando" class="text-base font-black text-amber-500">0</p>
+                <span class="text-[9px] text-slate-400 font-bold block uppercase tracking-wide mt-0.5">Cotizando</span>
+              </div>
+              <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm text-center">
+                <p id="p-emitiendo" class="text-base font-black text-purple-600">0</p>
+                <span class="text-[9px] text-slate-400 font-bold block uppercase tracking-wide mt-0.5">Emitiendo</span>
+              </div>
+              <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm text-center">
+                <p id="p-cobranza" class="text-base font-black text-indigo-600">0</p>
+                <span class="text-[9px] text-slate-400 font-bold block uppercase tracking-wide mt-0.5">Cobranza</span>
+              </div>
+              <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm text-center">
+                <p id="p-completados" class="text-base font-black text-emerald-600">0</p>
+                <span class="text-[9px] text-slate-400 font-bold block uppercase tracking-wide mt-0.5">Cerrados</span>
+              </div>
+              <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm text-center">
+                <p id="p-cancelados" class="text-base font-black text-slate-400">0</p>
+                <span class="text-[9px] text-slate-400 font-bold block uppercase tracking-wide mt-0.5">Cancelados</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex justify-between items-center px-1">
+              <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider block">Prospectos Recientes</span>
+              <a href="prospectos.html" class="text-[10px] font-bold text-kinsu-blue hover:underline">Ver todos</a>
+            </div>
+            <div id="recientes-container" class="space-y-2">
+              <div class="bg-white p-4 rounded-xl border border-slate-100 animate-pulse h-14"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </main>
   </div>
-</main>
 
-<nav class="lg:hidden fixed bottom-0 left-0 w-full h-16 bg-white/90 backdrop-blur-md flex justify-around items-center px-2 z-50 border-t border-slate-100 rounded-t-2xl shadow-lg">
-  <a href="dashboard.html" class="flex flex-col items-center justify-center text-kinsu-blue">
-    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">home</span>
-    <span class="text-[10px] font-bold uppercase tracking-wider mt-0.5">Inicio</span>
-  </a>
-  <a href="prospectos.html" class="flex flex-col items-center justify-center text-slate-400">
-    <span class="material-symbols-outlined">group</span>
-    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Prospectos</span>
-  </a>
-  <div class="flex flex-col items-center -mt-8">
-    <a href="nuevo-prospecto.html"
-      class="w-14 h-14 bg-kinsu-blue text-white rounded-xl shadow-lg flex items-center justify-center active:scale-95 transition-transform">
-      <span class="material-symbols-outlined text-3xl">add</span>
+  <nav class="md:hidden fixed bottom-0 left-0 w-full h-16 bg-white/90 backdrop-blur-md flex justify-around items-center px-2 z-50 border-t border-slate-100 rounded-t-2xl shadow-lg">
+    <a href="dashboard.html" class="flex flex-col items-center justify-center text-kinsu-blue">
+      <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">home</span>
+      <span class="text-[10px] font-bold uppercase tracking-wider mt-0.5">Inicio</span>
     </a>
-  </div>
-  <a href="ganancias.html" class="flex flex-col items-center justify-center text-slate-400">
-    <span class="material-symbols-outlined">payments</span>
-    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Ganancias</span>
-  </a>
-  <a href="perfil.html" class="flex flex-col items-center justify-center text-slate-400">
-    <span class="material-symbols-outlined">person</span>
-    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Perfil</span>
-  </a>
-</nav>
+    <a href="prospectos.html" class="flex flex-col items-center justify-center text-slate-400">
+      <span class="material-symbols-outlined">group</span>
+      <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Prospectos</span>
+    </a>
+    <div class="flex flex-col items-center -mt-8">
+      <a href="nuevo-prospecto.html"
+        class="w-14 h-14 bg-kinsu-blue text-white rounded-xl shadow-lg flex items-center justify-center active:scale-95 transition-transform">
+        <span class="material-symbols-outlined text-3xl">add</span>
+      </a>
+    </div>
+    <a href="ganancias.html" class="flex flex-col items-center justify-center text-slate-400">
+      <span class="material-symbols-outlined">payments</span>
+      <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Ganancias</span>
+    </a>
+    <a href="perfil.html" class="flex flex-col items-center justify-center text-slate-400">
+      <span class="material-symbols-outlined">person</span>
+      <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Perfil</span>
+    </a>
+  </nav>
 
 <script src="kinsu-config.js"></script>
 <script>
@@ -197,6 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const user = JSON.parse(sessionData);
     document.getElementById('user-avatar').textContent = user.initials || 'KS';
 
+    // Despacho automático de consulta al backend seguro
     cargarDatosDashboard(user.kinsurerID || 'KIN-0001');
 });
 
@@ -205,8 +252,10 @@ async function cargarDatosDashboard(kinsurerID) {
         const data = await KinsuAPI.getDashboard(kinsurerID);
 
         if (data && !data.error) {
+            // 1. Finanzas
             document.getElementById('dash-ganancias').textContent = data.ganancias_total || '$0.00 MXN';
 
+            // 2. Sistema de Gamificación Multi-Nivel Sincronizado
             if (data.nivel && data.nivel.actual) {
                 const lvl = data.nivel;
                 const cleanNombre = lvl.actual.nombre.replace('Kinsurer ', '');
@@ -226,6 +275,7 @@ async function cargarDatosDashboard(kinsurerID) {
                 }
             }
 
+            // 3. Métricas del Pipeline Operativo (6 Estatus)
             document.getElementById('p-enviados').textContent    = data.prospectos_enviados || 0;
             document.getElementById('p-cotizando').textContent   = data.prospectos_cotizacion || 0;
             document.getElementById('p-emitiendo').textContent   = data.prospectos_emision || 0;
@@ -233,13 +283,14 @@ async function cargarDatosDashboard(kinsurerID) {
             document.getElementById('p-completados').textContent = data.prospectos_completados || 0;
             document.getElementById('p-cancelados').textContent  = data.prospectos_cancelados || 0;
 
+            // 4. Renderizado Cronológico de Leads Recientes
             renderizarProspectosRecientes(data.prospectos_recientes || []);
 
         } else {
-            console.error("Error de API:", data.error);
+            console.error("Error en respuesta de la API:", data.error);
         }
     } catch (err) {
-        console.error("Error de conexión:", err);
+        console.error("Fallo de comunicación de red:", err);
     }
 }
 
