@@ -15,13 +15,13 @@
   .ana-bubble  { border-radius:16px 16px 16px 4px; }
   .user-bubble { border-radius:16px 16px 4px 16px; }
 
-  /* Animación de esferas de escritura conversacional de Ana */
+  /* Esferas de escritura de Ana */
   .dot { width:6px; height:6px; border-radius:50%; background:#4575BA; display:inline-block; animation:blink 1.2s infinite; }
   .dot:nth-child(2) { animation-delay:.2s; }
   .dot:nth-child(3) { animation-delay:.4s; }
   @keyframes blink { 0%,100%{ opacity:.3; transform:scale(.8); } 50%{ opacity:1; transform:scale(1); } }
 
-  /* Chips táctiles para interactuar con el chatbot */
+  /* Chips táctiles conversacionales */
   .qr-chip {
     flex-shrink:0; padding:10px 18px; border-radius:99px;
     font-size:13px; font-weight:700; cursor:pointer;
@@ -93,7 +93,7 @@
         <div class="hidden md:block"></div>
 
         <div class="flex items-center gap-4">
-          <div class="w-9 h-9 bg-blue-50 text-kinsu-blue rounded-full flex items-center justify-center font-bold text-sm uppercase tracking-wide select-none border border-blue-100/40">
+          <div id="user-avatar" class="w-9 h-9 bg-blue-50 text-kinsu-blue rounded-full flex items-center justify-center font-bold text-sm uppercase tracking-wide select-none border border-blue-100/40">
             KS
           </div>
         </div>
@@ -103,7 +103,7 @@
     <main class="flex-1 w-full max-w-2xl mx-auto px-4 pb-28 md:pb-8 md:mx-0 md:max-w-none md:px-6 flex flex-col">
 
       <div class="pt-6 pb-4">
-        <h2 class="text-3xl font-black text-kinsu-navy tracking-tight">Capacitación Kinsu 🎓</h2>
+        <h2 class="text-3xl font-black text-kinsu-navy tracking-tight">Academia Kinsu 🎓</h2>
         <p class="text-sm text-slate-500 mt-1 leading-relaxed">Interactúa con Ana para completar tu inducción operativa.</p>
       </div>
 
@@ -121,7 +121,7 @@
             </div>
           </div>
           <span id="quiz-attempts-tag" class="text-[9px] bg-amber-50 border border-amber-200 text-amber-600 font-extrabold px-2.5 py-0.5 rounded uppercase tracking-wider">
-            Intentos: 3 de 3
+            Consultando BD...
           </span>
         </div>
 
@@ -160,29 +160,27 @@
 
 <script src="kinsu-config.js"></script>
 <script>
-// Validar e inicializar sesión de seguridad
 const userRaw = sessionStorage.getItem('user');
 if (!userRaw) window.location.href = 'index.html';
 const user = JSON.parse(userRaw || '{}');
+document.getElementById('user-avatar').textContent = user.initials || 'KS';
 
-const storageKey = `kinsu_quiz_attempts_${user.kinsurerID || 'GEN'}`;
-let intentosGastados = parseInt(localStorage.getItem(storageKey) || '0');
-
-// ── MÁQUINA DE ESTADOS CONVERSACIONAL DEL CHATBOT DE FORMACIÓN ──
 const chatState = {
     currentStep: 'WELCOME',
     quizAnswers: [],
     currentQuestionIndex: 0
 };
 
+let intentosGastados = 0; // Se sincronizará de forma remota desde la base de datos Sheet
+
 const ANA_CONVERSATION = {
     'WELCOME': {
-        q: () => `¡Hola de nuevo! 👋 Soy Ana, tu guía con IA en Kinsu.\n\nPara promover tu perfil a **Kinsurer Certificado** y desbloquear el cobro de tus comisiones bancarias directas, completaremos una inducción express muy rápida sobre nuestras Reglas de Oro.\n\n¿Estás listo para comenzar?`,
+        q: () => `¡Hola de nuevo! 👋 Soy Ana, tu guía con IA en Kinsu.\n\nPara promover tu perfil a **Kinsurer Certificado** y desbloquear tus comisiones bancarias, completaremos una inducción express muy rápida.\n\n¿Estás listo para comenzar?`,
         replies: ['¡Excelente, vamos! 🚀'],
         next: 'RULE_1'
     },
     'RULE_1': {
-        q: () => `🎯 **Regla 1: Tú Compartes**\n\nTu única tarea dentro de Kinsu es identificar amigos o conocidos que requieran un seguro de gastos médicos. **Ingresas su nombre y celular en esta app interactuando conmigo**.\n\n¡Listo! No tienes que vender pólizas complejas ni redactar contratos teóricos.`,
+        q: () => `🎯 **Regla 1: Tú Compartes**\n\nTu única tarea operativa en Kinsu es identificar referidos que necesiten un seguro de salud. **Ingresas su nombre y celular en esta app interactuando conmigo**.\n\nNo tienes que vender contratos complejos ni ser un experto técnico.`,
         replies: ['Entendido. ¿Cuál es la regla 2? 🏢'],
         next: 'RULE_2'
     },
@@ -200,7 +198,7 @@ const ANA_CONVERSATION = {
 
 const QUIZ_QUESTIONS = [
   {
-    q: "Pregunta 1: ¿Cuál es la responsabilidad operativa principal de un Kinsurer en la plataforma?",
+    q: "Pregunta 1: ¿Cuál es la responsabilidad operativa de un Kinsurer en la plataforma?",
     options: [
       "Diseñar cotizaciones avanzadas en múltiples portales y armar los contratos.",
       "Compartir el nombre y el WhatsApp del prospecto con el chatbot Ana.",
@@ -209,11 +207,11 @@ const QUIZ_QUESTIONS = [
     correct: 1
   },
   {
-    q: "Pregunta 2: ¿Quién se encarga de contactar al referido, estructurar la asesoría y realizar el cierre comercial?",
+    q: "Pregunta 2: ¿Quién realiza el seguimiento técnico y el cierre final de la venta con el cliente?",
     options: [
       "El Kinsurer de forma independiente mediante llamadas directas.",
-      "El staff corporativo de asesores especialistas de Kinsu.",
-      "La compañía aseguradora de forma automática sin intermediación."
+      "El staff corporativo de asesores expertos de Kinsu.",
+      "La compañía aseguradora de forma directa sin intervención alguna."
     ],
     correct: 1
   },
@@ -228,7 +226,6 @@ const QUIZ_QUESTIONS = [
   }
 ];
 
-// ── UI Conversational Mechanics ──
 function scrollBottom() {
   const area = document.getElementById('chat-area');
   setTimeout(() => area.scrollTo({ top: area.scrollHeight, behavior: 'smooth' }), 50);
@@ -277,34 +274,82 @@ function removeTyping() {
 function setQuickReplies(replies, isQuiz = false) {
   const container = document.getElementById('quick-replies-container');
   container.innerHTML = '';
-  
   if (!replies || !replies.length) return;
 
   if (!isQuiz) {
-    // Modo Lectura: Botón horizontal elástico
     container.innerHTML = `<div class="flex gap-2 overflow-x-auto no-scrollbar py-1">${
       replies.map(r => `<button class="qr-chip qr-primary mx-auto" onclick="handleAnswer('${r.replace(/'/g,"\\'")}')">${r}</button>`).join('')
     }</div>`;
   } else {
-    // Modo Examen: Botones verticales estructurados de alta densidad táctil
     container.innerHTML = `<div class="flex flex-col gap-2 py-1 w-full">${
       replies.map((r, idx) => `<button class="w-full text-left p-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 font-bold text-xs leading-relaxed active:scale-[0.99] transition-all hover:border-kinsu-blue hover:bg-blue-50/20" onclick="handleQuizSelection(${idx}, '${r.replace(/'/g,"\\'")}')">${r}</button>`).join('')
     }</div>`;
   }
 }
 
-// ── Motor Conversacional Inteligente ──
-function askNextStep() {
-    document.getElementById('quiz-attempts-tag').textContent = `Intentos: ${3 - intentosGastados} restantes`;
+// ── CONSULTA EN ENTRADA SINO LE DEBE SEGUIR PERMITIENDO INTENTAR (FUENTE DE LA VERDAD REAL) ──
+async function comprobarEstatusRemotoYFase() {
+    showTyping();
+    try {
+        // Consultamos la ficha del Kinsurer directo del Sheets para leer flags y nivel real
+        const perfil = await KinsuAPI.getPerfil();
+        
+        // Verificamos si en renglón viene marcado como 'Exitoso' o nivel Certificado
+        const estatusCertSheet = perfil['Estatus Certificación'] || perfil['Estatus Certificacion'] || '';
+        const nivelSheet       = perfil['Nivel'] || '';
+        
+        intentosGastados = parseInt(perfil['Intentos Examen'] || perfil['Intentos'] || '0');
+        document.getElementById('quiz-attempts-tag').textContent = `Intentos: ${3 - intentosGastados} restantes`;
+
+        if (estatusCertSheet.trim() === 'Exitoso' || nivelSheet === 'Kinsurer Certificado') {
+            removeTyping();
+            renderPantallaCapacitacionExitosa();
+            return;
+        }
+        
+        // Si agotó intentos y no es exitoso se bloquea
+        if (intentosGastados >= 3) {
+            removeTyping();
+            renderFinalBlockedState();
+            return;
+        }
+
+        // Si es 'En Curso' o no tiene datos, le permitimos avanzar en el chat de Ana
+        removeTyping();
+        askNextStep();
+
+    } catch (e) {
+        console.error("Fallo de red al conectar con Google Sheets:", e);
+        removeTyping();
+        // Fallback local por seguridad de experiencia
+        const nivelLocal = user.nivel || '';
+        if (nivelLocal === 'Kinsurer Certificado') {
+            renderPantallaCapacitacionExitosa();
+        } else {
+            askNextStep();
+        }
+    }
+}
+
+function renderPantallaCapacitacionExitosa() {
+    document.getElementById('quiz-attempts-tag').textContent = `Completado ✓`;
+    addBubble(`✨ **Capacitación Exitosa** ✨\n\n¡Enhorabuena! Ya has acreditado y completado satisfactoriamente tu inducción interactiva como **Kinsurer Certificado** en el sistema.\n\nPor el momento, **espera novedades en este apartado** mientras liberamos nuevos playbooks de venta de salud de forma automatizada.`);
     
-    // Validamos si ya agotó sus cartuchos antes de hablar
+    document.getElementById('quick-replies-container').innerHTML = `
+        <button onclick="window.location.href='dashboard.html'" class="w-full h-11 bg-kinsu-blue text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md active:scale-95 transition-transform flex items-center justify-center gap-1">
+            <span>Ir a mi panel de inicio</span>
+            <span class="material-symbols-outlined text-base">arrow_forward</span>
+        </button>
+    `;
+}
+
+function askNextStep() {
     if (intentosGastados >= 3) {
         renderFinalBlockedState();
         return;
     }
 
     const currentConfig = ANA_CONVERSATION[chatState.currentStep];
-    
     if (!currentConfig) {
         if (chatState.currentStep === 'QUIZ_START') {
             startQuizConversational();
@@ -317,18 +362,16 @@ function askNextStep() {
         removeTyping();
         addBubble(currentConfig.q());
         setQuickReplies(currentConfig.replies, false);
-    }, 700);
+    }, 600);
 }
 
 function handleAnswer(answer) {
     addBubble(answer, 'user');
     const currentConfig = ANA_CONVERSATION[chatState.currentStep];
     chatState.currentStep = currentConfig.next;
-    
     setTimeout(askNextStep, 400);
 }
 
-// ── Quiz en Interfaz Conversacional Estricta ──
 function startQuizConversational() {
     chatState.currentQuestionIndex = 0;
     chatState.quizAnswers = [];
@@ -338,18 +381,17 @@ function startQuizConversational() {
 function askQuizQuestion() {
     const qData = QUIZ_QUESTIONS[chatState.currentQuestionIndex];
     showTyping();
-    
     setTimeout(() => {
         removeTyping();
         addBubble(`📝 **Pregunta ${chatState.currentQuestionIndex + 1} de 3:**\n\n${qData.q}`);
         setQuickReplies(qData.options, true);
-    }, 800);
+    }, 700);
 }
 
 function handleQuizSelection(optionIdx, textOption) {
     addBubble(textOption, 'user');
     chatState.quizAnswers.push(optionIdx);
-    document.getElementById('quick-replies-container').innerHTML = ''; // Limpieza
+    document.getElementById('quick-replies-container').innerHTML = '';
 
     if (chatState.currentQuestionIndex < QUIZ_QUESTIONS.length - 1) {
         chatState.currentQuestionIndex++;
@@ -359,78 +401,76 @@ function handleQuizSelection(optionIdx, textOption) {
     }
 }
 
-// ── Evaluación y Afectación en Cascada de la Fila del Sheets ──
+// ── REGISTRO DEL EVENTO, INTENTO CORRECTO O NO Y MODIFICACIÓN EN BASE PIVOTE EN CASCADA ──
 async function evaluarQuizConversational() {
     intentosGastados++;
-    localStorage.setItem(storageKey, intentosGastados);
     document.getElementById('quiz-attempts-tag').textContent = `Intentos: ${3 - intentosGastados} restantes`;
 
+    // Validamos acierto total de las 3 celdas
     const aprobado = chatState.quizAnswers.every((ans, idx) => ans === QUIZ_QUESTIONS[idx].correct);
+    const estatusFinalCert = aprobado ? 'Exitoso' : 'En Curso';
 
     showTyping();
-    setTimeout(async () => {
+    
+    try {
+        // Enviamos la trama completa a la Google Sheet Pivote para impactar la fila del Kinsurer
+        await fetch(KINSU_CONFIG.APPS_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'updatePerfil',
+                kinsurerID: user.kinsurerID || 'KIN-0001',
+                fields: {
+                    'Nivel': aprobado ? 'Kinsurer Certificado' : (user.nivel || 'Kinsurer Nuevo'),
+                    'Intentos Examen': intentosGastados,
+                    'Estatus Certificación': estatusFinalCert // Registra si quedó Exitoso o sigue En Curso
+                }
+            })
+        });
+    } catch (e) {
+        console.error("Fallo de red al registrar intento y evento en la Sheet remota:", e);
+    }
+
+    setTimeout(() => {
         removeTyping();
         
         if (aprobado) {
-            addBubble(`🎉 ¡Excelente! Has respondido de forma correcta todas las preguntas operativas.\n\nDame un segundo mientras emito tus credenciales y actualizo tu rango en el servidor...`);
-            showTyping();
-
-            try {
-                // Petición remota para parchar la celda Nivel en el Google Sheet
-                await fetch(KINSU_CONFIG.APPS_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'updatePerfil',
-                        kinsurerID: user.kinsurerID || 'KIN-0001',
-                        fields: { 'Nivel': 'Kinsurer Certificado' }
-                    })
-                });
-            } catch (e) {
-                console.error("Fallo controlado en persistencia remota:", e);
-            }
-
-            // Sincronización en caliente del sessionStorage para habilitar comisiones de forma inmediata
+            // Actualización INMEDIATA de la sesión local para verse reflejada en todos los apartados (Dash, Perfil, etc.)
             user.nivel = "Kinsurer Certificado";
             sessionStorage.setItem('user', JSON.stringify(user));
 
+            addBubble(`🎉 ¡EXCELENTE TRABAJO! Has respondido correctamente todas las preguntas de certificación.\n\nYa guardé de forma permanente el evento de éxito en la base de datos de Google Sheets.`);
             setTimeout(() => {
-                removeTyping();
-                addBubble(`🏆 ¡Listo! Ya eres oficialmente un **Kinsurer Certificado**.\n\nHemos actualizado tu expediente en la base de datos de Google Sheets de forma permanente. A partir de este momento tienes acceso a las comisiones completas por catálogo.`);
-                
-                document.getElementById('quick-replies-container').innerHTML = `
-                    <button onclick="window.location.href='dashboard.html'" class="w-full h-11 bg-kinsu-blue text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md active:scale-95 transition-transform flex items-center justify-center gap-1">
-                        <span>Ir a mi panel de inicio</span>
-                        <span class="material-symbols-outlined text-base">arrow_forward</span>
-                    </button>
-                `;
-            }, 1200);
+                renderPantallaCapacitacionExitosa();
+            }, 1000);
 
         } else {
+            addBubble(`❌ El intento #${intentosGastados} ha concluido y el resultado fue incorrecto.\n\nHe registrado este evento en tu expediente de Sheets.`);
+            
             const restantes = 3 - intentosGastados;
             if (restantes > 0) {
-                addBubble(`❌ Vaya, algunas de tus respuestas no coinciden con las Reglas de Oro de Kinsu.\n\nNo te preocupes, repasemos los conceptos clave y realicemos un nuevo intento. ¡Tú puedes!`);
-                
-                document.getElementById('quick-replies-container').innerHTML = `
-                    <button onclick="restartConversationalFlow()" class="w-full h-11 bg-kinsu-blue text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md active:scale-95 transition-transform flex items-center justify-center gap-1">
-                        <span class="material-symbols-outlined text-base">replay</span>
-                        <span>Volver a repasar e intentar</span>
-                    </button>
-                `;
+                setTimeout(() => {
+                    addBubble(`¿Quieres que volvamos a repasar las Reglas de Oro para realizar tu siguiente intento? (Te quedan ${restantes} de 3 permitidos)`);
+                    document.getElementById('quick-replies-container').innerHTML = `
+                        <button onclick="restartConversationalFlow()" class="w-full h-11 bg-kinsu-blue text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md active:scale-95 transition-transform flex items-center justify-center gap-1">
+                            <span class="material-symbols-outlined text-base">replay</span>
+                            <span>Volver a repasar e intentar</span>
+                        </button>
+                    `;
+                }, 800);
             } else {
-                renderFinalBlockedState();
+                setTimeout(renderFinalBlockedState, 800);
             }
         }
-    }, 1000);
+    }, 800);
 }
 
 function renderFinalBlockedState() {
-    addBubble(`🔒 **Intentos Agotados**\n\nHas alcanzado el límite de 3 intentos permitidos para tu certificación express. Por políticas de cumplimiento del C-level, tu expediente requiere una liberación manual.\n\nPonte en contacto con la mesa de soporte para reactivar tu acceso.`);
-    
+    addBubble(`🔒 **Intentos Agotados**\n\nHas alcanzado el límite máximo de 3 intentos guardados en la Google Sheet.\n\nPor políticas internas del C-level, tu expediente requiere una liberación manual. Ponte en contacto con soporte para reactivar tu acceso.`);
     document.getElementById('quick-replies-container').innerHTML = `
-        <a href="https://wa.me/525512345678?text=${encodeURIComponent('Hola Soporte Kinsu, agoté mis 3 intentos de certificación express en el chatbot Ana. ¿Me podrían ayudar a validar mi ID y liberar mi perfil por favor?')}" target="_blank" 
-           class="w-full h-11 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md flex items-center justify-center gap-1 active:scale-95 transition-transform text-center font-bold">
+        <a href="https://wa.me/525512345678?text=${encodeURIComponent('Hola Soporte Kinsu, agoté mis 3 intentos de certificación express en el chat. ¿Me ayudan a validar mi ID para liberarlo por favor?')}" target="_blank" 
+           class="w-full h-11 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md flex items-center justify-center gap-1 active:scale-95 transition-transform text-center">
           <span class="material-symbols-outlined text-base">support_agent</span>
           <span>Contactar Soporte Kinsu</span>
         </a>
@@ -438,25 +478,13 @@ function renderFinalBlockedState() {
 }
 
 function restartConversationalFlow() {
-    document.getElementById('chat-area').innerHTML = ''; // Limpiamos pantalla
+    document.getElementById('chat-area').innerHTML = '';
     chatState.currentStep = 'WELCOME';
     askNextStep();
 }
 
-// Inicialización Automática Conversacional Directa
-const nivelActual = user.nivel || 'Kinsurer Nuevo';
-if (nivelActual !== 'Kinsurer Nuevo' && nivelActual !== 'Kinsurer Conectado' && nivelActual !== '') {
-    // Si ya está aprobado, mitigamos afectaciones dándole pantalla directa de bienvenida certificada
-    addBubble(`¡Hola! Tu perfil ya se encuentra validado y activo como **${nivelActual}** en el servidor. ✓\n\nNo requieres volver a presentar tu evaluación express de inducción.`);
-    document.getElementById('quick-replies-container').innerHTML = `
-        <button onclick="window.location.href='dashboard.html'" class="w-full h-11 bg-kinsu-blue text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md flex items-center justify-center gap-1">
-            <span>Ir a mi panel de inicio</span>
-            <span class="material-symbols-outlined text-base">arrow_forward</span>
-        </button>
-    `;
-} else {
-    askNextStep();
-}
+// Inicialización Automática basada en la verdad remota del Sheets
+comprobarEstatusRemotoYFase();
 </script>
 </body>
 </html>
