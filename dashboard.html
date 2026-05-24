@@ -1,533 +1,287 @@
 <!DOCTYPE html>
 <html class="light" lang="es">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Kinsu - Dashboard</title>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport">
+<title>Kinsu - Mi Panel</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<script id="tailwind-config">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+<style>
+  body { font-family:'Inter',sans-serif; background:#f8fafc; padding-bottom:env(safe-area-inset-bottom); }
+  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; vertical-align:middle; }
+  .no-scrollbar::-webkit-scrollbar { display:none; }
+  .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
+</style>
+<script>
   tailwind.config = {
-    darkMode:"class",
-    theme:{ extend:{
-      colors:{
-        "on-error":"#ffffff","surface":"#f9f9ff",
-        "surface-container-highest":"#d7e2ff","surface-container-lowest":"#ffffff",
-        "primary-fixed-dim":"#a9c7ff","surface-container-high":"#e0e8ff",
-        "on-primary-fixed":"#001b3d","primary-fixed":"#d6e3ff",
-        "surface-dim":"#cbdafd","secondary-container":"#64a1ff",
-        "secondary":"#005db7","on-primary":"#ffffff",
-        "on-error-container":"#93000a","inverse-primary":"#a9c7ff",
-        "background":"#f9f9ff","surface-variant":"#d7e2ff",
-        "on-tertiary":"#ffffff","secondary-fixed":"#d6e3ff",
-        "on-secondary-fixed":"#001b3d","on-secondary":"#ffffff",
-        "on-surface-variant":"#424751","tertiary-container":"#285900",
-        "on-tertiary-container":"#84d44d","tertiary-fixed-dim":"#8bdb54",
-        "on-tertiary-fixed-variant":"#245100","inverse-surface":"#22304b",
-        "on-surface":"#0b1b35","on-secondary-container":"#003670",
-        "tertiary":"#1b3f00","surface-container-low":"#f1f3ff",
-        "on-primary-container":"#9ec1ff","on-background":"#0b1b35",
-        "primary-container":"#004d99","secondary-fixed-dim":"#a9c7ff",
-        "outline":"#727782","error":"#ba1a1a",
-        "inverse-on-surface":"#edf0ff","surface-bright":"#f9f9ff",
-        "primary":"#1565c0","surface-tint":"#225eab",
-        "tertiary-fixed":"#a6f86d","on-tertiary-fixed":"#0a2000",
-        "on-primary-fixed-variant":"#00468c","error-container":"#ffdad6",
-        "outline-variant":"#c2c6d3","surface-container":"#e8edff",
-        "on-secondary-fixed-variant":"#00468c"
-      },
-      borderRadius:{ DEFAULT:"1rem",lg:"2rem",xl:"3rem",full:"9999px" },
-      fontFamily:{ headline:["Inter"],body:["Inter"],label:["Inter"] },
-      animation:{ marquee:"marquee 30s linear infinite" },
-      keyframes:{ marquee:{ "0%":{transform:"translateX(0%)"},"100%":{transform:"translateX(-50%)"} } }
-    }}
+    theme: {
+      extend: {
+        colors: {
+          kinsu: {
+            blue: '#4575BA',
+            blueDark: '#355c94',
+            green: '#BFFD70',
+            navy: '#0d1c2e'
+          }
+        }
+      }
+    }
   }
 </script>
-<style>
-  body { font-family:'Inter',sans-serif; background-color:#f9f9ff; }
-  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
-  .material-symbols-outlined.filled { font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24; }
-  .no-scrollbar::-webkit-scrollbar { display:none; }
-  .pause-on-hover:hover { animation-play-state:paused; }
-</style>
 </head>
-<body class="text-on-background">
+<body class="min-h-screen flex flex-col text-kinsu-navy antialiased bg-slate-50">
 
-<!-- Sidebar Desktop -->
-<aside class="fixed left-0 top-0 h-screen w-[200px] hidden lg:flex flex-col bg-[#f8fafc] border-r border-slate-200 z-50">
-  <div class="px-6 py-8">
-    <div class="text-[24px] font-[900] text-[#1d4ed8] leading-none">Kinsu</div>
-    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-1">DASHBOARD</div>
-  </div>
-  <nav class="flex-1">
-    <a href="dashboard.html"       class="flex items-center gap-3 px-4 py-3 text-blue-700 border-l-4 border-blue-700 bg-blue-50/50 font-semibold text-sm"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">home</span>Inicio</a>
-    <a href="prospectos.html"      class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">group</span>Prospectos</a>
-    <a href="formacion.html"       class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">school</span>Formación</a>
-    <a href="nuevo-prospecto.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">add_box</span>Nuevo</a>
-    <a href="ganancias.html"       class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">payments</span>Ganancias</a>
-    <a href="perfil.html"          class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">person</span>Perfil</a>
-  </nav>
-</aside>
-
-<!-- Topbar — igual a todas las demás páginas -->
-<header class="fixed top-0 right-0 left-0 lg:left-[200px] h-16 bg-white/85 backdrop-blur-md flex items-center justify-between px-6 z-40 shadow-sm">
-  <div class="flex items-center gap-3">
-    <span class="lg:hidden text-xl font-black text-[#1d4ed8]">Kinsu</span>
-    <h1 class="hidden lg:block text-base font-bold text-slate-800">Dashboard</h1>
-  </div>
-  <div class="flex items-center gap-2">
-    <!-- Formación solo mobile -->
-    <a href="formacion.html"
-      class="lg:hidden flex items-center gap-1.5 px-3 py-1.5 bg-[#e8f0fe] text-[#1565c0] rounded-full text-[11px] font-bold hover:bg-[#d4dcf5] transition-colors">
-      <span class="material-symbols-outlined text-[16px]">school</span>
-      <span>Formación</span>
+<header class="bg-white/90 backdrop-blur-md sticky top-0 w-full z-50 border-b border-slate-100">
+  <div class="flex items-center justify-between px-4 h-16 max-w-2xl mx-auto">
+    <div class="flex items-center gap-2.5">
+      <div id="user-avatar" class="w-9 h-9 bg-kinsu-blue text-white rounded-full flex items-center justify-center font-black text-xs border border-blue-100 uppercase tracking-wider">
+        KS
+      </div>
+      <div>
+        <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider block">Hola de nuevo 👋</span>
+        <h1 id="user-welcome" class="text-xs font-black text-kinsu-navy tracking-tight truncate max-w-[140px]">Kinsurer</h1>
+      </div>
+    </div>
+    
+    <a href="chat-ana.html" class="w-9 h-9 bg-slate-50 text-kinsu-blue rounded-full flex items-center justify-center border border-slate-100 hover:bg-slate-100 transition-colors">
+      <span class="material-symbols-outlined text-xl">smart_toy</span>
     </a>
-    <button class="text-slate-500 hover:text-blue-600 transition-colors">
-      <span class="material-symbols-outlined">notifications</span>
-    </button>
-    <button onclick="window.location.href='perfil.html'"
-      class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-700 text-xs"
-      id="topbar-av">JR</button>
   </div>
 </header>
 
-<!-- Main -->
-<main class="lg:ml-[200px] pt-20 pb-24 px-6 max-w-7xl mx-auto">
+<main class="flex-1 w-full max-w-2xl mx-auto px-4 py-5 space-y-4 pb-28">
 
-  <!-- Hero Bento -->
-  <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-    <!-- Earnings card -->
-    <div class="lg:col-span-2 relative overflow-hidden bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-      <div class="absolute top-0 right-0 w-64 h-64 bg-green-100/40 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
-      <div class="relative z-10 flex flex-col h-full justify-between">
-        <div>
-          <label class="text-[11px] font-bold uppercase tracking-[.15em] text-gray-400">Resumen de Cuenta</label>
-          <div class="flex items-baseline gap-4 mt-2"><h3 class="text-4xl md:text-6xl font-black text-gray-900 tracking-tighter" id="hero-ganancias">$24,850.00</h3>
-          </div>
-        </div>
-        <div class="mt-8 flex items-end justify-between">
-          <p class="text-on-surface-variant max-w-xs">Ganancias globales generadas</p>
-          <a href="ganancias.html"
-            class="bg-primary text-white px-8 py-3 rounded-full font-bold shadow-md hover:bg-primary-container transition-all active:scale-95">
-            Ir a ganancias
-          </a>
-        </div>
+  <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm relative overflow-hidden">
+    <div class="absolute -right-12 -top-12 w-32 h-32 bg-kinsu-blue/5 rounded-full blur-xl pointer-events-none"></div>
+    <div class="relative z-10 space-y-3.5">
+      <div>
+        <span class="text-[9px] bg-blue-50 text-kinsu-blue font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider border border-blue-100/60">¿Cómo funciona Kinsu?</span>
+        <h3 class="text-sm font-black tracking-tight mt-1.5 text-kinsu-navy">Ganar es muy fácil:</h3>
+      </div>
+
+      <div class="space-y-1.5 text-xs font-medium border-l-2 border-kinsu-blue/30 pl-3 text-slate-600">
+        <p><strong>1. Tú compartes:</strong> Registras el contacto de tu referido con tu asistente de IA Ana.</p>
+        <p><strong>2. Kinsu cierra:</strong> Nuestro equipo experto cotiza, emite y cobra el seguro.</p>
+        <p class="text-emerald-600"><strong>3. Tú ganas:</strong> En cuanto la póliza esté pagada por tu prosepcto, recibes tu dinero.</p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2.5 pt-1">
+        <a href="chat-ana.html" class="h-10 bg-kinsu-blue hover:bg-kinsu-blueDark text-white font-bold text-xs rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-all text-center">
+          <span class="material-symbols-outlined text-base">school</span>
+          <span>Capacitación</span>
+        </a>
+        <a href="formacion.html" class="h-10 bg-slate-50 text-slate-600 border border-slate-200/80 font-bold text-xs rounded-xl flex items-center justify-center gap-1 hover:bg-slate-100 active:scale-95 transition-all text-center">
+          <span class="material-symbols-outlined text-base">folder_open</span>
+          <span>Kit de Venta</span>
+        </a>
       </div>
     </div>
+  </div>
 
-    <!-- Kinsurer card -->
-    <div class="bg-on-background text-white rounded-3xl p-8 flex flex-col justify-between relative overflow-hidden">
-      <div class="relative z-10">
-        <span class="bg-secondary px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">KINSURER</span>
-        <!-- Skeleton nivel -->
-        <div id="nivel-skeleton" class="mt-4 space-y-2">
-          <div class="h-7 w-32 bg-white/20 rounded-lg animate-pulse"></div>
-          <div class="h-4 w-48 bg-white/10 rounded-lg animate-pulse"></div>
-        </div>
-        <h2 class="mt-4 text-2xl font-bold hidden" id="nivel-nombre"></h2>
-        <p class="mt-2 text-blue-200 text-sm hidden" id="nivel-faltan"></p>
-      </div>
-      <div class="mt-8 relative z-10">
-        <div class="flex justify-between text-xs mb-2 text-blue-100">
-          <span id="nivel-polizas-label"></span>
-          <span id="nivel-pct"></span>
-        </div>
-        <div class="h-2 w-full bg-blue-900/50 rounded-full overflow-hidden">
-          <div class="h-full bg-secondary-container rounded-full transition-all duration-700" id="nivel-bar" style="width:0%"></div>
-        </div>
-      </div>
-      <div class="absolute -right-12 -bottom-12 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
-    </div>
-  </section>
-
-  <!-- Aseguradoras marquee -->
-  <section class="mb-8">
-    <div class="flex items-center mb-3 gap-3">
-      <span class="text-[10px] font-bold uppercase tracking-[.18em] text-gray-400 whitespace-nowrap">
-        Aseguradoras con las que trabajamos
-      </span>
-      <div class="flex-1 h-px bg-gray-100"></div>
-    </div>
-    <div class="relative overflow-hidden">
-      <div class="absolute left-0 top-0 bottom-0 w-12 z-10 pointer-events-none" style="background:linear-gradient(to right,#f9f9ff,transparent);"></div>
-      <div class="absolute right-0 top-0 bottom-0 w-12 z-10 pointer-events-none" style="background:linear-gradient(to left,#f9f9ff,transparent);"></div>
-      <div class="flex gap-3 animate-marquee pause-on-hover w-max py-2" id="marquee-track">
-        <div class="flex gap-3" id="logos-a"></div>
-        <div class="flex gap-3" id="logos-b"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Activity metrics -->
-  <section class="mb-10">
-        <!-- Resumen de actividad — Opción C -->
+  <div class="bg-[#0d1c2e] text-white rounded-3xl p-6 shadow-xl border border-slate-800 space-y-4 relative overflow-hidden">
     <div>
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-xl font-extrabold tracking-tight text-gray-900">Resumen de actividad</h2>
-        <a href="prospectos.html" class="text-primary text-sm font-bold flex items-center gap-1">
-          Ver todos<span class="material-symbols-outlined text-sm">chevron_right</span>
-        </a>
-      </div>
-
-      <!-- 2 cards superiores: total + activos -->
-      <div class="grid grid-cols-2 gap-3 mb-4">
-        <div class="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm">
-          <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Total prospectos</p>
-          <p class="text-4xl font-black text-[#0d1c2e] leading-none" id="stat-total">—</p>
-        </div>
-        <div class="rounded-2xl p-4" style="background:#e8f0fe;border:0.5px solid #b5d4f4;">
-          <p class="text-[10px] font-black uppercase tracking-widest mb-1.5" style="color:#185fa5;">Activos ahora</p>
-          <p class="text-4xl font-black leading-none" style="color:#185fa5;" id="stat-activos">—</p>
-        </div>
-      </div>
-
-      <!-- Card pipeline compacto -->
-      <div class="bg-white border border-slate-100 rounded-2xl p-4 shadow-sm">
-        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Distribución por etapa</p>
-
-        <!-- Barra apilada proporcional -->
-        <div class="flex rounded-lg overflow-hidden h-2 mb-4 gap-px" id="pipeline-bar">
-          <div class="flex-1 bg-slate-200 animate-pulse"></div>
-        </div>
-
-        <!-- Leyenda 3x2 -->
-        <div class="grid grid-cols-3 gap-x-3 gap-y-3">
-          <div class="flex items-center gap-2">
-            <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:#1565c0;"></div>
-            <div>
-              <p class="text-[10px] text-slate-400 leading-tight">Enviados</p>
-              <p class="text-base font-black text-[#0d1c2e] leading-none" id="stat-enviados">—</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-2">
-            <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:#534ab7;"></div>
-            <div>
-              <p class="text-[10px] text-slate-400 leading-tight">Cotizando</p>
-              <p class="text-base font-black text-[#0d1c2e] leading-none" id="stat-cotizacion">—</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-2">
-            <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:#0f6e56;"></div>
-            <div>
-              <p class="text-[10px] text-slate-400 leading-tight">Emitiendo</p>
-              <p class="text-base font-black text-[#0d1c2e] leading-none" id="stat-emision">—</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-2">
-            <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:#993556;"></div>
-            <div>
-              <p class="text-[10px] text-slate-400 leading-tight">Cobranza</p>
-              <p class="text-base font-black text-[#0d1c2e] leading-none" id="stat-cobranza">—</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-2">
-            <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:#3b6d11;"></div>
-            <div>
-              <p class="text-[10px] text-slate-400 leading-tight">Completados</p>
-              <p class="text-base font-black text-[#0d1c2e] leading-none" id="stat-completados">—</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-2">
-            <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:#888780;"></div>
-            <div>
-              <p class="text-[10px] text-slate-400 leading-tight">Cancelados</p>
-              <p class="text-base font-black text-[#0d1c2e] leading-none" id="stat-cancelados">—</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <span class="inline-block bg-[#1565c0] text-white text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-md">
+        KINSURER
+      </span>
     </div>
 
-      <!-- Prospectos recientes -->
-      <div class="flex items-center justify-between mb-4 mt-6">
-        <h2 class="text-xl font-extrabold tracking-tight text-gray-900">Prospectos recientes</h2>
-        <a href="prospectos.html" class="text-primary text-sm font-bold flex items-center gap-1">
-          Ver todos<span class="material-symbols-outlined text-sm">chevron_right</span>
-        </a>
+    <div>
+      <h2 id="lvl-nombre" class="text-3xl font-extrabold tracking-tight">Cargando...</h2>
+    </div>
+
+    <div>
+      <p id="lvl-meta" class="text-sm font-semibold text-slate-300">Calculando objetivos...</p>
+    </div>
+
+    <div class="space-y-2 pt-2">
+      <div class="flex justify-between items-center text-xs font-bold tracking-wide text-slate-400">
+        <span id="lvl-progreso-texto">0 de 0 pólizas</span>
+        <span id="lvl-porcentaje">0%</span>
       </div>
-      <div class="space-y-3 mb-6" id="recent-list"></div>
+      <div class="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+        <div id="lvl-bar" class="h-full bg-kinsu-blue rounded-full transition-all duration-700" style="width:0%"></div>
+      </div>
     </div>
-    <div class="bg-[#e8eeff] p-8 rounded-3xl h-fit mt-4 lg:mt-0">
-      <h2 class="text-lg font-extrabold tracking-tight text-gray-900 mb-4">Tips Kinsu</h2>
-      <ul class="space-y-4">
-        <li class="flex items-start gap-3">
-          <span class="material-symbols-outlined text-blue-700 text-sm mt-1">check_circle</span>
-          <p class="text-sm text-gray-500">Comparte por WhatsApp para mayor tasa de conversión.</p>
-        </li>
-        <li class="flex items-start gap-3">
-          <span class="material-symbols-outlined text-blue-700 text-sm mt-1">check_circle</span>
-          <p class="text-sm text-gray-500">Los seguros de Salud tienen la comisión más alta.</p>
-        </li>
-        <li class="flex items-start gap-3">
-          <span class="material-symbols-outlined text-blue-700 text-sm mt-1">check_circle</span>
-          <p class="text-sm text-gray-500">Registra el prospecto inmediatamente después de hablar con él.</p>
-        </li>
-      </ul>
+  </div>
+
+  <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex items-center justify-between">
+    <div class="space-y-0.5">
+      <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Comisiones Acumuladas</span>
+      <h2 id="dash-ganancias" class="text-2xl font-black text-kinsu-navy tracking-tight">$0.00 MXN</h2>
     </div>
-  </section>
+    <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center shadow-sm border border-emerald-100/40">
+      <span class="material-symbols-outlined text-2xl" style="font-variation-settings:'FILL' 1;">account_balance_wallet</span>
+    </div>
+  </div>
+
+  <div class="space-y-2">
+    <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider block px-1">Resumen de actividad</span>
+    <div class="grid grid-cols-3 gap-2">
+      <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm text-center">
+        <p id="p-enviados" class="text-base font-black text-blue-600">0</p>
+        <span class="text-[9px] text-slate-400 font-bold block uppercase tracking-wide mt-0.5">Enviados</span>
+      </div>
+      <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm text-center">
+        <p id="p-cotizando" class="text-base font-black text-amber-500">0</p>
+        <span class="text-[9px] text-slate-400 font-bold block uppercase tracking-wide mt-0.5">Cotizando</span>
+      </div>
+      <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm text-center">
+        <p id="p-emitiendo" class="text-base font-black text-purple-600">0</p>
+        <span class="text-[9px] text-slate-400 font-bold block uppercase tracking-wide mt-0.5">Emitiendo</span>
+      </div>
+      <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm text-center">
+        <p id="p-cobranza" class="text-base font-black text-indigo-600">0</p>
+        <span class="text-[9px] text-slate-400 font-bold block uppercase tracking-wide mt-0.5">Cobranza</span>
+      </div>
+      <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm text-center">
+        <p id="p-completados" class="text-base font-black text-emerald-600">0</p>
+        <span class="text-[9px] text-slate-400 font-bold block uppercase tracking-wide mt-0.5">Cerrados</span>
+      </div>
+      <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-sm text-center">
+        <p id="p-cancelados" class="text-base font-black text-slate-400">0</p>
+        <span class="text-[9px] text-slate-400 font-bold block uppercase tracking-wide mt-0.5">Cancelados</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="space-y-2">
+    <div class="flex justify-between items-center px-1">
+      <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider block">Prospectos Recientes</span>
+      <a href="prospectos.html" class="text-[10px] font-bold text-kinsu-blue hover:underline">Ver todos</a>
+    </div>
+    <div id="recientes-container" class="space-y-2">
+      <div class="bg-white p-4 rounded-xl border border-slate-100 animate-pulse h-14"></div>
+    </div>
+  </div>
 
 </main>
 
-<!-- FAB -->
-<div class="hidden lg:block fixed lg:bottom-10 lg:right-10 z-50">
-  <a href="nuevo-prospecto.html"
-    class="w-16 h-16 bg-primary text-white rounded-xl shadow-2xl flex items-center justify-center transition-all hover:scale-110 active:scale-95">
-    <span class="material-symbols-outlined text-3xl" style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">add</span>
-  </a>
-</div>
-
-<!-- Bottom Nav Mobile -->
-<nav class="lg:hidden fixed bottom-0 left-0 w-full h-16 bg-white/85 backdrop-blur-xl flex justify-around items-center px-2 pb-safe z-50 border-t border-slate-100 shadow-sm rounded-t-2xl">
-  <a href="dashboard.html" class="flex flex-col items-center justify-center text-blue-700">
-    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">home</span>
-    <span class="text-[11px] font-medium uppercase tracking-wider mt-0.5">Inicio</span>
+<nav class="lg:hidden fixed bottom-0 left-0 w-full h-16 bg-white/90 backdrop-blur-md flex justify-around items-center px-2 z-50 border-t border-slate-100 rounded-t-2xl shadow-lg">
+  <a href="dashboard.html" class="flex flex-col items-center justify-center text-kinsu-blue">
+    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">home</span>
+    <span class="text-[10px] font-bold uppercase tracking-wider mt-0.5">Inicio</span>
   </a>
   <a href="prospectos.html" class="flex flex-col items-center justify-center text-slate-400">
     <span class="material-symbols-outlined">group</span>
-    <span class="text-[11px] font-medium uppercase tracking-wider mt-0.5">Prospectos</span>
+    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Prospectos</span>
   </a>
-  <!-- FAB central -->
   <div class="flex flex-col items-center -mt-8">
     <a href="nuevo-prospecto.html"
-      class="w-14 h-14 bg-primary text-white rounded-xl shadow-lg flex items-center justify-center active:scale-95 transition-transform">
+      class="w-14 h-14 bg-kinsu-blue text-white rounded-xl shadow-lg flex items-center justify-center active:scale-95 transition-transform">
       <span class="material-symbols-outlined text-3xl">add</span>
     </a>
   </div>
   <a href="ganancias.html" class="flex flex-col items-center justify-center text-slate-400">
     <span class="material-symbols-outlined">payments</span>
-    <span class="text-[11px] font-medium uppercase tracking-wider mt-0.5">Ganancias</span>
+    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Ganancias</span>
   </a>
   <a href="perfil.html" class="flex flex-col items-center justify-center text-slate-400">
     <span class="material-symbols-outlined">person</span>
-    <span class="text-[11px] font-medium uppercase tracking-wider mt-0.5">Perfil</span>
+    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Perfil</span>
   </a>
 </nav>
 
 <script src="kinsu-config.js"></script>
 <script>
-// ── Fallback data ──
-const FALLBACK = {
-  ganancias_total:    '$500.00',
-  prospectos_total:   6,
-  prospectos_activos: 4,
-  completados:        1,
-  nivel:              'Kinsurer Certificado',
-  prospectos_recientes: [
-    { 'Nombre Prospecto':'Juan López',   'Tipo Seguro':'Auto',  'Folio':'A20240001', 'Estatus':'En Emisión'    },
-    { 'Nombre Prospecto':'Ana Pérez',    'Tipo Seguro':'Salud', 'Folio':'S20240002', 'Estatus':'En Cotización' },
-    { 'Nombre Prospecto':'Carlos Ríos',  'Tipo Seguro':'Viaje', 'Folio':'V20240003', 'Estatus':'Enviado'       },
-  ]
-};
-
-// ── Usuario ──
-const user = JSON.parse(
-  sessionStorage.getItem('user') ||
-  '{"nombre":"Jimena Ríos","email":"kinsurer@kinsu.mx","initials":"JR"}'
-);
-document.getElementById('topbar-av').textContent = user.initials || 'JR';
-
-// ── Skeleton loader ──
-function showSkeleton() {
-  // Hero ganancias
-  document.getElementById('hero-ganancias').innerHTML =
-    '<div class="h-10 w-36 bg-white/20 rounded-xl animate-pulse inline-block"></div>';
-
-  // Pipeline cards — números en skeleton
-  ['stat-total','stat-activos','stat-enviados','stat-cotizacion','stat-emision','stat-cobranza','stat-completados','stat-cancelados'].forEach(id => {
-    document.getElementById(id).innerHTML =
-      '<div class="h-8 w-8 bg-slate-200 rounded-lg animate-pulse"></div>';
-  });
-
-  // Prospectos recientes
-  const skRow = `<div class="bg-white rounded-2xl border border-gray-100 p-5 flex items-center gap-4">
-    <div class="w-12 h-12 rounded-full bg-slate-200 animate-pulse flex-shrink-0"></div>
-    <div class="flex-1 space-y-2">
-      <div class="h-4 bg-slate-200 rounded animate-pulse w-3/4"></div>
-      <div class="h-3 bg-slate-200 rounded animate-pulse w-1/2"></div>
-    </div>
-    <div class="h-6 w-20 bg-slate-200 rounded-full animate-pulse"></div>
-  </div>`;
-  document.getElementById('recent-list').innerHTML = skRow + skRow + skRow;
-}
-
-// ── Render con datos ──
-// Configuración de niveles (espejo del Apps Script)
-const NIVELES = [
-  { id:0, nombre:'Kinsurer Nuevo',      min:0,  max:0  },
-  { id:1, nombre:'Kinsurer Certificado',min:1,  max:4  },
-  { id:2, nombre:'Kinsurer Pro',        min:5,  max:14 },
-  { id:3, nombre:'Kinsurer Elite',      min:15, max:29 },
-  { id:4, nombre:'Kinsurer Embajador',  min:30, max:999},
-];
-
-function renderDashboard(data) {
-  // ── Ganancias ──
-  document.getElementById('hero-ganancias').textContent = data.ganancias_total || FALLBACK.ganancias_total;
-
-  // ── Nivel desde API ──
-  const nivelData = data.nivel;
-  if (nivelData) {
-    const nombre    = nivelData.actual?.nombre || 'Kinsurer Nuevo';
-    const siguiente = nivelData.siguiente;
-    const faltan    = nivelData.faltanParaSiguiente || 0;
-    const progreso  = nivelData.progresoEnNivel || 0;
-    const polizas   = nivelData.polizas || 0;
-
-    // Ocultar skeleton, mostrar datos reales
-    document.getElementById('nivel-skeleton').classList.add('hidden');
-    document.getElementById('nivel-nombre').classList.remove('hidden');
-    document.getElementById('nivel-faltan').classList.remove('hidden');
-
-    document.getElementById('nivel-nombre').textContent = nombre.replace('Kinsurer ', '');
-
-    if (siguiente) {
-      document.getElementById('nivel-faltan').textContent =
-        faltan === 0 ? '¡Listo para subir de nivel!' : `Faltan ${faltan} póliza${faltan===1?'':'s'} para el siguiente nivel`;
-      document.getElementById('nivel-polizas-label').textContent =
-        `${polizas} de ${siguiente.min} pólizas`;
-    } else {
-      document.getElementById('nivel-faltan').textContent = '¡Nivel máximo alcanzado! 🏆';
-      document.getElementById('nivel-polizas-label').textContent = `${polizas} pólizas emitidas`;
+document.addEventListener('DOMContentLoaded', () => {
+    const sessionData = sessionStorage.getItem('user');
+    if (!sessionData) {
+        window.location.href = 'index.html';
+        return;
     }
 
-    document.getElementById('nivel-pct').textContent  = progreso + '%';
-    // Mínimo visual del 4% para que la barra no se vea rota cuando recién sube de nivel
-    document.getElementById('nivel-bar').style.width  = Math.max(progreso, 4) + '%';
-  }
+    const user = JSON.parse(sessionData);
+    document.getElementById('user-welcome').textContent = user.nombre || 'Kinsurer';
+    document.getElementById('user-avatar').textContent = user.initials || 'KS';
 
-  // ── Stats pipeline ──
-  const env  = data.prospectos_enviados    ?? 0;
-  const cot  = data.prospectos_cotizacion  ?? 0;
-  const emi  = data.prospectos_emision     ?? 0;
-  const cob  = data.prospectos_cobranza    ?? 0;
-  const comp = data.prospectos_completados ?? 0;
-  const can  = data.prospectos_cancelados  ?? 0;
-  const tot  = (data.prospectos_total ?? (env+cot+emi+cob+comp+can));
-  const act  = env + cot + emi + cob;
+    cargarDatosDashboard(user.kinsurerID || 'KIN-0001');
+});
 
-  const setS = (id, val) => { const e = document.getElementById(id); if(e) e.textContent = val; };
-  setS('stat-total',       tot  || '—');
-  setS('stat-activos',     act  || '—');
-  setS('stat-enviados',    env  || '—');
-  setS('stat-cotizacion',  cot  || '—');
-  setS('stat-emision',     emi  || '—');
-  setS('stat-cobranza',    cob  || '—');
-  setS('stat-completados', comp || '—');
-  setS('stat-cancelados',  can  || '—');
+async function cargarDatosDashboard(kinsurerID) {
+    try {
+        const data = await KinsuAPI.getDashboard(kinsurerID);
 
-  // Barra apilada proporcional
-  const barTotal = env + cot + emi + cob + comp + can;
-  if (barTotal > 0) {
-    const pct = n => Math.max((n/barTotal)*100, n>0?4:0).toFixed(1) + '%';
-    const bar = document.getElementById('pipeline-bar');
-    if(bar) bar.innerHTML = [
-      env  ? `<div style="width:${pct(env)};background:#1565c0;"></div>` : '',
-      cot  ? `<div style="width:${pct(cot)};background:#534ab7;"></div>` : '',
-      emi  ? `<div style="width:${pct(emi)};background:#0f6e56;"></div>` : '',
-      cob  ? `<div style="width:${pct(cob)};background:#993556;"></div>` : '',
-      comp ? `<div style="width:${pct(comp)};background:#3b6d11;"></div>` : '',
-      can  ? `<div style="width:${pct(can)};background:#888780;"></div>` : '',
-    ].join('');
-  }
+        if (data && !data.error) {
+            // 1. Ganancias
+            document.getElementById('dash-ganancias').textContent = data.ganancias_total || '$0.00 MXN';
 
-  // ── Prospectos recientes — los 3 más recientes del Kinsurer ──
-  const prospects = data.prospectos_recientes || FALLBACK.prospectos_recientes;
-  const list = document.getElementById('recent-list');
-  list.innerHTML = '';
+            // 2. SISTEMA DE GAMIFICACIÓN RECONSTRUIDO AL 100%
+            if (data.nivel && data.nivel.actual) {
+                const lvl = data.nivel;
+                
+                // Limpiamos el prefijo "Kinsurer " para dejarlo corto y limpio como en la captura ("Nuevo", "Pro", etc.)
+                const cleanNombre = lvl.actual.nombre.replace('Kinsurer ', '');
+                document.getElementById('lvl-nombre').textContent = cleanNombre;
+                
+                // Inyección del porcentaje y mapeo de la barra de carga
+                document.getElementById('lvl-bar').style.width = lvl.progresoEnNivel + '%';
+                document.getElementById('lvl-porcentaje').textContent = lvl.progresoEnNivel + '%';
+                
+                // Control gramatical de singulares/plurales solicitado por la dirección
+                const pWord = lvl.faltanParaSiguiente === 1 ? 'póliza' : 'pólizas';
 
-  const BADGE = {
-    'Enviado':       { bg:'#e8f0fe', color:'#1565c0' },
-    'En Cotización': { bg:'#eeedfe', color:'#534ab7' },
-    'En Emisión':    { bg:'#e1f5ee', color:'#0f6e56' },
-    'En Cobranza':   { bg:'#fbeaf0', color:'#993556' },
-    'Completado':    { bg:'#d4f0a0', color:'#1a3a0a' },
-    'Cancelado':     { bg:'#f1efe8', color:'#888780' },
-  };
+                if (lvl.siguiente) {
+                    document.getElementById('lvl-meta').textContent = `Faltan ${lvl.faltanParaSiguiente} ${pWord} para el siguiente nivel`;
+                    document.getElementById('lvl-progreso-texto').textContent = `${lvl.polizas} de ${lvl.siguiente.min} pólizas`;
+                } else {
+                    document.getElementById('lvl-meta').textContent = '¡Rango Máximo alcanzado! 🏆';
+                    document.getElementById('lvl-progreso-texto').textContent = `${lvl.polizas} emitidas`;
+                }
+            }
 
-  if (!prospects.length) {
-    list.innerHTML = `<div class="text-center py-8 text-slate-400">
-      <span class="material-symbols-outlined text-[40px] mb-2 block">person_search</span>
-      <p class="text-sm font-semibold">Aún no tienes prospectos registrados</p>
-      <a href="nuevo-prospecto.html" class="text-[#1565c0] font-bold text-sm mt-2 inline-block">+ Agregar el primero</a>
-    </div>`;
-    return;
-  }
+            // 3. Pipeline Metrics
+            document.getElementById('p-enviados').textContent    = data.prospectos_enviados || 0;
+            document.getElementById('p-cotizando').textContent   = data.prospectos_cotizacion || 0;
+            document.getElementById('p-emitiendo').textContent   = data.prospectos_emision || 0;
+            document.getElementById('p-cobranza').textContent    = data.prospectos_cobranza || 0;
+            document.getElementById('p-completados').textContent = data.prospectos_completados || 0;
+            document.getElementById('p-cancelados').textContent  = data.prospectos_cancelados || 0;
 
-  prospects.slice(0, 3).forEach(p => {
-    const nombre  = p['Nombre Prospecto'] || p.nombre  || 'Prospecto';
-    const folio   = p['Folio']            || p.folio   || '';
-    const estatus = p['Estatus']          || p.estatus || 'Enviado';
-    const fecha   = p['Fecha Registro']   || p.fecha   || '';
-    const ini     = nombre.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
-    const badge   = BADGE[estatus] || { bg:'#e8f0fe', color:'#1565c0' };
-    const fechaFmt= fecha ? new Date(fecha).toLocaleDateString('es-MX',{day:'numeric',month:'short'}) : '';
+            // 4. Prospectos
+            renderizarProspectosRecientes(data.prospectos_recientes || []);
 
-    const linkFolio = folio || '';
-    list.innerHTML += `
-    <a href="detalle-prospecto.html?folio=${linkFolio}" onclick="sessionStorage.removeItem('prospecto')"
-      class="bg-white rounded-2xl border border-gray-100 p-4 lg:p-5 flex items-center justify-between
-             group hover:shadow-md hover:translate-x-1 transition-all cursor-pointer block">
-      <div class="flex items-center gap-3 lg:gap-4 min-w-0">
-        <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-[#e8f0fe] flex items-center justify-center
-                    font-bold text-[#1565c0] text-sm flex-shrink-0">${ini}</div>
-        <div class="min-w-0">
-          <h4 class="font-bold text-on-background text-sm lg:text-base truncate">${nombre}</h4>
-          <p class="text-[10px] text-slate-400 font-medium">${fechaFmt ? fechaFmt + ' · ' : ''}#${folio}</p>
-        </div>
-      </div>
-      <div class="flex items-center gap-2 flex-shrink-0 ml-2">
-        <span class="px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap"
-          style="background:${badge.bg};color:${badge.color};">${estatus}</span>
-        <span class="material-symbols-outlined text-slate-300 group-hover:text-primary transition-colors text-[18px]">chevron_right</span>
-      </div>
-    </a>`;
-  });
-}
-
-// ── Cargar datos ──
-async function loadDashboard() {
-  showSkeleton();
-  try {
-    const data = await KinsuAPI.getDashboard();
-    if (data) {
-      renderDashboard(data);
-    } else {
-      renderDashboard(FALLBACK);
+        } else {
+            console.error("Error de API:", data.error);
+        }
+    } catch (err) {
+        console.error("Error de conexión:", err);
     }
-  } catch(e) {
-    renderDashboard(FALLBACK);
-  }
 }
 
-loadDashboard();
+function renderizarProspectosRecientes(lista) {
+    const container = document.getElementById('recientes-container');
+    container.innerHTML = '';
 
-// ── Marquee aseguradoras ──
-const INSURERS = [
-  { name:'GNP Seguros', abbr:'GNP', bg:'#e8f0fe', color:'#1565c0' },
-  { name:'AXA',         abbr:'AXA', bg:'#fff3e0', color:'#e65100' },
-  { name:'Qualitas',    abbr:'QLT', bg:'#e8f5e9', color:'#2e7d32' },
-  { name:'Zurich',      abbr:'ZRH', bg:'#fce4ec', color:'#c62828' },
-  { name:'MAPFRE',      abbr:'MAP', bg:'#f3e5f5', color:'#6a1b9a' },
-  { name:'MetLife',     abbr:'MET', bg:'#e3f2fd', color:'#0277bd' },
-  { name:'Allianz',     abbr:'ALZ', bg:'#e8eaf6', color:'#283593' },
-  { name:'SURA',        abbr:'SRA', bg:'#e0f2f1', color:'#00695c' },
-  { name:'HDI Seguros', abbr:'HDI', bg:'#fff8e1', color:'#f57f17' },
-  { name:'Bupa México', abbr:'BUP', bg:'#fbe9e7', color:'#bf360c' },
-];
+    if (!lista || lista.length === 0) {
+        container.innerHTML = `
+            <div class="bg-white p-5 border border-slate-100 rounded-xl text-center text-xs font-semibold text-slate-400">
+                <span class="material-symbols-outlined text-base block mb-1">group_add</span>
+                Sin prospectos registrados activos.
+            </div>`;
+        return;
+    }
 
-function pillHTML(ins) {
-  return `<div style="display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #e2e8f5;border-radius:99px;padding:10px 20px;white-space:nowrap;box-shadow:0 2px 8px rgba(11,27,53,0.04);flex-shrink:0;cursor:default;transition:box-shadow .2s,border-color .2s;"
-    onmouseenter="this.style.boxShadow='0 4px 16px rgba(21,101,192,0.12)';this.style.borderColor='#c2d4f0';"
-    onmouseleave="this.style.boxShadow='0 2px 8px rgba(11,27,53,0.04)';this.style.borderColor='#e2e8f5';">
-    <div style="width:28px;height:28px;border-radius:50%;background:${ins.bg};color:${ins.color};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;">${ins.abbr}</div>
-    <span style="font-size:13px;font-weight:700;color:#0d1c2e;">${ins.name}</span>
-  </div>`;
+    lista.forEach(p => {
+        const estatus = p['Estatus'] || 'Enviado';
+        let colorBadge = "bg-blue-50 text-blue-600 border-blue-100";
+        if (estatus === 'En Cotización') colorBadge = "bg-amber-50 text-amber-600 border-amber-100";
+        if (estatus === 'Completado' || estatus === 'En Cobranza') colorBadge = "bg-emerald-50 text-emerald-600 border-emerald-100";
+        if (estatus === 'Cancelado') colorBadge = "bg-rose-50 text-rose-600 border-rose-100";
+
+        container.innerHTML += `
+            <div onclick="window.location.href='detalle-prospecto.html?folio=${p['Folio']}'"
+                 class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex items-center justify-between active:scale-[0.99] transition-all cursor-pointer hover:bg-slate-50">
+                <div class="space-y-0.5 truncate pr-2">
+                    <h4 class="text-xs font-black text-kinsu-navy tracking-tight truncate">${p['Nombre Prospecto'] || '—'}</h4>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Folio: #${p['Folio'] || '—'}</p>
+                </div>
+                <span class="px-2.5 py-0.5 border text-[9px] font-extrabold uppercase tracking-wider rounded-full flex-shrink-0 ${colorBadge}">
+                    ${estatus}
+                </span>
+            </div>`;
+    });
 }
-
-const html = INSURERS.map(pillHTML).join('');
-document.getElementById('logos-a').innerHTML = html;
-document.getElementById('logos-b').innerHTML = html;
 </script>
 </body>
 </html>
