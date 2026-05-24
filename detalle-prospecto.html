@@ -12,7 +12,10 @@
   .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; vertical-align:middle; }
   .no-scrollbar::-webkit-scrollbar { display:none; }
   .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
-  @keyframes pulse { 0%,100% { opacity:.5; transform:scale(.8); } 50% { opacity:1; transform:scale(1); } }
+  
+  .task-card { transition: all 0.2s ease; }
+  .task-checked { background-color: #f1f5f9 !important; border-color: #cbd5e1 !important; opacity: 0.75; }
+  .task-checked h5 { text-decoration: line-through; color: #64748b; }
 </style>
 <script>
   tailwind.config = {
@@ -40,7 +43,7 @@
         <span class="material-symbols-outlined">arrow_back</span>
       </button>
       <div>
-        <h1 class="text-sm font-black text-kinsu-navy tracking-tight">Detalle del Prospecto</h1>
+        <h1 class="text-sm font-black text-kinsu-navy tracking-tight">Expediente del Prospecto</h1>
         <p id="header-folio" class="text-[10px] text-slate-400 font-bold tracking-wider uppercase">Cargando...</p>
       </div>
     </div>
@@ -50,23 +53,25 @@
   </div>
 </header>
 
-<main class="flex-1 w-full max-w-2xl mx-auto px-4 py-6 space-y-4 pb-32">
+<main class="flex-1 w-full max-w-2xl mx-auto px-4 py-6 space-y-4 pb-36">
   
   <div id="loading-state" class="bg-white rounded-2xl p-6 border border-slate-100 space-y-4 animate-pulse">
     <div class="h-5 bg-slate-200 rounded w-1/3"></div>
     <div class="h-4 bg-slate-200 rounded w-1/2"></div>
-    <div class="h-24 bg-slate-100 rounded-xl"></div>
+    <div class="h-32 bg-slate-100 rounded-xl"></div>
   </div>
 
   <div id="content-state" class="hidden space-y-4">
     
-    <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm space-y-4">
+    <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm space-y-4 relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-24 h-24 bg-kinsu-blue/5 rounded-full blur-xl pointer-events-none"></div>
+      
       <div>
         <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider block mb-0.5">Nombre Registrado</span>
         <h2 id="p-nombre" class="text-base font-black text-kinsu-navy tracking-tight">—</h2>
       </div>
 
-      <div class="grid grid-cols-2 gap-4 pt-2 border-t border-slate-50">
+      <div class="grid grid-cols-2 gap-4 pt-2 border-t border-slate-100/70">
         <div>
           <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider block mb-0.5">WhatsApp</span>
           <p id="p-tel" class="text-xs font-semibold text-slate-600">—</p>
@@ -77,29 +82,57 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-2 gap-4 pt-2 border-t border-slate-50">
+      <div class="grid grid-cols-2 gap-4 pt-2 border-t border-slate-100/70">
         <div>
           <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider block mb-0.5">Rango de Edad</span>
           <p id="p-edad" class="text-xs font-semibold text-slate-600">—</p>
         </div>
         <div>
-          <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider block mb-0.5">Ubicación / CP</span>
+          <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider block mb-0.5">Ubicación / Ciudad</span>
           <p id="p-ciudad" class="text-xs font-semibold text-slate-600">—</p>
         </div>
       </div>
     </div>
 
+    <div class="bg-[#0d1c2e] text-white rounded-2xl p-5 border border-slate-800 shadow-sm space-y-3 relative overflow-hidden">
+      <div class="absolute -right-10 -bottom-10 w-28 h-28 bg-kinsu-blue/10 rounded-full blur-xl pointer-events-none"></div>
+      <div class="flex items-center gap-2 pb-2 border-b border-slate-800">
+        <span class="material-symbols-outlined text-kinsu-green text-xl">smart_toy</span>
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300">Análisis Consultivo de Ana</h3>
+      </div>
+      <p id="ana-analisis-text" class="text-xs text-slate-300 font-medium leading-relaxed">
+          Analizando los datos demográficos del prospecto para diseñar tu speech comercial...
+      </p>
+    </div>
+
+    <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm space-y-4">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-kinsu-blue text-xl">playlist_add_check</span>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-kinsu-navy">Plan de Seguimiento (15 Días)</h3>
+        </div>
+        <div class="flex items-center gap-2">
+          <span id="sync-indicator" class="text-[8px] font-bold text-slate-400 uppercase hidden">Guardando en BD...</span>
+          <span id="tasks-progress-label" class="text-[9px] bg-slate-100 text-slate-500 font-extrabold px-2 py-0.5 rounded uppercase tracking-wider">
+            0/6 completadas
+          </span>
+        </div>
+      </div>
+      
+      <div class="space-y-3" id="tasks-list-container"></div>
+    </div>
+
     <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm space-y-3">
       <div class="flex items-center gap-2 pb-2 border-b border-slate-100">
         <span class="material-symbols-outlined text-kinsu-blue text-xl">assignment_ind</span>
-        <h3 class="text-xs font-bold uppercase tracking-wider text-kinsu-navy">Información adicional</h3>
+        <h3 class="text-xs font-bold uppercase tracking-wider text-kinsu-navy">Comentarios del Expediente</h3>
       </div>
-      <pre id="p-notes" class="text-xs text-slate-600 font-medium leading-relaxed font-sans whitespace-pre-wrap bg-slate-50 p-4 rounded-xl border border-slate-100/60 overflow-x-hidden"></pre>
+      <p id="p-notes" class="text-xs text-slate-600 font-medium leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-100/60 overflow-x-hidden whitespace-pre-wrap"></p>
     </div>
 
     <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600">
+        <div class="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 border border-emerald-100">
           <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">payments</span>
         </div>
         <div>
@@ -107,15 +140,15 @@
           <p id="p-comision" class="text-base font-black text-emerald-600 tracking-tight">$0.00 MXN</p>
         </div>
       </div>
-      <span class="text-[9px] bg-slate-50 text-slate-500 font-bold px-2.5 py-1 rounded-md uppercase tracking-wider">
-        GMM
+      <span class="text-[9px] bg-blue-50 border border-blue-100 text-kinsu-blue font-extrabold px-2.5 py-1 rounded-md uppercase tracking-wider">
+        GMM SALUD
       </span>
     </div>
 
     <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm space-y-5">
       <div class="flex items-center gap-2 pb-2 border-b border-slate-100">
         <span class="material-symbols-outlined text-kinsu-blue text-xl">timeline</span>
-        <h3 class="text-xs font-bold uppercase tracking-wider text-kinsu-navy">Estado de la Solicitud</h3>
+        <h3 class="text-xs font-bold uppercase tracking-wider text-kinsu-navy">Estado de la Solicitud (Staff)</h3>
       </div>
       <div class="relative pl-2">
         <div class="absolute left-6 top-3 bottom-3 w-0.5 bg-slate-100 rounded-full"></div>
@@ -123,12 +156,10 @@
       </div>
     </div>
 
-    <div id="action-container" class="pt-2"></div>
-
   </div>
 </main>
 
-<nav class="lg:hidden fixed bottom-0 left-0 w-full h-16 bg-white/90 backdrop-blur-xl flex justify-around items-center px-2 z-50 border-t border-slate-100 rounded-t-2xl shadow-lg">
+<nav class="md:hidden fixed bottom-0 left-0 w-full h-16 bg-white/90 backdrop-blur-md flex justify-around items-center px-2 z-50 border-t border-slate-100 rounded-t-2xl shadow-lg">
   <a href="dashboard.html" class="flex flex-col items-center justify-center text-slate-400">
     <span class="material-symbols-outlined">home</span>
     <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Inicio</span>
@@ -153,19 +184,51 @@
   </a>
 </nav>
 
+<div id="copy-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+  <div class="bg-white rounded-3xl p-6 max-w-md w-full border border-slate-100 shadow-2xl space-y-4 transform scale-95 transition-transform">
+    <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+      <h4 class="text-sm font-black text-kinsu-navy uppercase tracking-wider flex items-center gap-1.5">
+         <span class="material-symbols-outlined text-emerald-500">chat_bubble</span>
+         <span>Mensaje Listo para Enviar</span>
+      </h4>
+      <button onclick="closeCopyModal()" class="text-slate-400 hover:text-slate-600"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Copia el texto e inicia tu conversación en WhatsApp:</p>
+    <textarea id="modal-textarea" readonly class="w-full h-36 p-3 bg-slate-50 border border-slate-200 rounded-xl font-medium text-xs text-slate-700 leading-relaxed focus:outline-none focus:ring-0 resize-none"></textarea>
+    <button id="modal-copy-btn" onclick="executeCopyAndRedirect()" class="w-full h-11 bg-kinsu-blue hover:bg-kinsu-blueDark text-white font-bold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-1.5 shadow-md">
+      <span class="material-symbols-outlined text-base">content_copy</span>
+      <span>Copiar y Abrir WhatsApp</span>
+    </button>
+  </div>
+</div>
+
 <script src="kinsu-config.js"></script>
 <script>
+let currentFolio = "";
+let currentTel = "";
+let currentNombre = "";
+let activeTasksState = {};
+let originalCleanNotes = ""; // Almacena las notas de texto sin el payload del plan de seguimiento
+
+// Plan consultivo maestro experto
+const MASTER_PLAN_TASKS = [
+    { id: "t1", dia: "Día 1", titulo: "Validar contacto y prospección inicial", desc: "Asegúrate de que tu referido sepa que el equipo experto de Kinsu lo llamará para diseñar su propuesta.", copy: "Hola {N}, ¿cómo estás? Te escribe tu Kinsurer de confianza. Quería avisarte que ya registré tus datos en nuestra plataforma premium. Muy pronto un asesor especialista de mi equipo de operaciones te contactará desde nuestra línea corporativa para diseñar una propuesta a tu medida de Gastos Médicos Mayores sin costo. ¡Sé que te va a encantar el respaldo!" },
+    { id: "t2", dia: "Día 2", titulo: "Seguimiento de llamada de contacto", desc: "Pregunta discretamente si el staff de Kinsu ya logró hacer el enlace inicial.", copy: "Hola {N}, excelente día. Oye, una pregunta rápida: ¿ya te contactó el especialista de Kinsu para platicar sobre tu Seguro de Salud? Quedo muy atento para asegurar que te den la atención prioritaria que te mereces." },
+    { id: "t3", dia: "Día 5", titulo: "Revisión conjunta de alternativas", desc: "Fase idónea cuando el estatus cambia a Cotizando. Rompe el hielo evaluando qué le pareció la cotización.", copy: "Hola {N}. Vi en el sistema que el equipo operativo ya te hizo llegar las alternativas médicas personalizadas para tu Seguro de Salud. ¿Tuviste oportunidad de revisarlas? Si tienes cualquier duda sobre deducibles o coberturas, avísame y lo revisamos juntos." },
+    { id: "t4", dia: "Día 8", titulo: "Abordaje de valor y prevención", desc: "Día de descanso de venta directa. Envía un recordatorio de por qué blindar la salud familiar es vital.", copy: "Hola {N}, me acordé de ti. Estaba leyendo que el 65% de los imprevistos médicos familiares se pueden resolver con un buen esquema de Gastos Médicos Mayores, protegiendo todo tu patrimonio. Seguimos muy al pendiente de tu trámite en Kinsu para lo que necesites." },
+    { id: "t5", dia: "Día 12", titulo: "Recordatorio de Emisión / Urgencia", desc: "Ideal si el prospecto está en Emisión o Cobranza para incentivar el cierre antes de que venzan folios.", copy: "Hola {N}, espero que estés excelente. Me avisa el área de operaciones de Kinsu que tienen listo el folio final para la emisión de tu póliza de salud, manteniendo las tarifas preferenciales que platicamos. ¿Nos das luz verde para proceder con el cierre seguro?" },
+    { id: "t6", dia: "Día 15", titulo: "Fidelización y solicitud de referidos", desc: "Paso final. Si se cerró o se aplazó, mantén la puerta abierta para expandir tu red de contactos.", copy: "Hola {N}. Muchas gracias por toda tu confianza en este proceso de blindaje médico. Si conoces a algún otro amigo o familiar que necesite proteger su salud y su patrimonio de la misma forma, compárteme su contacto aquí en la app. ¡Me encantará ayudarlos!" }
+];
+
 document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
-    const folio = urlParams.get('folio');
-
-    if (!folio) {
+    currentFolio = urlParams.get('folio');
+    if (!currentFolio) {
         alert('Folio de prospecto no especificado.');
         window.location.href = 'prospectos.html';
         return;
     }
-
-    cargarDetalleProspecto(folio);
+    cargarDetalleProspecto(currentFolio);
 });
 
 async function cargarDetalleProspecto(folio) {
@@ -176,61 +239,40 @@ async function cargarDetalleProspecto(folio) {
         const data = await KinsuAPI.getProspecto(folio);
 
         if (data && !data.error) {
-            // Inyección de campos de texto indexados
+            currentNombre = data['Nombre Prospecto'] || 'Hola';
+            currentTel = String(data['Teléfono'] || data['Telefono'] || '').replace(/[^0-9]/g, '');
+
             document.getElementById('header-folio').textContent = `Folio: #${data['Folio'] || folio}`;
-            document.getElementById('p-nombre').textContent = data['Nombre Prospecto'] || '—';
-            document.getElementById('p-tel').textContent = data['Teléfono'] || '—';
-            document.getElementById('p-correo').textContent = data['Correo'] || '—';
-            document.getElementById('p-edad').textContent = data['Rango Edad'] || data['Edad'] || '—';
+            document.getElementById('p-nombre').textContent = currentNombre;
+            document.getElementById('p-tel').textContent = data['Teléfono'] || data['Telefono'] || '—';
+            document.getElementById('p-correo').textContent = data['Email'] || '—';
+            
+            const rangoEdad = data['Rango Edad'] || data['Edad'] || '—';
+            document.getElementById('p-edad').textContent = rangoEdad;
             document.getElementById('p-ciudad').textContent = data['Ciudad'] || '—';
-            document.getElementById('p-comision').textContent = data['Comisión Estimada'] || '$0 MXN';
-            document.getElementById('p-notes').textContent = data['Notas'] || 'Sin notas complementarias registradas.';
+            document.getElementById('p-comision').textContent = data['Comisión Estimada'] || '$0.00 MXN';
+
+            // ── PARSEO DE NOTAS DESDE LA BD PIVOTE ──
+            const rawNotes = data['Notas'] || '';
+            extraerNotasYProgresoBD(rawNotes);
 
             const estatus = data['Estatus'] || 'Enviado';
             const badge = document.getElementById('status-badge');
             badge.textContent = estatus;
 
-            // Badges estilizados por fase
             if (estatus === 'Enviado') {
                 badge.className = "px-3 py-1 bg-blue-50 text-blue-600 border border-blue-100 rounded-full text-[10px] font-extrabold uppercase tracking-wider";
             } else if (estatus === 'En Cotización') {
                 badge.className = "px-3 py-1 bg-amber-50 text-amber-600 border border-amber-100 rounded-full text-[10px] font-extrabold uppercase tracking-wider";
-            } else if (estatus === 'Completado' || estatus === 'En Cobranza') {
+            } else if (estatus === 'Completado' || estatus === 'En Cobranza' || estatus === 'En Emisión') {
                 badge.className = "px-3 py-1 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-full text-[10px] font-extrabold uppercase tracking-wider";
             } else if (estatus === 'Cancelado') {
                 badge.className = "px-3 py-1 bg-rose-50 text-rose-600 border border-rose-100 rounded-full text-[10px] font-extrabold uppercase tracking-wider";
             }
 
-            // ── RENDERIZADO DEL TIMELINE RESTAURADO DE FORMA SEGURA ──
+            generarAnalisisAna(rangoEdad, data['Ciudad'] || 'México');
+            renderizarListaMisiones();
             dibujarTimelineHorizontal(estatus);
-
-            // ── CONDICIONAL REGLA DE NEGOCIO (PROMPT A - REQ 2) ──
-            const actionContainer = document.getElementById('action-container');
-            actionContainer.innerHTML = '';
-
-            if (estatus.trim() === 'Enviado') {
-                const nombreProspecto = data['Nombre Prospecto'] || 'Hola';
-                const telefonoLimpio  = String(data['Teléfono'] || '').replace(/[^0-9]/g, '');
-                
-                const textoWhatsApp = `Hola ${nombreProspecto}, ¿cómo estás? Te escribe tu Kinsurer de confianza. Quería darte seguimiento para saber si tuviste oportunidad de revisar la propuesta del Seguro de Salud familiar que te enviamos y conocer qué te gustaría hacer. ¡Quedo a tus órdenes!`;
-                const urlWhatsApp = `https://wa.me/52${telefonoLimpio}?text=${encodeURIComponent(textoWhatsApp)}`;
-
-                // Botón táctil de 48px de alto alineado con la marca
-                actionContainer.innerHTML = `
-                    <a href="${urlWhatsApp}" target="_blank"
-                       class="w-full h-12 bg-kinsu-blue hover:bg-kinsu-blueDark text-white font-bold text-xs rounded-full flex items-center justify-center gap-2 active:scale-[0.98] transition-all shadow-lg shadow-blue-950/10 text-center uppercase tracking-wider py-3.5">
-                        <span class="material-symbols-outlined text-base">chat_bubble</span>
-                        <span>Hacer seguimiento por WhatsApp</span>
-                    </a>
-                `;
-            } else {
-                actionContainer.innerHTML = `
-                    <div class="bg-slate-50 border border-slate-100 text-slate-400 p-4 rounded-xl text-center text-xs font-semibold">
-                        <span class="material-symbols-outlined text-base mr-1">lock</span>
-                        Kinsu está gestionando este prospecto de forma interna.
-                    </div>
-                `;
-            }
 
             loadingEl.classList.add('hidden');
             contentEl.classList.remove('hidden');
@@ -241,68 +283,171 @@ async function cargarDetalleProspecto(folio) {
     } catch (err) {
         console.error('Fallo de red:', err);
         alert('Error al conectar con la base de datos de Google Sheets.');
-        window.location.href = 'prospectos.html';
     }
+}
+
+// ── DESACOPLADOR INTELIGENTE DE DATOS DESDE LA CELDA DE NOTAS ──
+function extraerNotasYProgresoBD(rawNotes) {
+    const tokenSplit = "── PROGRESS_PLAN_15_DAYS ──";
+    if (rawNotes.includes(tokenSplit)) {
+        const parts = rawNotes.split(tokenSplit);
+        originalCleanNotes = parts[0].trim();
+        try {
+            activeTasksState = JSON.parse(parts[1].trim());
+        } catch(e) {
+            activeTasksState = {};
+        }
+    } else {
+        originalCleanNotes = rawNotes.trim();
+        activeTasksState = {};
+    }
+    document.getElementById('p-notes').textContent = originalCleanNotes || 'Sin comentarios adicionales de Staff registrados.';
+}
+
+// ── RENDERIZADOR TÁCTIL DE LA CHECKLIST ──
+function renderizarListaMisiones() {
+    const container = document.getElementById('tasks-list-container');
+    container.innerHTML = '';
+    let completadasCount = 0;
+
+    MASTER_PLAN_TASKS.forEach(task => {
+        const isChecked = !!activeTasksState[task.id];
+        if (isChecked) completadasCount++;
+
+        const copyPersonalizado = task.copy.replace(/{N}/g, currentNombre);
+
+        container.innerHTML += `
+            <div id="card-task-${task.id}" class="task-card bg-slate-50 border border-slate-200/70 rounded-xl p-4 flex items-start justify-between gap-3 ${isChecked ? 'task-checked' : ''}">
+                <div class="flex-grow space-y-1">
+                    <div class="flex items-center gap-2">
+                        <span class="text-[9px] bg-kinsu-blue text-white font-black px-2 py-0.5 rounded-md uppercase tracking-wider">${task.dia}</span>
+                        <h5 class="text-xs font-black text-kinsu-navy tracking-tight">${task.titulo}</h5>
+                    </div>
+                    <p class="text-[11px] text-slate-500 font-medium leading-relaxed">${task.desc}</p>
+                    <button onclick="openCopyModal('${task.id}', '${copyPersonalizado.replace(/'/g, "\\'")}')" 
+                            class="text-[10px] text-kinsu-blue hover:text-kinsu-blueDark font-extrabold uppercase tracking-wider flex items-center gap-0.5 pt-1">
+                        <span class="material-symbols-outlined text-sm">content_copy</span>
+                        <span>Ver Copy de WhatsApp</span>
+                    </button>
+                </div>
+                <button onclick="toggleTaskCompletion('${task.id}')" class="w-6 h-6 rounded-md border-2 border-slate-300 bg-white flex items-center justify-center flex-shrink-0 active:scale-95 transition-all">
+                    <span id="check-icon-${task.id}" class="material-symbols-outlined text-sm font-black text-emerald-600 ${isChecked ? '' : 'hidden'}">check</span>
+                </button>
+            </div>
+        `;
+    });
+
+    document.getElementById('tasks-progress-label').textContent = `${completadasCount} de 6 completadas`;
+}
+
+// ── PERSISTENCIA ASÍNCRONA EN LA BASE DE DATOS DE GOOGLE SHEETS ──
+async function toggleTaskCompletion(taskId) {
+    const card = document.getElementById(`card-task-${taskId}`);
+    const icon = document.getElementById(`check-icon-${taskId}`);
+    const syncIndicator = document.getElementById('sync-indicator');
+    
+    const isNowChecked = !activeTasksState[taskId];
+    activeTasksState[taskId] = isNowChecked;
+
+    // Actualización visual inmediata en UI (Optimistic UI update)
+    card.classList.toggle('task-checked', isNowChecked);
+    icon.classList.toggle('hidden', !isNowChecked);
+
+    let count = 0;
+    Object.keys(activeTasksState).forEach(k => { if (activeTasksState[k]) count++; });
+    document.getElementById('tasks-progress-label').textContent = `${count} de 6 completadas`;
+
+    // Empaquetado estructurado para almacenar en Google Sheets
+    syncIndicator.classList.remove('hidden');
+    const tokenSplit = "\n\n── PROGRESS_PLAN_15_DAYS ──\n";
+    const payloadNotesString = originalCleanNotes + tokenSplit + JSON.stringify(activeTasksState);
+
+    try {
+        // Invocación segura al API de tu Google Apps Script
+        const result = await KinsuAPI.updateProspectoNotes(currentFolio, payloadNotesString);
+        if (result && result.success) {
+            syncIndicator.textContent = "Sincronizado con BD ✓";
+            setTimeout(() => syncIndicator.classList.add('hidden'), 2000);
+        } else {
+            syncIndicator.textContent = "Error de red";
+        }
+    } catch(err) {
+        console.error("Error sincronizando misiones:", err);
+        syncIndicator.textContent = "Reintentando local...";
+    }
+}
+
+function generarAnalisisAna(edad, ciudad) {
+    const contenedor = document.getElementById('ana-analisis-text');
+    let enfoque = "el acceso inmediato a médicos de alta gama y protección patrimonial.";
+    if (edad.includes('Menos de 30')) {
+        enfoque = "la prevención, las asistencias dentales/ópticas en trayecto y la cobertura ante accidentes deportivos o imprevistos.";
+    } else if (edad.includes('30 a 45')) {
+        enfoque = "la tranquilidad familiar, maternidad planificada y la protección del ingreso ante emergencias médicas.";
+    } else if (edad.includes('45 a 60') || edad.includes('Más de 60')) {
+        enfoque = "la cobertura ante enfermedades crónico-degenerativas, check-ups ejecutivos anuales y la eliminación de deducibles por accidente.";
+    }
+    contenedor.innerHTML = `Basado en el perfil, ${currentNombre} valora principalmente <strong>${enfoque}</strong> Dado que reside en <strong>${ciudad}</strong>, nuestro equipo de operaciones priorizará hospitales clave de la zona metropolitana. Utiliza el plan táctico de 15 días abajo para maximizar tu tasa de cierre.`;
+}
+
+// CONTROLADORES DE MODAL EXCLUSIVO COPIADO SEGURO
+let textPendingToCopy = "";
+function openCopyModal(taskId, copyText) {
+    textPendingToCopy = copyText;
+    document.getElementById('modal-textarea').value = copyText;
+    document.getElementById('copy-modal').classList.remove('hidden');
+}
+function closeCopyModal() {
+    document.getElementById('copy-modal').classList.add('hidden');
+}
+function executeCopyAndRedirect() {
+    navigator.clipboard.writeText(textPendingToCopy).then(() => {
+        const btn = document.getElementById('modal-copy-btn');
+        btn.innerHTML = `<span class="material-symbols-outlined text-base">done</span> <span>¡Texto Copiado!</span>`;
+        btn.className = "w-full h-11 bg-emerald-600 text-white font-bold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-1.5 shadow-md";
+        setTimeout(() => {
+            closeCopyModal();
+            btn.innerHTML = `<span class="material-symbols-outlined text-base">content_copy</span> <span>Copiar y Enviar WhatsApp</span>`;
+            btn.className = "w-full h-11 bg-kinsu-blue text-white font-bold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-1.5 shadow-md";
+            window.open(`https://wa.me/52${currentTel}?text=${encodeURIComponent(textPendingToCopy)}`, '_blank');
+        }, 800);
+    });
 }
 
 function dibujarTimelineHorizontal(estatusActual) {
     const FASES = ['Enviado', 'En Cotización', 'En Emisión', 'En Cobranza', 'Completado'];
     const container = document.getElementById('timeline-container');
     container.innerHTML = '';
-
     if (estatusActual === 'Cancelado') {
-        container.innerHTML = `
-            <div class="relative flex gap-4 items-center py-2">
-                <div class="z-10 w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center flex-shrink-0">
-                    <span class="material-symbols-outlined text-slate-500 text-base">cancel</span>
-                </div>
-                <div>
-                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-wider">Cancelado</p>
-                    <h4 class="text-sm font-bold text-slate-500">Solicitud cancelada por el Staff</h4>
-                </div>
-            </div>`;
+        container.innerHTML = `<div class="relative flex gap-4 items-center py-2"><div class="z-10 w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center flex-shrink-0 border border-slate-300"><span class="material-symbols-outlined text-slate-500 text-base">cancel</span></div><div><p class="text-[9px] font-black text-rose-500 uppercase tracking-wider">Cancelado</p><h4 class="text-xs font-black text-slate-500">Solicitud cancelada por el Staff operativo</h4></div></div>`;
         return;
     }
-
     const currentIndex = FASES.indexOf(estatusActual);
-
     FASES.forEach((fase, idx) => {
         const esUltimo = idx === FASES.length - 1;
         const completado = idx < currentIndex;
         const esActual = idx === currentIndex;
-
         let estiloCirculo, iconoInterno, colorTextoMeta, textoMeta, estiloTitulo;
-
         if (esActual) {
             estiloCirculo = 'background:#4575BA; box-shadow: 0 0 0 4px rgba(69, 117, 186, 0.15);';
-            iconoInterno  = '<div class="w-2.5 h-2.5 rounded-full bg-white animate-[pulse_1.5s_infinite]"></div>';
+            iconoInterno  = '<div class="w-2.5 h-2.5 rounded-full bg-white animate-pulse"></div>';
             colorTextoMeta = 'text-[#4575BA]';
-            textoMeta = 'Fase activa';
-            estiloTitulo = 'text-sm font-black text-[#4575BA]';
+            textoMeta = 'Fase activa en proceso';
+            estiloTitulo = 'text-xs font-black text-[#4575BA]';
         } else if (completado) {
             estiloCirculo = 'background:#BFFD70;';
             iconoInterno  = '<span class="material-symbols-outlined text-[#1a3a0a] text-sm font-bold">check</span>';
             colorTextoMeta = 'text-slate-400';
             textoMeta = 'Paso completado ✓';
-            estiloTitulo = 'text-sm font-bold text-slate-800';
+            estiloTitulo = 'text-xs font-bold text-slate-700';
         } else {
             estiloCirculo = 'background:#e2e8f5;';
             iconoInterno  = '<span class="material-symbols-outlined text-slate-300 text-sm">hourglass_empty</span>';
             colorTextoMeta = 'text-slate-300';
-            textoMeta = 'Pendiente';
-            estiloTitulo = 'text-sm font-semibold text-slate-400';
+            textoMeta = 'Pendiente del flujo';
+            estiloTitulo = 'text-xs font-semibold text-slate-400';
         }
-
-        container.innerHTML += `
-            <div class="relative flex gap-4 ${esUltimo ? '' : 'pb-6'}">
-                <div class="z-10 w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style="${estiloCirculo}">
-                    ${iconoInterno}
-                </div>
-                <div class="flex-grow pt-0.5">
-                    <p class="text-[9px] font-bold uppercase tracking-wider ${colorTextoMeta}">${textoMeta}</p>
-                    <h4 class="${estiloTitulo}">${fase}</h4>
-                </div>
-            </div>`;
+        container.innerHTML += `<div class="relative flex gap-4 ${esUltimo ? '' : 'pb-5'}"><div class="z-10 w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style="${estiloCirculo}">${iconoInterno}</div><div class="flex-grow pt-0.5"><p class="text-[9px] font-black uppercase tracking-wider ${colorTextoMeta}">${textoMeta}</p><h4 class="${estiloTitulo}">${fase}</h4></div></div>`;
     });
 }
 </script>
