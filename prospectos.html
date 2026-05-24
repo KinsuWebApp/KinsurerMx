@@ -2,233 +2,236 @@
 <html class="light" lang="es">
 <head>
 <meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport">
 <title>Kinsu - Prospectos</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
 <style>
-  body { font-family:'Inter',sans-serif; background:#f9f9ff; }
-  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
+  body { font-family:'Inter',sans-serif; background:#f8fafc; padding-bottom:env(safe-area-inset-bottom); }
+  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; vertical-align:middle; }
   .no-scrollbar::-webkit-scrollbar { display:none; }
   .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
-
-  /* Toast */
-  #toast { transition: all .4s ease; }
-  #toast.show { opacity:1 !important; transform:translateY(0) !important; }
+  
+  /* Evita el zoom automático en inputs dentro de iOS/Safari */
+  #search-input { font-size: 16px !important; }
+  @media (min-width: 640px) { #search-input { font-size: 14px !important; } }
+  
+  #toast { transition: all .4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 </style>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          kinsu: {
+            blue: '#4575BA',
+            blueDark: '#355c94',
+            green: '#BFFD70',
+            navy: '#0d1c2e'
+          }
+        }
+      }
+    }
+  }
+</script>
 </head>
+<body class="min-h-screen text-kinsu-navy antialiased bg-slate-50 flex">
 
-<body class="min-h-screen text-[#0d1c2e]">
-
-<!-- Sidebar Desktop -->
-<aside class="fixed left-0 top-0 h-screen w-[200px] hidden lg:flex flex-col bg-[#f8fafc] border-r border-slate-200 z-50">
-  <div class="px-6 py-8">
-    <div class="text-[24px] font-[900] text-[#1d4ed8] leading-none">Kinsu</div>
-    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-1">DASHBOARD</div>
-  </div>
-  <nav class="flex-1">
-    <a href="dashboard.html"       class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">home</span>Inicio</a>
-    <a href="prospectos.html"      class="flex items-center gap-3 px-4 py-3 text-blue-700 border-l-4 border-blue-700 bg-blue-50/50 font-semibold text-sm"><span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">group</span>Prospectos</a>
-    <a href="formacion.html"       class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">school</span>Formación</a>
-    <a href="nuevo-prospecto.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">add_box</span>Nuevo</a>
-    <a href="ganancias.html"       class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">payments</span>Ganancias</a>
-    <a href="perfil.html"          class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">person</span>Perfil</a>
-  </nav>
-</aside>
-
-<!-- Topbar -->
-<header class="fixed top-0 right-0 left-0 lg:left-[200px] h-16 bg-white/85 backdrop-blur-md flex items-center justify-between px-6 z-40 shadow-sm">
-  <div class="flex items-center gap-3">
-    <span class="lg:hidden text-xl font-black text-[#1d4ed8]">Kinsu</span>
-    <h1 class="hidden lg:block text-base font-bold text-slate-800">Prospectos</h1>
-  </div>
-  <div class="flex items-center gap-3">
-    <button class="text-slate-500 hover:text-blue-600 transition-colors relative">
-      <span class="material-symbols-outlined">notifications</span>
-    </button>
-    <button onclick="window.location.href='perfil.html'"
-      class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-700 text-xs"
-      id="topbar-av">JR</button>
-  </div>
-</header>
-
-<!-- Main -->
-<main class="pt-20 pb-28 lg:pl-[200px] px-6 min-h-screen">
-  <div class="max-w-5xl mx-auto">
-
-    <!-- Header -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 mt-4">
-      <div>
-        <h2 class="text-3xl lg:text-[40px] font-[800] leading-tight text-[#0d1c2e] tracking-tight">Prospectos</h2>
-        <p class="text-on-surface-variant text-base mt-1 max-w-xl">Gestiona y haz seguimiento de tus referidos en tiempo real.</p>
+  <aside class="hidden md:flex flex-col w-64 bg-white border-r border-slate-100 fixed inset-y-0 left-0 z-50 p-5 justify-between">
+    <div class="space-y-8">
+      <div class="flex items-center px-2">
+        <span class="font-black text-2xl text-kinsu-blue tracking-tight select-none">Kinsu</span>
       </div>
-      <a href="nuevo-prospecto.html"
-        class="flex items-center gap-2 px-6 py-3 bg-[#1565c0] text-white rounded-full font-bold shadow-md hover:bg-[#1255a8] active:scale-95 transition-all text-sm w-fit">
-        <span class="material-symbols-outlined text-[20px]">person_add</span>
-        Nuevo Prospecto
+      
+      <nav class="space-y-1.5">
+        <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-kinsu-blue hover:bg-slate-50 font-semibold text-sm rounded-xl transition-all">
+          <span class="material-symbols-outlined text-[22px]">home</span>
+          <span>Inicio</span>
+        </a>
+        <a href="prospectos.html" class="flex items-center gap-3 px-3 py-2.5 bg-blue-50/60 text-kinsu-blue font-bold text-sm rounded-xl transition-all">
+          <span class="material-symbols-outlined text-[22px]" style="font-variation-settings:'FILL' 1;">group</span>
+          <span>Prospectos</span>
+        </a>
+        <a href="ganancias.html" class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-kinsu-blue hover:bg-slate-50 font-semibold text-sm rounded-xl transition-all">
+          <span class="material-symbols-outlined text-[22px]">payments</span>
+          <span>Ganancias</span>
+        </a>
+        <a href="perfil.html" class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-kinsu-blue hover:bg-slate-50 font-semibold text-sm rounded-xl transition-all">
+          <span class="material-symbols-outlined text-[22px]">person</span>
+          <span>Perfil</span>
+        </a>
+      </nav>
+    </div>
+
+    <div>
+      <a href="nuevo-prospecto.html" class="w-full h-11 bg-kinsu-blue hover:bg-kinsu-blueDark text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-all uppercase tracking-wider shadow-sm shadow-blue-900/10">
+        <span class="material-symbols-outlined text-base">person_add</span>
+        <span>Nuevo Prospecto</span>
       </a>
     </div>
+  </aside>
 
-    <!-- Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-      <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden">
-        <div class="flex justify-between items-start mb-3">
-          <p class="text-xs font-black tracking-widest text-slate-400 uppercase">Total Prospectos</p>
+  <div class="flex-1 flex flex-col md:pl-64 min-w-0">
 
+    <header class="bg-white sticky top-0 w-full z-40 border-b border-slate-100 h-16 flex items-center">
+      <div class="flex items-center justify-between px-4 w-full max-w-2xl mx-auto md:mx-0 md:max-w-none md:px-6">
+        <div class="flex items-center md:hidden">
+          <span class="font-black text-2xl text-kinsu-blue tracking-tight select-none">Kinsu</span>
         </div>
-        <p class="text-4xl font-black text-[#0d1c2e]" id="stat-total">—</p>
-      </div>
-      <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden">
-        <p class="text-xs font-black tracking-widest text-slate-400 uppercase mb-3">En Proceso</p>
-        <p class="text-4xl font-black text-[#0d1c2e]" id="stat-proceso">—</p>
-      </div>
-      <div class="bg-[#d4f0a0] p-6 rounded-2xl relative overflow-hidden">
-        <p class="text-xs font-black tracking-widest text-[#1a3a0a] uppercase mb-3">Completados</p>
-        <p class="text-4xl font-black text-[#1a3a0a]" id="stat-completados">—</p>
-      </div>
-    </div>
+        <div class="hidden md:block"></div>
 
-    <!-- Búsqueda + Filtros -->
-    <div class="flex flex-col md:flex-row gap-3 mb-6">
-      <!-- Búsqueda -->
-      <div class="relative flex-1">
-        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#8899bb] text-[20px] pointer-events-none">search</span>
-        <input id="search-input" type="text" placeholder="Buscar por nombre o tipo de seguro..."
+        <div class="flex items-center gap-4">
+          <a href="chat-ana.html" class="text-slate-400 hover:text-kinsu-blue flex items-center justify-center transition-colors p-1.5 rounded-full hover:bg-slate-50" title="Asistente de IA Ana">
+            <span class="material-symbols-outlined text-[24px]">smart_toy</span>
+          </a>
+          <div id="user-avatar" class="w-9 h-9 bg-blue-50 text-kinsu-blue rounded-full flex items-center justify-center font-bold text-sm uppercase tracking-wide select-none border border-blue-100/40">
+            KS
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 w-full max-w-2xl mx-auto px-4 pb-28 md:pb-8 md:mx-0 md:max-w-none md:px-6">
+
+      <div class="pt-6 pb-4 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <div>
+          <h2 class="text-3xl font-black text-kinsu-navy tracking-tight">Prospectos</h2>
+          <p class="text-sm text-slate-500 mt-1 leading-relaxed">Gestiona y haz seguimiento de tus referidos en tiempo real.</p>
+        </div>
+        <a href="nuevo-prospecto.html"
+          class="flex items-center justify-center gap-2 px-5 h-11 bg-kinsu-blue text-white rounded-full font-bold shadow-md hover:bg-kinsu-blueDark active:scale-95 transition-all text-xs uppercase tracking-wider w-full sm:w-auto">
+          <span class="material-symbols-outlined text-base">person_add</span>
+          <span>Nuevo Prospecto</span>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-3 gap-2.5 mb-5">
+        <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+          <span class="text-[9px] font-black tracking-wider text-slate-400 uppercase block mb-1">Total</span>
+          <p class="text-2xl font-black text-kinsu-navy" id="stat-total">—</p>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+          <span class="text-[9px] font-black tracking-wider text-slate-400 uppercase block mb-1">En Proceso</span>
+          <p class="text-2xl font-black text-amber-500" id="stat-proceso">—</p>
+        </div>
+        <div class="bg-emerald-50/60 p-4 rounded-xl border border-emerald-100 shadow-sm">
+          <span class="text-[9px] font-black tracking-wider text-emerald-700 uppercase block mb-1">Cerrados</span>
+          <p class="text-2xl font-black text-emerald-600" id="stat-completados">—</p>
+        </div>
+      </div>
+
+      <div class="relative mb-4">
+        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl pointer-events-none select-none">search</span>
+        <input 
+          id="search-input" 
+          type="text" 
+          placeholder="Buscar por nombre, folio o estatus..."
           oninput="filterProspectos()"
-          style="padding-left:48px !important;"
-          class="w-full h-[52px] bg-[#d7e2ff] border-none rounded-xl text-sm font-medium
-                 text-[#0d1c2e] placeholder:text-[#8899bb] focus:ring-2 focus:ring-[#1565c0]
-                 focus:bg-white transition-all outline-none">
+          class="w-full h-12 pl-11 pr-4 bg-white border border-slate-200 rounded-xl font-medium text-kinsu-navy placeholder:text-slate-400 focus:outline-none focus:border-kinsu-blue focus:ring-4 focus:ring-blue-50 transition-all text-sm border-1.5"
+        />
       </div>
-    </div>
 
-    <!-- Chips de filtro -->
-    <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2 mb-6" id="filter-chips">
-      <button onclick="setFilter('todos',this)"   class="chip-filter active-chip flex-shrink-0 px-5 py-2 rounded-full text-sm font-bold transition-all">Todos</button>
-      <button onclick="setFilter('Enviado',this)"       class="chip-filter flex-shrink-0 px-5 py-2 rounded-full bg-[#d7e2ff] text-[#8899bb] text-sm font-bold transition-all">Enviado</button>
-      <button onclick="setFilter('En Cotización',this)" class="chip-filter flex-shrink-0 px-5 py-2 rounded-full bg-[#d7e2ff] text-[#8899bb] text-sm font-bold transition-all">En Cotización</button>
-      <button onclick="setFilter('En Emisión',this)"    class="chip-filter flex-shrink-0 px-5 py-2 rounded-full bg-[#d7e2ff] text-[#8899bb] text-sm font-bold transition-all">En Emisión</button>
-      <button onclick="setFilter('En Cobranza',this)"   class="chip-filter flex-shrink-0 px-5 py-2 rounded-full bg-[#d7e2ff] text-[#8899bb] text-sm font-bold transition-all">En Cobranza</button>
-      <button onclick="setFilter('Completado',this)"    class="chip-filter flex-shrink-0 px-5 py-2 rounded-full bg-[#d7e2ff] text-[#8899bb] text-sm font-bold transition-all">Completado</button>
-      <button onclick="setFilter('Cancelado',this)"     class="chip-filter flex-shrink-0 px-5 py-2 rounded-full bg-[#d7e2ff] text-[#8899bb] text-sm font-bold transition-all">Cancelado</button>
-    </div>
+      <div class="flex gap-2 overflow-x-auto no-scrollbar pb-3 mb-4" id="filter-chips">
+        <button onclick="setFilter('todos', this)" class="chip-filter px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-kinsu-blue text-white shadow-sm border border-transparent">Todos</button>
+        <button onclick="setFilter('Enviado', this)" class="chip-filter px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-white text-slate-500 border border-slate-200 hover:bg-slate-50">Enviado</button>
+        <button onclick="setFilter('En Cotización', this)" class="chip-filter px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-white text-slate-500 border border-slate-200 hover:bg-slate-50">En Cotización</button>
+        <button onclick="setFilter('En Emisión', this)" class="chip-filter px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-white text-slate-500 border border-slate-200 hover:bg-slate-50">En Emisión</button>
+        <button onclick="setFilter('En Cobranza', this)" class="chip-filter px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-white text-slate-500 border border-slate-200 hover:bg-slate-50">En Cobranza</button>
+        <button onclick="setFilter('Completado', this)" class="chip-filter px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-white text-slate-500 border border-slate-200 hover:bg-slate-50">Cerrados</button>
+        <button onclick="setFilter('Cancelado', this)" class="chip-filter px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-white text-slate-500 border border-slate-200 hover:bg-slate-50">Cancelado</button>
+      </div>
 
-    <!-- Lista -->
-    <div class="space-y-3" id="lista-prospectos"></div>
+      <div class="space-y-2.5" id="lista-prospectos"></div>
 
-    <!-- Empty state -->
-    <div id="empty-state" class="hidden text-center py-16">
-      <span class="material-symbols-outlined text-[48px] text-slate-300">search_off</span>
-      <p class="text-slate-400 font-semibold mt-3">No se encontraron prospectos</p>
-    </div>
+      <div id="empty-state" class="hidden text-center py-12 bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+        <span class="material-symbols-outlined text-[44px] text-slate-300 block mb-2">search_off</span>
+        <p class="text-slate-400 font-bold text-sm">No se encontraron registros coincidentes</p>
+      </div>
 
+    </main>
   </div>
-</main>
 
-<!-- Toast de éxito -->
-<div id="toast"
-  class="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 bg-[#1a3a0a] text-white
-         px-6 py-3 rounded-full text-sm font-bold flex items-center gap-2 shadow-lg"
-  style="opacity:0; transform:translateY(20px);">
-  <span class="material-symbols-outlined text-[#a6f86d] text-[18px]">check_circle</span>
-  <span id="toast-msg">Prospecto registrado correctamente</span>
-</div>
-
-<!-- Bottom Nav Mobile -->
-<nav class="lg:hidden fixed bottom-0 left-0 w-full h-16 bg-white/85 backdrop-blur-xl flex justify-around items-center px-2 z-50 border-t border-slate-100 shadow-sm rounded-t-2xl">
-  <a href="dashboard.html" class="flex flex-col items-center justify-center text-slate-400">
-    <span class="material-symbols-outlined">home</span>
-    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Inicio</span>
-  </a>
-  <a href="prospectos.html" class="flex flex-col items-center justify-center text-[#1565c0]">
-    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">group</span>
-    <span class="text-[10px] font-bold uppercase tracking-wider mt-0.5">Prospectos</span>
-  </a>
-  <div class="flex flex-col items-center -mt-8">
-    <a href="nuevo-prospecto.html"
-      class="w-14 h-14 bg-[#1565c0] text-white rounded-xl shadow-lg flex items-center justify-center active:scale-95 transition-transform">
-      <span class="material-symbols-outlined text-3xl">add</span>
+  <nav class="md:hidden fixed bottom-0 left-0 w-full h-16 bg-white/90 backdrop-blur-md flex justify-around items-center px-2 z-50 border-t border-slate-100 rounded-t-2xl shadow-lg">
+    <a href="dashboard.html" class="flex flex-col items-center justify-center text-slate-400">
+      <span class="material-symbols-outlined">home</span>
+      <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Inicio</span>
     </a>
+    <a href="prospectos.html" class="flex flex-col items-center justify-center text-kinsu-blue">
+      <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">group</span>
+      <span class="text-[10px] font-bold uppercase tracking-wider mt-0.5">Prospectos</span>
+    </a>
+    <div class="flex flex-col items-center -mt-8">
+      <a href="nuevo-prospecto.html"
+        class="w-14 h-14 bg-kinsu-blue text-white rounded-xl shadow-lg flex items-center justify-center active:scale-95 transition-transform">
+        <span class="material-symbols-outlined text-3xl">add</span>
+      </a>
+    </div>
+    <a href="ganancias.html" class="flex flex-col items-center justify-center text-slate-400">
+      <span class="material-symbols-outlined">payments</span>
+      <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Ganancias</span>
+    </a>
+    <a href="perfil.html" class="flex flex-col items-center justify-center text-slate-400">
+      <span class="material-symbols-outlined">person</span>
+      <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Perfil</span>
+    </a>
+  </nav>
+
+  <div id="toast" class="opacity-0 translate-y-4 pointer-events-none fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-[#0d1c2e] text-white px-5 py-3 rounded-full text-xs font-bold flex items-center gap-2 shadow-xl border border-slate-800">
+    <span class="material-symbols-outlined text-kinsu-green text-base">check_circle</span>
+    <span id="toast-msg">Operación completada</span>
   </div>
-  <a href="ganancias.html" class="flex flex-col items-center justify-center text-slate-400">
-    <span class="material-symbols-outlined">payments</span>
-    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Ganancias</span>
-  </a>
-  <a href="perfil.html" class="flex flex-col items-center justify-center text-slate-400">
-    <span class="material-symbols-outlined">person</span>
-    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Perfil</span>
-  </a>
-</nav>
 
 <script src="kinsu-config.js"></script>
 <script>
-const user = JSON.parse(sessionStorage.getItem('user') || '{"nombre":"Jimena Ríos","initials":"JR"}');
-document.getElementById('topbar-av').textContent = user.initials || 'JR';
-
-const BADGE = {
-  'Enviado':       { bg:'#e8f0fe', color:'#1565c0' },
-  'En Cotización': { bg:'#eeedfe', color:'#534ab7' },
-  'En Emisión':    { bg:'#e1f5ee', color:'#0f6e56' },
-  'En Cobranza':   { bg:'#fbeaf0', color:'#993556' },
-  'Completado':    { bg:'#d4f0a0', color:'#1a3a0a' },
-  'Cancelado':     { bg:'#f1efe8', color:'#888780' },
-};
-
 let PROSPECTOS = [];
 let currentFilter = 'todos';
 let searchVal = '';
 
-// ── Skeleton ──
+document.addEventListener('DOMContentLoaded', () => {
+    const sessionData = sessionStorage.getItem('user');
+    if (!sessionData) {
+        window.location.href = 'index.html';
+        return;
+    }
+    const user = JSON.parse(sessionData);
+    document.getElementById('user-avatar').textContent = user.initials || 'KS';
+
+    loadProspectos();
+});
+
 function showSkeleton() {
-  // Skeleton stats
   ['stat-total','stat-proceso','stat-completados'].forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.innerHTML = '<div class="h-8 w-8 bg-slate-200 rounded-lg animate-pulse"></div>';
+    document.getElementById(id).innerHTML = '<div class="h-6 w-8 bg-slate-100 rounded animate-pulse"></div>';
   });
 
-  // Skeleton lista
   const lista = document.getElementById('lista-prospectos');
-  lista.innerHTML = Array(5).fill(`
-    <div class="bg-white rounded-2xl border border-slate-100 p-5 flex items-center gap-4">
-      <div class="w-12 h-12 rounded-full bg-slate-200 animate-pulse flex-shrink-0"></div>
-      <div class="flex-1 space-y-2">
-        <div class="h-4 bg-slate-200 rounded animate-pulse w-3/4"></div>
-        <div class="h-3 bg-slate-200 rounded animate-pulse w-1/2"></div>
+  lista.innerHTML = Array(4).fill(`
+    <div class="bg-white rounded-xl border border-slate-100 p-4 flex items-center justify-between animate-pulse">
+      <div class="flex items-center gap-3 w-2/3">
+        <div class="w-10 h-10 rounded-full bg-slate-100 flex-shrink-0"></div>
+        <div class="space-y-1.5 w-full">
+          <div class="h-3.5 bg-slate-100 rounded w-3/4"></div>
+          <div class="h-2.5 bg-slate-100 rounded w-1/2"></div>
+        </div>
       </div>
-      <div class="h-6 w-24 bg-slate-200 rounded-full animate-pulse"></div>
+      <div class="h-5 w-20 bg-slate-100 rounded-full"></div>
     </div>`).join('');
 }
 
-// ── Normalizar prospecto del sheet ──
-function norm(p) {
-  const nombre  = p['Nombre Prospecto'] || p.nombre  || 'Prospecto';
-  const tipo    = (p['Tipo Seguro']     || p.tipo    || 'salud').toLowerCase();
-  const folio   = p['Folio']            || p.folio   || '';
-  const estatus = p['Estatus']          || p.estatus || 'Enviado';
-  const fecha   = p['Fecha Registro']   || p.fecha   || '';
-  const initials= nombre.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
-  const fechaFmt= fecha ? new Date(fecha).toLocaleDateString('es-MX',{day:'numeric',month:'short'}) : '';
-  return { nombre, tipo, folio, estatus, fecha:fechaFmt, initials };
-}
-
-// ── Render lista ──
 function renderProspectos() {
   const lista = document.getElementById('lista-prospectos');
   const empty = document.getElementById('empty-state');
-  const q     = searchVal.toLowerCase();
+  const q = searchVal.toLowerCase();
 
-  // Ordenar por fecha más reciente primero
-  const sorted = [...PROSPECTOS].sort((a, b) => {
-    const da = new Date(a['Fecha Registro'] || a.fecha || 0);
-    const db = new Date(b['Fecha Registro'] || b.fecha || 0);
-    return db - da;
-  });
+  let filtered = PROSPECTOS.filter(p => {
+    const estatus = p['Estatus'] || 'Enviado';
+    const nombre  = (p['Nombre Prospecto'] || '').toLowerCase();
+    const folio   = (p['Folio'] || '').toLowerCase();
+    const tipo    = (p['Tipo Seguro'] || '').toLowerCase();
 
-  let filtered = sorted.map(norm).filter(p => {
-    const matchFilter = currentFilter === 'todos' || p.estatus === currentFilter;
-    const matchSearch = !q || p.nombre.toLowerCase().includes(q)
-      || p.tipo.toLowerCase().includes(q) || p.folio.toLowerCase().includes(q);
+    const matchFilter = currentFilter === 'todos' || estatus.trim() === currentFilter.trim();
+    const matchSearch = !q || nombre.includes(q) || folio.includes(q) || tipo.includes(q);
     return matchFilter && matchSearch;
   });
 
@@ -240,45 +243,52 @@ function renderProspectos() {
   empty.classList.add('hidden');
 
   lista.innerHTML = filtered.map(p => {
-    const badge = BADGE[p.estatus] || { bg:'#e8f0fe', color:'#1565c0' };
+    const estatus = p['Estatus'] || 'Enviado';
+    const nombre = p['Nombre Prospecto'] || 'Referido';
+    const folio = p['Folio'] || '—';
+    const fecha = p['Fecha Registro'] ? new Date(p['Fecha Registro']).toLocaleDateString('es-MX', {day:'numeric', month:'short'}) : '';
+    const initials = nombre.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+
+    let colorBadge = "bg-blue-50 text-blue-600 border-blue-100";
+    if (estatus === 'En Cotización') colorBadge = "bg-amber-50 text-amber-600 border-amber-100";
+    if (estatus === 'En Emisión') colorBadge = "bg-purple-50 text-purple-600 border-purple-100";
+    if (estatus === 'En Cobranza') colorBadge = "bg-indigo-50 text-indigo-600 border-indigo-100";
+    if (estatus === 'Completado') colorBadge = "bg-emerald-50 text-emerald-600 border-emerald-100";
+    if (estatus === 'Cancelado') colorBadge = "bg-slate-100 text-slate-500 border-slate-200";
+
     return `
-    <a href="detalle-prospecto.html?folio=${p.folio}" onclick="sessionStorage.removeItem('prospecto')"
-      class="block bg-white rounded-2xl border border-slate-100 p-5 flex items-center justify-between
-             hover:shadow-md hover:translate-x-1 transition-all group cursor-pointer">
-      <div class="flex items-center gap-4 min-w-0">
-        <div class="w-12 h-12 rounded-full bg-[#e8f0fe] flex items-center justify-center font-bold text-[#1565c0] text-sm flex-shrink-0">
-          ${p.initials}
+    <div onclick="window.location.href='detalle-prospecto.html?folio=${folio}'"
+      class="bg-white rounded-xl border border-slate-100 p-4 flex items-center justify-between active:scale-[0.99] transition-all cursor-pointer hover:bg-slate-50 group">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-10 h-10 rounded-full bg-blue-50 text-kinsu-blue flex items-center justify-center font-bold text-xs flex-shrink-0 border border-blue-100/40">
+          ${initials}
         </div>
         <div class="min-w-0">
-          <h3 class="font-bold text-[#0d1c2e] text-base truncate">${p.nombre}</h3>
-          <p class="text-xs text-slate-400 font-medium">Salud · #${p.folio} ${p.fecha ? '· ' + p.fecha : ''}</p>
+          <h3 class="font-bold text-kinsu-navy text-sm truncate group-hover:text-kinsu-blue transition-colors">${nombre}</h3>
+          <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">Salud · #${folio} ${fecha ? '· ' + fecha : ''}</p>
         </div>
       </div>
-      <div class="flex items-center gap-3 flex-shrink-0 ml-2">
-        <span class="px-3 py-1.5 rounded-full text-[11px] font-bold whitespace-nowrap hidden sm:block"
-          style="background:${badge.bg};color:${badge.color};">${p.estatus}</span>
-        <span class="material-symbols-outlined text-slate-300 group-hover:text-[#1565c0] transition-colors">chevron_right</span>
+      <div class="flex items-center gap-2 flex-shrink-0 ml-2">
+        <span class="px-2.5 py-0.5 border text-[9px] font-extrabold uppercase tracking-wider rounded-full ${colorBadge}">
+          ${estatus === 'Completado' ? 'Cerrado' : estatus}
+        </span>
+        <span class="material-symbols-outlined text-slate-300 group-hover:text-kinsu-blue transition-colors text-xl">chevron_right</span>
       </div>
-    </a>`;
+    </div>`;
   }).join('');
 
-  // Stats
-  const all = PROSPECTOS.map(norm);
-  const elS = id => document.getElementById(id);
-  if(elS('stat-total'))       elS('stat-total').textContent       = all.length;
-  if(elS('stat-proceso'))     elS('stat-proceso').textContent     = all.filter(p=>!['Completado','Cancelado'].includes(p.estatus)).length;
-  if(elS('stat-completados')) elS('stat-completados').textContent = all.filter(p=>p.estatus==='Completado').length;
+  // Sincronización analítica de celdas
+  document.getElementById('stat-total').textContent = PROSPECTOS.length;
+  document.getElementById('stat-proceso').textContent = PROSPECTOS.filter(p => !['Completado','Cancelado'].includes(p['Estatus'])).length;
+  document.getElementById('stat-completados').textContent = PROSPECTOS.filter(p => p['Estatus'] === 'Completado').length;
 }
 
-// ── Filtros ──
 function setFilter(val, btn) {
   currentFilter = val;
   document.querySelectorAll('.chip-filter').forEach(c => {
-    c.style.background = '#d7e2ff';
-    c.style.color      = '#8899bb';
+    c.className = "chip-filter px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-white text-slate-500 border border-slate-200 hover:bg-slate-50";
   });
-  btn.style.background = '#1565c0';
-  btn.style.color      = '#fff';
+  btn.className = "chip-filter px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-kinsu-blue text-white shadow-sm border border-transparent";
   renderProspectos();
 }
 
@@ -287,40 +297,32 @@ function filterProspectos() {
   renderProspectos();
 }
 
-// ── Toast ──
 function showToast(msg) {
   const t = document.getElementById('toast');
   document.getElementById('toast-msg').textContent = msg;
-  t.style.opacity = '1';
-  t.style.transform = 'translateY(0)';
-  setTimeout(() => { t.style.opacity='0'; t.style.transform='translateY(20px)'; }, 3500);
+  t.className = "fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-[#0d1c2e] text-white px-5 py-3 rounded-full text-xs font-bold flex items-center gap-2 shadow-xl border border-slate-800 transition-all transform opacity-100 translate-y-0";
+  setTimeout(() => { 
+    t.className = "opacity-0 translate-y-4 pointer-events-none fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-[#0d1c2e] text-white px-5 py-3 rounded-full text-xs font-bold flex items-center gap-2 shadow-xl border border-slate-800 transition-all transform";
+  }, 3000);
 }
 
-// ── Cargar desde API ──
 async function loadProspectos() {
   showSkeleton();
   try {
     const data = await KinsuAPI.getProspectos();
-    PROSPECTOS = Array.isArray(data) && data.length ? data : [];
+    PROSPECTOS = Array.isArray(data) ? data : [];
   } catch(e) {
+    console.error("Fallo crítico de red:", e);
     PROSPECTOS = [];
   }
 
-  // Prospecto nuevo desde sessionStorage
   const params = new URLSearchParams(location.search);
   if (params.get('success') === 'true') {
-    const p = JSON.parse(sessionStorage.getItem('prospecto') || 'null');
-    if (p?.nombre) showToast(`✓ ${p.nombre} registrado`);
+    showToast(`Prospecto guardado de forma permanente`);
   }
-
-  // Activar chip inicial
-  const activeChip = document.querySelector('.chip-filter');
-  if(activeChip) { activeChip.style.background='#1565c0'; activeChip.style.color='#fff'; }
 
   renderProspectos();
 }
-
-loadProspectos();
 </script>
 </body>
 </html>
