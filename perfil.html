@@ -160,8 +160,8 @@
                 <button class="flex-1 sm:flex-none h-9 px-4 bg-kinsu-blue text-white rounded-full font-bold text-xs uppercase tracking-wider hover:bg-kinsu-blueDark transition-colors">
                   Actualizar
                 </button>
-                <button onclick="openModal()" class="flex-1 sm:flex-none h-9 px-4 border border-slate-200 text-kinsu-blue rounded-full font-bold text-xs uppercase tracking-wider hover:bg-slate-50 transition-all">
-                  Ver Historial
+                <button class="flex-1 sm:flex-none h-9 px-4 border border-slate-200 text-slate-400 bg-slate-50 rounded-full font-bold text-xs uppercase tracking-wider cursor-default select-none transition-all">
+                  Ver mis retiros
                 </button>
               </div>
             </div>
@@ -172,7 +172,7 @@
               <div class="w-9 h-9 rounded-xl bg-blue-50 text-kinsu-blue flex items-center justify-center mb-3 border border-blue-100/40 shadow-sm group-hover:scale-105 transition-transform">
                 <span class="material-symbols-outlined text-lg filled">verified_user</span>
               </div>
-              <h5 class="font-black text-kinsu-navy text-xs tracking-tight">Seguridad</h5>
+              <h5 class="font-black text-kinsu-navy text-xs tracking-tight">Security</h5>
               <p class="text-[9px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100/50 inline-block font-bold uppercase tracking-wider mt-1.5">2FA Activo</p>
             </div>
             <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:bg-slate-50 transition-colors cursor-pointer group">
@@ -245,8 +245,8 @@
     </a>
   </nav>
 
-  <div id="modal-overlay" class="fixed inset-0 z-50 flex items-center justify-center px-4" style="background:rgba(13,28,46,0.5); backdrop-blur-sm;">
-    <div id="modal-card" class="bg-white w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl border border-slate-100">
+  <div id="modal-overlay" class="hidden fixed inset-0 z-50 items-center justify-center px-4 bg-[#0d1c2e]/50 backdrop-blur-sm transition-opacity duration-300">
+    <div id="modal-card" class="bg-white w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl border border-slate-100 transform transition-transform duration-300 scale-100">
       <div class="p-6 sm:p-8 text-center space-y-5">
         <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-sm border border-emerald-100/40">
           <span class="material-symbols-outlined text-2xl font-variation-settings:'FILL' 1;">check_circle</span>
@@ -292,7 +292,7 @@ if (!user.kinsurerID) { window.location.href = 'index.html'; }
 
 const setEl = (id, val) => { const e = document.getElementById(id); if(e) e.textContent = val; };
 
-// ── Inyección inmediata de sessionStorage para evitar parpadeos ──
+// ── Inyección inmediata de datos ──
 setEl('topbar-av',       user.initials || 'KS');
 setEl('avatar-initials', user.initials || 'KS');
 setEl('perfil-nombre',   user.nombre   || 'Kinsurer');
@@ -306,7 +306,6 @@ const nivel = user.nivel || 'Kinsurer Certificado';
 setEl('topbar-nivel',    nivel.replace('Kinsurer ',''));
 setEl('header-nivel',    nivel);
 
-// ── Helper: Cómputo del saldo de transacciones pendientes ──
 function calcSaldoPendiente(transacciones) {
   const pendientes = (transacciones || []).filter(t =>
     (t['Estatus Pago'] || '').trim() === 'Pendiente'
@@ -318,7 +317,7 @@ function calcSaldoPendiente(transacciones) {
   return '$' + saldo.toLocaleString('es-MX', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' MXN';
 }
 
-// ── Despacho paralelo y sincronización fresca de API ──
+// ── Sincronización fresca de API ──
 async function loadPerfil() {
   try {
     const [perfil, ganData] = await Promise.all([
@@ -357,32 +356,31 @@ async function loadPerfil() {
     const saldoEl  = document.getElementById('perfil-saldo');
     if (saldoEl) saldoEl.textContent = saldoFmt;
 
-    // Sincronización de componentes internos del modal solicitado
-    const modalSaldo = document.getElementById('modal-saldo');
-    const modalClabe = document.getElementById('modal-clabe');
-    const modalBanco = document.getElementById('modal-banco');
-    if (modalSaldo) modalSaldo.textContent = saldoFmt;
-    if (modalClabe) modalClabe.textContent = user.clabe || '—';
-    if (modalBanco) modalBanco.textContent = user.banco || '—';
+    // Sincronización de componentes internos del modal
+    setEl('modal-saldo', saldoFmt);
+    setEl('modal-clabe', user.clabe || '—');
+    setEl('modal-banco', user.banco || '—');
 
   } catch(e) {
     console.warn('[Perfil Sync] Error de comunicación:', e);
   }
 }
 
-// ── Mecánicas de Control del Modal ──
+// ── Controles del Modal ──
 function openModal() {
   const overlay = document.getElementById('modal-overlay');
-  const card    = document.getElementById('modal-card');
-  if (overlay) { overlay.style.opacity = '1'; overlay.style.pointerEvents = 'all'; }
-  if (card)    card.style.transform = 'translateY(0) scale(1)';
+  if (overlay) {
+    overlay.classList.remove('hidden');
+    overlay.classList.add('flex');
+  }
 }
 
 function closeModal() {
   const overlay = document.getElementById('modal-overlay');
-  const card    = document.getElementById('modal-card');
-  if (overlay) { overlay.style.opacity = '0'; overlay.style.pointerEvents = 'none'; }
-  if (card)    card.style.transform = 'translateY(24px) scale(.97)';
+  if (overlay) {
+    overlay.classList.remove('flex');
+    overlay.classList.add('hidden');
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
