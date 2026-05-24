@@ -6,10 +6,13 @@
 <title>Kinsu - Detalle de Prospecto</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
 <style>
   body { font-family:'Inter',sans-serif; background:#f8fafc; padding-bottom:env(safe-area-inset-bottom); }
   .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; vertical-align:middle; }
+  .no-scrollbar::-webkit-scrollbar { display:none; }
+  .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
+  @keyframes pulse { 0%,100% { opacity:.5; transform:scale(.8); } 50% { opacity:1; transform:scale(1); } }
 </style>
 <script>
   tailwind.config = {
@@ -28,7 +31,7 @@
   }
 </script>
 </head>
-<body class="min-h-screen flex flex-col text-kinsu-navy antialiased">
+<body class="min-h-screen flex flex-col text-kinsu-navy antialiased bg-slate-50">
 
 <header class="bg-white/90 backdrop-blur-md sticky top-0 w-full z-50 border-b border-slate-100">
   <div class="flex items-center justify-between px-4 h-16 max-w-2xl mx-auto">
@@ -37,8 +40,8 @@
         <span class="material-symbols-outlined">arrow_back</span>
       </button>
       <div>
-        <h1 class="text-sm font-black text-kinsu-navy tracking-tight">Expediente Clínico</h1>
-        <p id="header-folio" class="text-[11px] text-slate-400 font-bold tracking-wider uppercase">Cargando...</p>
+        <h1 class="text-sm font-black text-kinsu-navy tracking-tight">Detalle del Prospecto</h1>
+        <p id="header-folio" class="text-[10px] text-slate-400 font-bold tracking-wider uppercase">Cargando...</p>
       </div>
     </div>
     <div id="status-badge" class="px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-[10px] font-extrabold uppercase tracking-wider">
@@ -47,7 +50,7 @@
   </div>
 </header>
 
-<main class="flex-1 w-full max-w-2xl mx-auto px-4 py-6 space-y-4">
+<main class="flex-1 w-full max-w-2xl mx-auto px-4 py-6 space-y-4 pb-32">
   
   <div id="loading-state" class="bg-white rounded-2xl p-6 border border-slate-100 space-y-4 animate-pulse">
     <div class="h-5 bg-slate-200 rounded w-1/3"></div>
@@ -59,37 +62,37 @@
     
     <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm space-y-4">
       <div>
-        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Nombre del Prospecto</span>
-        <h2 id="p-nombre" class="text-lg font-black text-kinsu-navy tracking-tight">—</h2>
+        <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider block mb-0.5">Nombre Registrado</span>
+        <h2 id="p-nombre" class="text-base font-black text-kinsu-navy tracking-tight">—</h2>
       </div>
 
       <div class="grid grid-cols-2 gap-4 pt-2 border-t border-slate-50">
         <div>
-          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Teléfono Celular</span>
-          <p id="p-tel" class="text-xs font-semibold text-slate-700">—</p>
+          <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider block mb-0.5">WhatsApp</span>
+          <p id="p-tel" class="text-xs font-semibold text-slate-600">—</p>
         </div>
         <div>
-          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Correo Electrónico</span>
-          <p id="p-correo" class="text-xs font-semibold text-slate-700 truncate">—</p>
+          <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider block mb-0.5">Email</span>
+          <p id="p-correo" class="text-xs font-semibold text-slate-600 truncate">—</p>
         </div>
       </div>
 
       <div class="grid grid-cols-2 gap-4 pt-2 border-t border-slate-50">
         <div>
-          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Rango de Edad</span>
-          <p id="p-edad" class="text-xs font-semibold text-slate-700">—</p>
+          <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider block mb-0.5">Rango de Edad</span>
+          <p id="p-edad" class="text-xs font-semibold text-slate-600">—</p>
         </div>
         <div>
-          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Ubicación / CP</span>
-          <p id="p-ciudad" class="text-xs font-semibold text-slate-700">—</p>
+          <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider block mb-0.5">Ubicación / CP</span>
+          <p id="p-ciudad" class="text-xs font-semibold text-slate-600">—</p>
         </div>
       </div>
     </div>
 
     <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm space-y-3">
       <div class="flex items-center gap-2 pb-2 border-b border-slate-100">
-        <span class="material-symbols-outlined text-kinsu-blue text-xl">vitals</span>
-        <h3 class="text-xs font-bold uppercase tracking-wider text-kinsu-navy">Diagnóstico Colectivo y Perfil</h3>
+        <span class="material-symbols-outlined text-kinsu-blue text-xl">assignment_ind</span>
+        <h3 class="text-xs font-bold uppercase tracking-wider text-kinsu-navy">Detalle del Prospecto</h3>
       </div>
       <pre id="p-notes" class="text-xs text-slate-600 font-medium leading-relaxed font-sans whitespace-pre-wrap bg-slate-50 p-4 rounded-xl border border-slate-100/60 overflow-x-hidden"></pre>
     </div>
@@ -100,21 +103,32 @@
           <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">payments</span>
         </div>
         <div>
-          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Tu Comisión Estimada</span>
+          <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider block">Tu Comisión Estimada</span>
           <p id="p-comision" class="text-base font-black text-emerald-600 tracking-tight">$0.00 MXN</p>
         </div>
       </div>
-      <span class="text-[10px] bg-slate-100 text-slate-500 font-bold px-2.5 py-1 rounded-md uppercase tracking-wider">
-        Sujeto a Nivel
+      <span class="text-[9px] bg-slate-50 text-slate-500 font-bold px-2.5 py-1 rounded-md uppercase tracking-wider">
+        MGM Catálogo
       </span>
     </div>
 
-    <div id="action-container" class="pt-4"></div>
+    <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm space-y-5">
+      <div class="flex items-center gap-2 pb-2 border-b border-slate-100">
+        <span class="material-symbols-outlined text-kinsu-blue text-xl">timeline</span>
+        <h3 class="text-xs font-bold uppercase tracking-wider text-kinsu-navy">Estado de la Solicitud</h3>
+      </div>
+      <div class="relative pl-2">
+        <div class="absolute left-6 top-3 bottom-3 w-0.5 bg-slate-100 rounded-full"></div>
+        <div id="timeline-container" class="space-y-0"></div>
+      </div>
+    </div>
+
+    <div id="action-container" class="pt-2"></div>
 
   </div>
 </main>
 
-<nav class="lg:hidden fixed bottom-0 left-0 w-full h-16 bg-white/85 backdrop-blur-xl flex justify-around items-center px-2 z-50 border-t border-slate-100 shadow-sm rounded-t-2xl">
+<nav class="lg:hidden fixed bottom-0 left-0 w-full h-16 bg-white/90 backdrop-blur-xl flex justify-around items-center px-2 z-50 border-t border-slate-100 rounded-t-2xl shadow-lg">
   <a href="dashboard.html" class="flex flex-col items-center justify-center text-slate-400">
     <span class="material-symbols-outlined">home</span>
     <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Inicio</span>
@@ -159,10 +173,10 @@ async function cargarDetalleProspecto(folio) {
     const contentEl = document.getElementById('content-state');
     
     try {
-        // ✅ CORRECCIÓN SOLUCIONADA: Llamamos a la API unificada del kinsu-config
         const data = await KinsuAPI.getProspecto(folio);
 
         if (data && !data.error) {
+            // Inyección de campos de texto indexados
             document.getElementById('header-folio').textContent = `Folio: #${data['Folio'] || folio}`;
             document.getElementById('p-nombre').textContent = data['Nombre Prospecto'] || '—';
             document.getElementById('p-tel').textContent = data['Teléfono'] || '—';
@@ -170,15 +184,13 @@ async function cargarDetalleProspecto(folio) {
             document.getElementById('p-edad').textContent = data['Rango Edad'] || data['Edad'] || '—';
             document.getElementById('p-ciudad').textContent = data['Ciudad'] || '—';
             document.getElementById('p-comision').textContent = data['Comisión Estimada'] || '$0 MXN';
-            
-            // Renderizado de las Notas Médicas Extendidas (Titular + Familiares)
-            document.getElementById('p-notes').textContent = data['Notas'] || 'Sin notas complementarias asentadas.';
+            document.getElementById('p-notes').textContent = data['Notas'] || 'Sin notas complementarias registradas.';
 
             const estatus = data['Estatus'] || 'Enviado';
             const badge = document.getElementById('status-badge');
             badge.textContent = estatus;
 
-            // Mapeo estético de badges
+            // Badges estilizados por fase
             if (estatus === 'Enviado') {
                 badge.className = "px-3 py-1 bg-blue-50 text-blue-600 border border-blue-100 rounded-full text-[10px] font-extrabold uppercase tracking-wider";
             } else if (estatus === 'En Cotización') {
@@ -189,10 +201,10 @@ async function cargarDetalleProspecto(folio) {
                 badge.className = "px-3 py-1 bg-rose-50 text-rose-600 border border-rose-100 rounded-full text-[10px] font-extrabold uppercase tracking-wider";
             }
 
-            // ══════════════════════════════════════════════════
-            // REGLA DE NEGOCIO CRÍTICA (PROMPT A - REQ 2)
-            // El botón de seguimiento SOLO aparece si el estatus es 'Enviado'
-            // ══════════════════════════════════════════════════
+            // ── RENDERIZADO DEL TIMELINE RESTAURADO DE FORMA SEGURA ──
+            dibujarTimelineHorizontal(estatus);
+
+            // ── CONDICIONAL REGLA DE NEGOCIO (PROMPT A - REQ 2) ──
             const actionContainer = document.getElementById('action-container');
             actionContainer.innerHTML = '';
 
@@ -203,10 +215,11 @@ async function cargarDetalleProspecto(folio) {
                 const textoWhatsApp = `Hola ${nombreProspecto}, ¿cómo estás? Te escribe tu Kinsurer de confianza. Quería darte seguimiento para saber si tuviste oportunidad de revisar la propuesta del Seguro de Salud familiar que te enviamos y conocer qué te gustaría hacer. ¡Quedo a tus órdenes!`;
                 const urlWhatsApp = `https://wa.me/52${telefonoLimpio}?text=${encodeURIComponent(textoWhatsApp)}`;
 
+                // Botón táctil de 48px de alto alineado con la marca
                 actionContainer.innerHTML = `
                     <a href="${urlWhatsApp}" target="_blank"
-                       class="w-full h-12 bg-kinsu-blue hover:bg-kinsu-blueDark text-white font-bold text-sm rounded-full flex items-center justify-center gap-2 active:scale-[0.98] transition-all shadow-lg shadow-blue-900/10 text-center py-3">
-                        <span class="material-symbols-outlined text-lg">chat_bubble</span>
+                       class="w-full h-12 bg-kinsu-blue hover:bg-kinsu-blueDark text-white font-bold text-xs rounded-full flex items-center justify-center gap-2 active:scale-[0.98] transition-all shadow-lg shadow-blue-950/10 text-center uppercase tracking-wider py-3.5">
+                        <span class="material-symbols-outlined text-base">chat_bubble</span>
                         <span>Hacer seguimiento por WhatsApp</span>
                     </a>
                 `;
@@ -214,7 +227,7 @@ async function cargarDetalleProspecto(folio) {
                 actionContainer.innerHTML = `
                     <div class="bg-slate-50 border border-slate-100 text-slate-400 p-4 rounded-xl text-center text-xs font-semibold">
                         <span class="material-symbols-outlined text-base mr-1">lock</span>
-                        Kinsu está gestionando este prospecto. No se requieren acciones.
+                        Kinsu está gestionando este prospecto de forma interna.
                     </div>
                 `;
             }
@@ -226,10 +239,71 @@ async function cargarDetalleProspecto(folio) {
             window.location.href = 'prospectos.html';
         }
     } catch (err) {
-        console.error('Fallo de conexión de red al recuperar expediente:', err);
-        alert('Error de red al consultar la base de datos de Sheets.');
+        console.error('Fallo de red:', err);
+        alert('Error al conectar con la base de datos de Google Sheets.');
         window.location.href = 'prospectos.html';
     }
+}
+
+function dibujarTimelineHorizontal(estatusActual) {
+    const FASES = ['Enviado', 'En Cotización', 'En Emisión', 'En Cobranza', 'Completado'];
+    const container = document.getElementById('timeline-container');
+    container.innerHTML = '';
+
+    if (estatusActual === 'Cancelado') {
+        container.innerHTML = `
+            <div class="relative flex gap-4 items-center py-2">
+                <div class="z-10 w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center flex-shrink-0">
+                    <span class="material-symbols-outlined text-slate-500 text-base">cancel</span>
+                </div>
+                <div>
+                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-wider">Cancelado</p>
+                    <h4 class="text-sm font-bold text-slate-500">Solicitud cancelada por el Staff</h4>
+                </div>
+            </div>`;
+        return;
+    }
+
+    const currentIndex = FASES.indexOf(estatusActual);
+
+    FASES.forEach((fase, idx) => {
+        const esUltimo = idx === FASES.length - 1;
+        const completado = idx < currentIndex;
+        const esActual = idx === currentIndex;
+
+        let estiloCirculo, iconoInterno, colorTextoMeta, textoMeta, estiloTitulo;
+
+        if (esActual) {
+            estiloCirculo = 'background:#4575BA; box-shadow: 0 0 0 4px rgba(69, 117, 186, 0.15);';
+            iconoInterno  = '<div class="w-2.5 h-2.5 rounded-full bg-white animate-[pulse_1.5s_infinite]"></div>';
+            colorTextoMeta = 'text-[#4575BA]';
+            textoMeta = 'Fase activa';
+            estiloTitulo = 'text-sm font-black text-[#4575BA]';
+        } else if (completado) {
+            estiloCirculo = 'background:#BFFD70;';
+            iconoInterno  = '<span class="material-symbols-outlined text-[#1a3a0a] text-sm font-bold">check</span>';
+            colorTextoMeta = 'text-slate-400';
+            textoMeta = 'Paso completado ✓';
+            estiloTitulo = 'text-sm font-bold text-slate-800';
+        } else {
+            estiloCirculo = 'background:#e2e8f5;';
+            iconoInterno  = '<span class="material-symbols-outlined text-slate-300 text-sm">hourglass_empty</span>';
+            colorTextoMeta = 'text-slate-300';
+            textoMeta = 'Pendiente';
+            estiloTitulo = 'text-sm font-semibold text-slate-400';
+        }
+
+        container.innerHTML += `
+            <div class="relative flex gap-4 ${esUltimo ? '' : 'pb-6'}">
+                <div class="z-10 w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style="${estiloCirculo}">
+                    ${iconoInterno}
+                </div>
+                <div class="flex-grow pt-0.5">
+                    <p class="text-[9px] font-bold uppercase tracking-wider ${colorTextoMeta}">${textoMeta}</p>
+                    <h4 class="${estiloTitulo}">${fase}</h4>
+                </div>
+            </div>`;
+    });
 }
 </script>
 </body>
