@@ -219,42 +219,36 @@ function removeTyping() {
   if (t) t.remove();
 }
 
-// ── INICIALIZACIÓN DEL MENSAJE FIJO SOLICITADO ──
 function inicializarMensajeFijoAna() {
     showTyping();
     setTimeout(() => {
         removeTyping();
         const primerNombre = (user.nombre || 'Kinsurer').split(' ')[0];
-        
-        // Mensaje inicial fijo canónico parametrizado
         addBubble(`¡Hola, ${primerNombre}! 👋 Estoy aquí para ayudarte en cualquier cosa que necesites.\n\nComo tu asistente operativa de Kinsu, puedo resolver dudas sobre cómo ingresar tus prospectos, explicar las comisiones bancarias del catálogo vigente o darte consejos comerciales para abordar cierres de Gastos Médicos Mayores (GMM).\n\n¿De qué tienes duda hoy? Escríbeme aquí abajo.`);
     }, 1000);
 }
 
-// ── MECANISMO DE CONTROL EN ENVÍO FRONTAL ──
 function enviarMensajeAIA() {
     const input = document.getElementById('user-input');
     const txt = input.value.trim();
     if (!txt) return;
 
     addBubble(txt, 'user');
-    input.value = ''; // Limpiamos la caja de texto
+    input.value = '';
     
     showTyping();
     conectarConCerebroIA(txt);
 }
 
-// ═════════════════════════════════════════════════════════════
-// 🧠 CONEXIÓN FRESH CON EL PROXY SEGURO DE IA EN GOOGLE SHEETS
-// ═════════════════════════════════════════════════════════════
 async function conectarConCerebroIA(mensajeUsuario) {
     try {
-        // Despachamos la consulta hacia la pasarela oculta del Google Apps Script
+        // ✅ SOLUCIÓN AL FALLO CORS: Cambiamos 'application/json' por 'text/plain' 
+        // para evitar el preflight OPTIONS que Google Apps Script no soporta de forma nativa.
         const response = await fetch(KINSU_CONFIG.APPS_SCRIPT_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'text/plain' },
             body: JSON.stringify({
-                action: 'chatWithAna', // Ejecuta el caso de Groq en el servidor
+                action: 'chatWithAna',
                 message: mensajeUsuario,
                 kinsurerID: user.kinsurerID || 'KIN-0001'
             })
@@ -264,20 +258,18 @@ async function conectarConCerebroIA(mensajeUsuario) {
         removeTyping();
 
         if (data && data.reply) {
-            // Pintamos la respuesta construida por la IA (Llama3-8b de Groq)
             addBubble(data.reply, 'ana');
         } else {
             addBubble(`Ana está procesando cotizaciones en este instante. ¿Me podrías repetir tu pregunta por favor?`, 'ana');
         }
 
     } catch (e) {
-        console.error("Fallo de comunicación de red con la IA:", e);
+        console.error("Fallo de network con la IA:", e);
         removeTyping();
         addBubble(`Vaya, detecté una interrupción menor en mi línea de comunicación en la nube. Por favor, vuelve a intentar tu mensaje.`, 'ana');
     }
 }
 
-// Inicialización Automática
 inicializarMensajeFijoAna();
 </script>
 </body>
