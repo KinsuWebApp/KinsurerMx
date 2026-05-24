@@ -2,255 +2,289 @@
 <html class="light" lang="es">
 <head>
 <meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport">
 <title>Kinsu - Perfil</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
 <style>
-  body { font-family:'Inter',sans-serif; background:#f9f9ff; }
-  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
-  .filled { font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24; }
+  body { font-family:'Inter',sans-serif; background:#f8fafc; padding-bottom:env(safe-area-inset-bottom); }
+  .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; vertical-align:middle; }
+  .no-scrollbar::-webkit-scrollbar { display:none; }
+  .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
 </style>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          kinsu: {
+            blue: '#4575BA',
+            blueDark: '#355c94',
+            green: '#BFFD70',
+            navy: '#0d1c2e'
+          }
+        }
+      }
+    }
+  }
+</script>
 </head>
+<body class="min-h-screen text-kinsu-navy antialiased bg-slate-50 flex">
 
-<body class="min-h-screen text-[#0d1c2e]">
-
-<!-- Sidebar Desktop -->
-<aside class="fixed left-0 top-0 h-screen w-[200px] hidden lg:flex flex-col bg-[#f8fafc] border-r border-slate-200 z-50">
-  <div class="px-6 py-8">
-    <div class="text-[24px] font-[900] text-[#1d4ed8] leading-none">Kinsu</div>
-    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-1">DASHBOARD</div>
-  </div>
-  <nav class="flex-1">
-    <a href="dashboard.html"       class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">home</span>Inicio</a>
-    <a href="prospectos.html"      class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">group</span>Prospectos</a>
-    <a href="formacion.html"       class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">school</span>Formación</a>
-    <a href="nuevo-prospecto.html" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">add_box</span>Nuevo</a>
-    <a href="ganancias.html"       class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:text-slate-900 hover:bg-slate-100 font-semibold text-sm transition-all"><span class="material-symbols-outlined">payments</span>Ganancias</a>
-    <a href="perfil.html"          class="flex items-center gap-3 px-4 py-3 text-blue-700 border-l-4 border-blue-700 bg-blue-50/50 font-semibold text-sm"><span class="material-symbols-outlined filled">person</span>Perfil</a>
-  </nav>
-  <!-- Cerrar sesión solo en desktop sidebar -->
-  <div class="px-3 pb-6">
-    <button onclick="doLogout()"
-      class="w-full flex items-center gap-3 px-4 py-3 text-[#ba1a1a] font-semibold hover:bg-red-50 rounded-xl transition-colors text-sm">
-      <span class="material-symbols-outlined">logout</span>
-      Cerrar sesión
-    </button>
-  </div>
-</aside>
-
-<!-- Topbar -->
-<header class="fixed top-0 right-0 left-0 lg:left-[200px] h-16 bg-white/85 backdrop-blur-md flex items-center justify-between px-6 z-40 shadow-sm">
-  <div class="flex items-center gap-3">
-    <span class="lg:hidden text-xl font-black text-[#1d4ed8]">Kinsu</span>
-    <div class="hidden lg:flex items-center gap-2">
-      <h1 class="text-base font-bold text-slate-800">Mi Perfil</h1>
-      <span class="px-3 py-1 bg-[#a6f86d] text-[#1a3a0a] rounded-full text-xs font-bold flex items-center gap-1">
-        <span class="w-1.5 h-1.5 bg-[#1a3a0a] rounded-full"></span>
-        Conectado
-      </span>
-    </div>
-  </div>
-  <div class="flex items-center gap-3">
-    <button class="text-slate-500 hover:text-blue-600 transition-colors">
-      <span class="material-symbols-outlined">notifications</span>
-    </button>
-    <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-700 text-xs"
-      id="topbar-av">JR</div>
-  </div>
-</header>
-
-<!-- Main -->
-<main class="pt-20 pb-28 lg:pl-[200px] px-6 min-h-screen">
-  <div class="max-w-5xl mx-auto mt-4">
-
-    <!-- Header sección -->
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-      <div>
-        <h2 class="text-3xl lg:text-[40px] font-[900] text-[#0d1c2e] tracking-tight">Mi Perfil</h2>
-        <p class="text-slate-500 text-base mt-1">Gestiona tu identidad y configura tus preferencias.</p>
+  <aside class="hidden md:flex flex-col w-64 bg-white border-r border-slate-100 fixed inset-y-0 left-0 z-50 p-5 justify-between">
+    <div class="space-y-8">
+      <div class="flex items-center px-2">
+        <span class="font-black text-2xl text-kinsu-blue tracking-tight select-none">Kinsu</span>
       </div>
-      <!-- Nivel badge desktop -->
-      <div class="hidden lg:flex items-center gap-3 bg-[#d4f0a0]/30 border border-[#d4f0a0]/50 rounded-2xl px-5 py-3">
-        <div class="w-10 h-10 bg-[#285900] rounded-xl flex items-center justify-center">
-          <span class="material-symbols-outlined text-white filled text-[18px]">verified</span>
-        </div>
-        <div>
-          <p class="text-[10px] text-[#1a3a0a] uppercase font-black tracking-wider">Nivel</p>
-          <p class="text-base font-black text-[#1a3a0a]" id="header-nivel">Kinsurer Conectado</p>
-        </div>
-      </div>
+      
+      <nav class="space-y-1.5">
+        <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-kinsu-blue hover:bg-slate-50 font-semibold text-sm rounded-xl transition-all">
+          <span class="material-symbols-outlined text-[22px]">home</span>
+          <span>Inicio</span>
+        </a>
+        <a href="prospectos.html" class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-kinsu-blue hover:bg-slate-50 font-semibold text-sm rounded-xl transition-all">
+          <span class="material-symbols-outlined text-[22px]">group</span>
+          <span>Prospectos</span>
+        </a>
+        <a href="ganancias.html" class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-kinsu-blue hover:bg-slate-50 font-semibold text-sm rounded-xl transition-all">
+          <span class="material-symbols-outlined text-[22px]">payments</span>
+          <span>Ganancias</span>
+        </a>
+        <a href="perfil.html" class="flex items-center gap-3 px-3 py-2.5 bg-blue-50/60 text-kinsu-blue font-bold text-sm rounded-xl transition-all">
+          <span class="material-symbols-outlined text-[22px]" style="font-variation-settings:'FILL' 1;">person</span>
+          <span>Perfil</span>
+        </a>
+      </nav>
     </div>
 
-    <!-- Bento grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-      <!-- Card identidad (col 4) -->
-      <div class="lg:col-span-4 bg-white rounded-3xl p-8 shadow-sm border border-slate-100 flex flex-col items-center text-center">
-
-        <!-- Avatar -->
-        <div class="relative mb-5">
-          <div class="w-28 h-28 rounded-full bg-[#e8f0fe] flex items-center justify-center border-4 border-white shadow-lg">
-            <span class="text-[28px] font-black text-[#1565c0]" id="avatar-initials">JR</span>
-          </div>
-          <!-- Badge nivel mobile -->
-          <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-[#a6f86d] text-[#1a3a0a] px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider whitespace-nowrap shadow">
-            Kinsurer
-          </div>
-        </div>
-
-        <h3 class="text-xl font-bold text-[#0d1c2e] mt-4" id="perfil-nombre">Jimena Ríos</h3>
-        <p class="text-xs text-slate-400 font-semibold mt-1 mb-1" id="perfil-id">ID: KIN-8829-XP</p>
-
-        <div class="w-full h-px bg-slate-100 my-5"></div>
-
-        <!-- Datos -->
-        <div class="w-full space-y-4 text-left">
-          <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl bg-[#f1f3ff] flex items-center justify-center flex-shrink-0">
-              <span class="material-symbols-outlined text-slate-500 text-[18px]">mail</span>
-            </div>
-            <div>
-              <p class="text-[10px] text-slate-400 uppercase tracking-wider font-bold">Email</p>
-              <p class="text-sm font-semibold text-[#0d1c2e]" id="perfil-email">kinsurer@kinsu.mx</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl bg-[#f1f3ff] flex items-center justify-center flex-shrink-0">
-              <span class="material-symbols-outlined text-slate-500 text-[18px]">smartphone</span>
-            </div>
-            <div>
-              <p class="text-[10px] text-slate-400 uppercase tracking-wider font-bold">Teléfono</p>
-              <p class="text-sm font-semibold text-[#0d1c2e]" id="perfil-tel">+52 55 1234 5678</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Columna derecha (col 8) -->
-      <div class="lg:col-span-8 flex flex-col gap-5">
-
-        <!-- Card CLABE -->
-        <div class="bg-white rounded-3xl p-6 lg:p-8 shadow-sm border border-slate-100">
-          <div class="flex flex-col md:flex-row md:items-center justify-between gap-5">
-            <div class="flex items-center gap-5">
-              <div class="w-14 h-14 rounded-2xl bg-[#f1f3ff] flex items-center justify-center flex-shrink-0">
-                <span class="material-symbols-outlined text-[#1565c0] text-[28px]">account_balance</span>
-              </div>
-              <div>
-                <h4 class="text-base font-bold text-[#0d1c2e]">Cuenta Bancaria</h4>
-                <p class="text-slate-400 text-sm" id="perfil-banco">BBVA México</p>
-                <p class="font-mono text-sm font-bold text-[#1565c0] tracking-widest mt-1" id="perfil-clabe">**** **** **** 0921</p>
-              </div>
-            </div>
-            <div class="flex gap-3">
-              <button class="px-6 py-2.5 bg-[#1565c0] text-white rounded-full font-bold text-sm
-                             hover:bg-[#1255a8] active:scale-95 transition-all">
-                Actualizar
-              </button>
-              <button onclick="openModal()"
-                class="px-6 py-2.5 border border-[#d4dcf5] text-[#1565c0] rounded-full font-bold text-sm
-                       hover:bg-[#f0f4ff] active:scale-95 transition-all">
-                Ver historial
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Mini grid configuración -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-
-          <div class="bg-[#f1f3ff] rounded-2xl p-5 hover:bg-[#e8f0fe] transition-colors cursor-pointer group">
-            <div class="w-11 h-11 rounded-full bg-white flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform">
-              <span class="material-symbols-outlined text-[#1565c0] filled">verified_user</span>
-            </div>
-            <h5 class="font-bold text-[#0d1c2e] mb-1">Seguridad</h5>
-            <p class="text-xs text-[#1a3a0a] bg-[#a6f86d] px-2 py-0.5 rounded-md inline-block font-bold">2FA Activo</p>
-          </div>
-
-          <div class="bg-[#f1f3ff] rounded-2xl p-5 hover:bg-[#e8f0fe] transition-colors cursor-pointer group">
-            <div class="w-11 h-11 rounded-full bg-white flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform">
-              <span class="material-symbols-outlined text-slate-500">language</span>
-            </div>
-            <h5 class="font-bold text-[#0d1c2e] mb-1">Idioma</h5>
-            <p class="text-xs text-slate-500 font-semibold">Español (MX)</p>
-          </div>
-
-          <div class="bg-[#f1f3ff] rounded-2xl p-5 hover:bg-[#dcfce7] transition-colors cursor-pointer group">
-            <div class="w-11 h-11 rounded-full bg-white flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform">
-              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="#25d366">
-                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
-              </svg>
-            </div>
-            <h5 class="font-bold text-[#0d1c2e] mb-1">Soporte</h5>
-            <p class="text-xs text-[#25d366] font-bold flex items-center gap-1">
-              WhatsApp <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
-            </p>
-          </div>
-        </div>
-
-        <!-- Card saldo disponible -->
-        <div class="bg-[#0d1c2e] rounded-3xl p-6 lg:p-8 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
-          <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-[#1565c0] rounded-full blur-3xl opacity-20 pointer-events-none"></div>
-          <div class="absolute -left-10 -top-10 w-48 h-48 bg-[#005db7] rounded-full blur-3xl opacity-10 pointer-events-none"></div>
-          <div class="relative z-10 text-center md:text-left">
-            <p class="text-white/50 text-[10px] font-black uppercase tracking-[.2em] mb-2">Saldo Disponible</p>
-<h2 class="text-3xl lg:text-4xl font-black text-white tracking-tighter" id="perfil-saldo"><div class="h-9 w-40 bg-white/20 rounded-xl animate-pulse"></div></h2>
-
-          </div>
-          <button onclick="openModal()"
-            class="relative z-10 px-6 py-3 bg-white text-[#1565c0] rounded-full font-black text-sm
-                   hover:bg-blue-50 active:scale-95 transition-all shadow-lg whitespace-nowrap">
-            Retirar Fondos
-          </button>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- Botón cerrar sesión SOLO mobile -->
-    <div class="lg:hidden mt-6">
-      <button onclick="doLogout()"
-        class="w-full flex items-center justify-center gap-3 py-4 bg-[#fff0f0] border border-[#fca5a5]/20
-               text-[#ba1a1a] font-bold rounded-2xl active:scale-95 transition-all text-sm">
-        <span class="material-symbols-outlined">logout</span>
-        Cerrar sesión
+    <div class="px-2">
+      <button onclick="doLogout()" class="w-full h-11 border border-rose-200 text-rose-600 hover:bg-rose-50/60 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-all uppercase tracking-wider">
+        <span class="material-symbols-outlined text-base">logout</span>
+        <span>Cerrar sesión</span>
       </button>
     </div>
+  </aside>
 
+  <div class="flex-1 flex flex-col md:pl-64 min-w-0">
+
+    <header class="bg-white sticky top-0 w-full z-40 border-b border-slate-100 h-16 flex items-center">
+      <div class="flex items-center justify-between px-4 w-full max-w-2xl mx-auto md:mx-0 md:max-w-none md:px-6">
+        <div class="flex items-center md:hidden">
+          <span class="font-black text-2xl text-kinsu-blue tracking-tight select-none">Kinsu</span>
+        </div>
+        <div class="hidden md:block"></div>
+
+        <div class="flex items-center gap-4">
+          <a href="chat-ana.html" class="text-slate-400 hover:text-kinsu-blue flex items-center justify-center transition-colors p-1.5 rounded-full hover:bg-slate-50" title="Asistente de IA Ana">
+            <span class="material-symbols-outlined text-[24px]">smart_toy</span>
+          </a>
+          <div id="topbar-av" class="w-9 h-9 bg-blue-50 text-kinsu-blue rounded-full flex items-center justify-center font-bold text-sm uppercase tracking-wide select-none border border-blue-100/40">
+            KS
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="flex-1 w-full max-w-2xl mx-auto px-4 pb-28 md:pb-8 md:mx-0 md:max-w-none md:px-6">
+
+      <div class="pt-6 pb-4 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <div>
+          <h2 class="text-3xl font-black text-kinsu-navy tracking-tight">Mi Perfil</h2>
+          <p class="text-sm text-slate-500 mt-1 leading-relaxed">Gestiona tu identidad y configura tus preferencias.</p>
+        </div>
+        
+        <div class="flex items-center gap-3 bg-blue-50/40 border border-blue-100/40 rounded-2xl px-4 py-2 shadow-sm w-full sm:w-auto">
+          <div class="w-9 h-9 bg-kinsu-blue text-white rounded-xl flex items-center justify-center shadow-sm">
+            <span class="material-symbols-outlined text-lg filled">verified</span>
+          </div>
+          <div>
+            <span id="topbar-nivel" class="hidden"></span>
+            <span class="text-[9px] text-slate-400 font-black uppercase tracking-wider block mb-0.5">Rango Actual</span>
+            <p class="text-xs font-black text-kinsu-navy tracking-tight" id="header-nivel">Cargando...</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+        
+        <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm flex flex-col items-center text-center lg:col-span-4 relative overflow-hidden">
+          <div class="absolute -right-8 -top-8 w-24 h-24 bg-kinsu-blue/5 rounded-full blur-xl pointer-events-none"></div>
+          
+          <div class="w-20 h-20 rounded-full bg-blue-50 text-kinsu-blue flex items-center justify-center font-black text-xl border-4 border-white shadow-md select-none" id="avatar-initials">
+            KS
+          </div>
+          
+          <h3 class="text-base font-black text-kinsu-navy mt-4 tracking-tight" id="perfil-nombre">—</h3>
+          <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5" id="perfil-id">ID: KIN-0000</p>
+          
+          <div class="w-full h-[1px] bg-slate-100 my-4"></div>
+          
+          <div class="w-full space-y-3.5 text-left">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 flex-shrink-0">
+                <span class="material-symbols-outlined text-base">mail</span>
+              </div>
+              <div class="min-w-0 flex-1">
+                <span class="text-[8px] font-black text-slate-400 uppercase tracking-wider block mb-0.5">Email</span>
+                <p class="text-xs font-semibold text-kinsu-navy truncate" id="perfil-email">—</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 flex-shrink-0">
+                <span class="material-symbols-outlined text-base">smartphone</span>
+              </div>
+              <div class="min-w-0 flex-1">
+                <span class="text-[8px] font-black text-slate-400 uppercase tracking-wider block mb-0.5">WhatsApp</span>
+                <p class="text-xs font-semibold text-kinsu-navy" id="perfil-tel">—</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-8 space-y-4">
+          
+          <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-kinsu-blue flex-shrink-0 border border-slate-100">
+                  <span class="material-symbols-outlined text-2xl">account_balance</span>
+                </div>
+                <div>
+                  <h4 class="text-xs font-black uppercase tracking-wider text-kinsu-navy">Cuenta Bancaria</h4>
+                  <p class="text-slate-500 font-medium text-xs mt-0.5" id="perfil-banco">—</p>
+                  <p class="font-mono text-xs font-bold text-kinsu-blue tracking-widest mt-1" id="perfil-clabe">**** **** **** 0000</p>
+                </div>
+              </div>
+              <div class="flex gap-2 w-full sm:w-auto">
+                <button class="flex-1 sm:flex-none h-9 px-4 bg-kinsu-blue text-white rounded-full font-bold text-xs uppercase tracking-wider hover:bg-kinsu-blueDark transition-colors">
+                  Actualizar
+                </button>
+                <button onclick="openModal()" class="flex-1 sm:flex-none h-9 px-4 border border-slate-200 text-kinsu-blue rounded-full font-bold text-xs uppercase tracking-wider hover:bg-slate-50 transition-all">
+                  Ver Historial
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:bg-slate-50 transition-colors cursor-pointer group">
+              <div class="w-9 h-9 rounded-xl bg-blue-50 text-kinsu-blue flex items-center justify-center mb-3 border border-blue-100/40 shadow-sm group-hover:scale-105 transition-transform">
+                <span class="material-symbols-outlined text-lg filled">verified_user</span>
+              </div>
+              <h5 class="font-black text-kinsu-navy text-xs tracking-tight">Seguridad</h5>
+              <p class="text-[9px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100/50 inline-block font-bold uppercase tracking-wider mt-1.5">2FA Activo</p>
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:bg-slate-50 transition-colors cursor-pointer group">
+              <div class="w-9 h-9 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center mb-3 border border-slate-100 shadow-sm group-hover:scale-105 transition-transform">
+                <span class="material-symbols-outlined text-lg">language</span>
+              </div>
+              <h5 class="font-black text-kinsu-navy text-xs tracking-tight">Idioma</h5>
+              <p class="text-[10px] text-slate-400 font-bold mt-2 uppercase tracking-wide">Español (MX)</p>
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-slate-100 shadow-sm hover:bg-emerald-50/40 border-slate-100 transition-colors cursor-pointer group">
+              <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3 border border-emerald-100/40 shadow-sm group-hover:scale-105 transition-transform">
+                <span class="material-symbols-outlined text-lg filled">support_agent</span>
+              </div>
+              <h5 class="font-black text-kinsu-navy text-xs tracking-tight">Mesa Soporte</h5>
+              <p class="text-[9px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 font-bold uppercase tracking-wider mt-1.5 flex items-center gap-0.5">
+                <span>WhatsApp</span>
+                <span class="material-symbols-outlined text-[10px]">arrow_forward</span>
+              </p>
+            </div>
+          </div>
+
+          <div class="bg-[#0d1c2e] text-white rounded-3xl p-6 relative overflow-hidden flex flex-col sm:flex-row items-center justify-between gap-5 border border-slate-800 shadow-lg">
+            <div class="absolute -right-12 -bottom-12 w-40 h-40 bg-kinsu-blue/15 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="relative z-10 text-center sm:text-left space-y-1">
+              <p class="text-slate-400 text-[9px] font-black uppercase tracking-widest block">Saldo Total Disponible</p>
+              <h2 class="text-3xl font-black text-white tracking-tight leading-none" id="perfil-saldo">
+                <div class="h-8 w-32 bg-white/10 rounded animate-pulse"></div>
+              </h2>
+            </div>
+            <button onclick="openModal()" class="relative z-10 h-11 px-6 bg-white text-kinsu-navy hover:bg-slate-50 font-black text-xs rounded-full uppercase tracking-wider shadow-md whitespace-nowrap active:scale-95 transition-transform w-full sm:w-auto">
+              Retirar Fondos
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="md:hidden mt-2">
+        <button onclick="doLogout()" class="w-full h-12 bg-rose-50 border border-rose-100 text-rose-600 font-bold rounded-2xl active:scale-[0.98] transition-all text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-base">logout</span>
+          <span>Cerrar sesión activa</span>
+        </button>
+      </div>
+
+    </main>
   </div>
-</main>
 
-<!-- Bottom Nav Mobile -->
-<nav class="lg:hidden fixed bottom-0 left-0 w-full h-16 bg-white/85 backdrop-blur-xl flex justify-around items-center px-2 z-50 border-t border-slate-100 shadow-sm rounded-t-2xl">
-  <a href="dashboard.html" class="flex flex-col items-center justify-center text-slate-400">
-    <span class="material-symbols-outlined">home</span>
-    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Inicio</span>
-  </a>
-  <a href="prospectos.html" class="flex flex-col items-center justify-center text-slate-400">
-    <span class="material-symbols-outlined">group</span>
-    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Prospectos</span>
-  </a>
-  <div class="flex flex-col items-center -mt-8">
-    <a href="nuevo-prospecto.html"
-      class="w-14 h-14 bg-[#1565c0] text-white rounded-xl shadow-lg flex items-center justify-center active:scale-95 transition-transform">
-      <span class="material-symbols-outlined text-3xl">add</span>
+  <nav class="md:hidden fixed bottom-0 left-0 w-full h-16 bg-white/90 backdrop-blur-md flex justify-around items-center px-2 z-50 border-t border-slate-100 rounded-t-2xl shadow-lg">
+    <a href="dashboard.html" class="flex flex-col items-center justify-center text-slate-400">
+      <span class="material-symbols-outlined">home</span>
+      <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Inicio</span>
     </a>
+    <a href="prospectos.html" class="flex flex-col items-center justify-center text-slate-400">
+      <span class="material-symbols-outlined">group</span>
+      <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Prospectos</span>
+    </a>
+    <div class="flex flex-col items-center -mt-8">
+      <a href="nuevo-prospecto.html"
+        class="w-14 h-14 bg-kinsu-blue text-white rounded-xl shadow-lg flex items-center justify-center active:scale-95 transition-transform">
+        <span class="material-symbols-outlined text-3xl">add</span>
+      </a>
+    </div>
+    <a href="ganancias.html" class="flex flex-col items-center justify-center text-slate-400">
+      <span class="material-symbols-outlined">payments</span>
+      <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Ganancias</span>
+    </a>
+    <a href="perfil.html" class="flex flex-col items-center justify-center text-kinsu-blue">
+      <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">person</span>
+      <span class="text-[10px] font-bold uppercase tracking-wider mt-0.5">Perfil</span>
+    </a>
+  </nav>
+
+  <div id="modal-overlay" class="fixed inset-0 z-50 flex items-center justify-center px-4" style="background:rgba(13,28,46,0.5); backdrop-blur-sm;">
+    <div id="modal-card" class="bg-white w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl border border-slate-100">
+      <div class="p-6 sm:p-8 text-center space-y-5">
+        <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-sm border border-emerald-100/40">
+          <span class="material-symbols-outlined text-2xl font-variation-settings:'FILL' 1;">check_circle</span>
+        </div>
+        <div class="space-y-1.5">
+          <h3 class="text-lg font-black text-kinsu-navy tracking-tight">Retiro solicitado</h3>
+          <p class="text-xs text-slate-500 max-w-xs mx-auto leading-relaxed">
+            Tu comisión se dispersará automáticamente en 2 días hábiles a la cuenta bancaria registrada en tu perfil.
+          </p>
+        </div>
+        
+        <div class="bg-slate-50 rounded-2xl p-4 text-left space-y-2.5 border border-slate-100/60">
+          <div class="flex justify-between items-center">
+            <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider">Monto a Transferir</span>
+            <span class="text-base font-black text-kinsu-blue tracking-tight" id="modal-saldo">$0.00 MXN</span>
+          </div>
+          <div class="h-[1px] bg-slate-200/60"></div>
+          <div class="flex justify-between items-center">
+            <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider">Banco Receptor</span>
+            <span class="text-xs font-bold text-kinsu-navy truncate max-w-[140px]" id="modal-banco">—</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider">CLABE Destino</span>
+            <span class="text-xs font-mono font-bold text-kinsu-navy" id="modal-clabe">**** **** **** 0000</span>
+          </div>
+        </div>
+        
+        <button onclick="closeModal()"
+          class="w-full h-11 bg-kinsu-blue text-white rounded-full font-bold text-xs uppercase tracking-wider hover:bg-kinsu-blueDark active:scale-95 transition-all shadow-md shadow-blue-900/10">
+          Entendido
+        </button>
+      </div>
+    </div>
   </div>
-  <a href="ganancias.html" class="flex flex-col items-center justify-center text-slate-400">
-    <span class="material-symbols-outlined">payments</span>
-    <span class="text-[10px] font-medium uppercase tracking-wider mt-0.5">Ganancias</span>
-  </a>
-  <a href="perfil.html" class="flex flex-col items-center justify-center text-[#1565c0]">
-    <span class="material-symbols-outlined filled">person</span>
-    <span class="text-[10px] font-bold uppercase tracking-wider mt-0.5">Perfil</span>
-  </a>
-</nav>
 
 <script src="kinsu-config.js"></script>
 <script>
-// ── Validar sesión ──
+// ── Validar sesión activa ──
 const userRaw = sessionStorage.getItem('user');
 if (!userRaw) { window.location.href = 'index.html'; }
 const user = JSON.parse(userRaw || '{}');
@@ -258,21 +292,21 @@ if (!user.kinsurerID) { window.location.href = 'index.html'; }
 
 const setEl = (id, val) => { const e = document.getElementById(id); if(e) e.textContent = val; };
 
-// ── Mostrar datos inmediatos desde sessionStorage ──
-setEl('topbar-av',       user.initials || '');
-setEl('avatar-initials', user.initials || '');
-setEl('perfil-nombre',   user.nombre   || '');
-setEl('perfil-email',    user.email    || '');
-setEl('perfil-clabe',    user.clabe    || '—');
+// ── Inyección inmediata de sessionStorage para evitar parpadeos ──
+setEl('topbar-av',       user.initials || 'KS');
+setEl('avatar-initials', user.initials || 'KS');
+setEl('perfil-nombre',   user.nombre   || 'Kinsurer');
+setEl('perfil-email',    user.email    || '—');
+setEl('perfil-clabe',    user.clabe    || '**** **** **** 0000');
 setEl('perfil-banco',    user.banco    || '—');
 setEl('perfil-tel',      user.tel      || '—');
-setEl('perfil-id',       'ID: ' + (user.kinsurerID || ''));
+setEl('perfil-id',       'ID: ' + (user.kinsurerID || 'KIN-0001'));
 
-const nivel = user.nivel || '';
-setEl('topbar-nivel', nivel.replace('Kinsurer ',''));
-setEl('header-nivel', nivel);
+const nivel = user.nivel || 'Kinsurer Certificado';
+setEl('topbar-nivel',    nivel.replace('Kinsurer ',''));
+setEl('header-nivel',    nivel);
 
-// ── Helper: calcular saldo de transacciones pendientes ──
+// ── Helper: Cómputo del saldo de transacciones pendientes ──
 function calcSaldoPendiente(transacciones) {
   const pendientes = (transacciones || []).filter(t =>
     (t['Estatus Pago'] || '').trim() === 'Pendiente'
@@ -284,22 +318,20 @@ function calcSaldoPendiente(transacciones) {
   return '$' + saldo.toLocaleString('es-MX', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' MXN';
 }
 
-// ── Cargar datos frescos en paralelo ──
+// ── Despacho paralelo y sincronización fresca de API ──
 async function loadPerfil() {
   try {
-    // Ambas llamadas simultáneas
     const [perfil, ganData] = await Promise.all([
       KinsuAPI.getPerfil(),
       KinsuAPI.getGanancias()
     ]);
 
-    // ── Datos del perfil ──
     if (perfil && !perfil.error) {
       const nombre   = perfil['Nombre Completo'] || user.nombre || '';
       const email    = perfil['Email']            || user.email  || '';
       const clabe    = perfil['CLABE Bancaria']   || user.clabe  || '—';
       const banco    = perfil['Banco']            || user.banco  || '—';
-      const nivelAPI = perfil['Nivel']            || user.nivel  || '';
+      const nivelAPI = perfil['Nivel']            || user.nivel  || 'Kinsurer Certificado';
       const id       = perfil['ID_Kinsurer']      || user.kinsurerID || '';
       const tel      = perfil['Tel'] || perfil['Teléfono'] || perfil['Telefono'] || user.tel || '';
       const initials = nombre.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
@@ -315,19 +347,17 @@ async function loadPerfil() {
       setEl('header-nivel',    nivelAPI);
       if (tel) setEl('perfil-tel', tel);
 
-      // Actualizar sessionStorage
       sessionStorage.setItem('user', JSON.stringify({
         ...user, nombre, email, initials, clabe, banco,
         nivel: nivelAPI, kinsurerID: id, tel
       }));
     }
 
-    // ── Saldo disponible (transacciones pendientes) ──
     const saldoFmt = calcSaldoPendiente(ganData?.transacciones);
     const saldoEl  = document.getElementById('perfil-saldo');
     if (saldoEl) saldoEl.textContent = saldoFmt;
 
-    // Pre-llenar modal con saldo y datos bancarios
+    // Sincronización de componentes internos del modal solicitado
     const modalSaldo = document.getElementById('modal-saldo');
     const modalClabe = document.getElementById('modal-clabe');
     const modalBanco = document.getElementById('modal-banco');
@@ -336,11 +366,11 @@ async function loadPerfil() {
     if (modalBanco) modalBanco.textContent = user.banco || '—';
 
   } catch(e) {
-    console.warn('[Perfil] Error:', e);
+    console.warn('[Perfil Sync] Error de comunicación:', e);
   }
 }
 
-// ── Modal ──
+// ── Mecánicas de Control del Modal ──
 function openModal() {
   const overlay = document.getElementById('modal-overlay');
   const card    = document.getElementById('modal-card');
@@ -361,7 +391,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// ── Cerrar sesión ──
 function doLogout() {
   sessionStorage.clear();
   window.location.href = 'index.html';
