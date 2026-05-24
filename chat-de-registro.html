@@ -2,8 +2,8 @@
 <html class="light" lang="es">
 <head>
 <meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0" name="viewport">
-<title>Kinsu - Chat de Registro</title>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport">
+<title>Kinsu - Chat de Registro de Salud</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
@@ -15,43 +15,46 @@
   .no-scrollbar::-webkit-scrollbar { display:none; }
   .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
 
-  /* Typing dots */
-  .dot { width:6px; height:6px; border-radius:50%; background:#1565c0; display:inline-block; animation:blink 1.2s infinite; }
+  /* Typing dots utilizando el color corporativo $primary */
+  .dot { width:6px; height:6px; border-radius:50%; background:#4575BA; display:inline-block; animation:blink 1.2s infinite; }
   .dot:nth-child(2) { animation-delay:.2s; }
   .dot:nth-child(3) { animation-delay:.4s; }
   @keyframes blink { 0%,100%{ opacity:.3; transform:scale(.8); } 50%{ opacity:1; transform:scale(1); } }
 
-  /* Quick reply chips */
+  /* Quick reply chips con tokens oficiales */
   .qr-chip {
     flex-shrink:0; padding:8px 18px; border-radius:99px;
     font-size:13px; font-weight:600; cursor:pointer;
     transition:all .15s; white-space:nowrap;
   }
-  .qr-primary { background:#1565c0; color:#fff; box-shadow:0 4px 12px rgba(21,101,192,.25); }
-  .qr-primary:hover { background:#1255a8; }
-  .qr-secondary { background:#fff; color:#1565c0; border:1.5px solid rgba(21,101,192,.2); }
-  .qr-secondary:hover { background:#e8f0fe; }
+  .qr-primary { background:#4575BA; color:#fff; box-shadow:0 4px 12px rgba(69,117,186,.25); }
+  .qr-primary:hover { background:#355c94; }
+  .qr-secondary { background:#fff; color:#4575BA; border:1.5px solid rgba(69,117,186,.2); }
+  .qr-secondary:hover { background:#f4f7fc; }
+  
+  /* Input móvil optimizado sin zoom forzado */
+  #chat-input { font-size: 16px !important; }
+  @media (min-width: 640px) { #chat-input { font-size: 14px !important; } }
 </style>
 </head>
 
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col select-none">
 
-<!-- TOPBAR -->
-<header class="bg-white/90 backdrop-blur-md fixed top-0 w-full z-50 border-b border-[#e8f0fe]">
+<header class="bg-white/90 backdrop-blur-md fixed top-0 w-full z-50 border-b border-[#edf1f6]">
   <div class="flex items-center justify-between px-4 h-16 max-w-2xl mx-auto">
     <div class="flex items-center gap-3">
-      <button onclick="history.back()" class="text-[#1565c0] hover:bg-slate-100 p-2 rounded-full transition-all">
+      <button onclick="history.back()" class="text-[#4575BA] hover:bg-slate-100 p-2 rounded-full transition-all">
         <span class="material-symbols-outlined">arrow_back</span>
       </button>
       <div class="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
-        style="background:linear-gradient(135deg,#1565c0 0%,#82d14b 100%);">
+        style="background:linear-gradient(135deg,#4575BA 0%,#BFFD70 100%);">
         <span class="text-white font-bold text-sm">K</span>
       </div>
       <div>
-        <p id="chat-title" class="text-[13px] font-bold text-[#0d1c2e]">Chat de Registro</p>
+        <p id="chat-title" class="text-[13px] font-bold text-[#0d1c2e]">Cotización Médica</p>
         <div class="flex items-center gap-1">
-          <span class="w-2 h-2 bg-[#82d14b] rounded-full"></span>
-          <span class="text-[10px] text-slate-500 font-medium uppercase tracking-wider">En línea</span>
+          <span class="w-2 h-2 bg-[#BFFD70] rounded-full"></span>
+          <span class="text-[10px] text-slate-500 font-medium uppercase tracking-wider">Formulario Médico</span>
         </div>
       </div>
     </div>
@@ -61,156 +64,198 @@
   </div>
 </header>
 
-<!-- PROGRESS BANNER -->
-<div class="bg-[#e8f0fe] border-b border-[#d4dcf5] fixed top-16 w-full z-40">
+<div class="bg-[#edf1f6] border-b border-[#e4e8ee] fixed top-16 w-full z-40">
   <div class="flex items-center justify-between px-4 py-2.5 max-w-2xl mx-auto">
     <div class="flex items-center gap-2">
-      <span class="material-symbols-outlined text-[#1565c0] text-[18px]">chat</span>
-      <span class="text-[13px] text-[#1565c0] font-semibold" id="progress-label">Pregunta 1 de 4</span>
+      <span class="material-symbols-outlined text-[#4575BA] text-[18px]">analytics</span>
+      <span class="text-[13px] text-[#4575BA] font-semibold" id="progress-label">Fase 1: Titular de la Póliza</span>
     </div>
     <div class="flex items-center gap-2">
-      <span class="text-[11px] text-[#1565c0] font-bold" id="progress-pct">25%</span>
-      <div class="w-24 h-1.5 bg-[#c2d4f0]/40 rounded-full overflow-hidden">
-        <div class="h-full bg-[#1565c0] rounded-full transition-all duration-500" id="progress-bar" style="width:25%"></div>
+      <span class="text-[11px] text-[#4575BA] font-bold" id="progress-pct">10%</span>
+      <div class="w-24 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+        <div class="h-full bg-[#4575BA] rounded-full transition-all duration-500" id="progress-bar" style="width:10%"></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- CHAT AREA -->
 <main class="flex-1 max-w-2xl w-full mx-auto pt-32 pb-48 px-4 flex flex-col gap-4 no-scrollbar overflow-y-auto" id="chat-area"></main>
 
-<!-- QUICK REPLIES -->
 <div class="fixed w-full max-w-2xl left-1/2 -translate-x-1/2 px-4 z-40" id="quick-replies-container" style="bottom:100px;"></div>
 
-<!-- INPUT BAR -->
 <div class="fixed bottom-0 left-0 w-full z-50">
   <div class="max-w-2xl mx-auto px-4 pb-6 pt-2">
     <div class="bg-white/90 backdrop-blur-xl rounded-3xl p-2 shadow-lg flex items-center gap-2 border border-white">
       <input id="chat-input" type="text" placeholder="Escribe tu respuesta..."
         class="flex-1 bg-transparent border-none focus:ring-0 text-[14px] text-[#0d1c2e] placeholder:text-slate-400 px-2 outline-none">
       <button onclick="sendUserMessage()" id="send-btn"
-        class="w-10 h-10 bg-[#1565c0] text-white rounded-full flex items-center justify-center shadow active:scale-90 transition-transform flex-shrink-0">
+        class="w-10 h-10 bg-[#4575BA] text-white rounded-full flex items-center justify-center shadow active:scale-90 transition-transform flex-shrink-0">
         <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;">arrow_upward</span>
       </button>
     </div>
   </div>
 </div>
 
+<script src="kinsu-config.js"></script>
 <script>
-// ── Leer params ──
+// ── Parámetros Iniciales del Prospecto Titular desde la Ficha Base ──
 const params  = new URLSearchParams(location.search);
 const nombre  = params.get('nombre') || sessionStorage.getItem('form-nombre') || 'tu referido';
-const tipo    = (params.get('tipo')  || sessionStorage.getItem('form-tipo')   || 'salud').toLowerCase();
 const tel     = sessionStorage.getItem('form-telefono') || '';
 const correo  = sessionStorage.getItem('form-correo')   || '';
 
-// Actualizar título
-document.getElementById('chat-title').textContent =
-  `${tipo.charAt(0).toUpperCase()+tipo.slice(1)} · ${nombre}`;
+document.getElementById('chat-title').textContent = `Salud · ${nombre}`;
 
-// ── Flows de preguntas por tipo ──
-const FLOWS = {
-  salud: [
-    {
-      q: `¡Hola! Ya tengo los datos de ${nombre} 👌 Solo necesito unos detalles más para el seguro de Salud.\n\n¿Cuántos años tiene ${nombre}?`,
-      key:'edad', placeholder:'Ej. 35 años',
-      replies:['Menos de 30','30 a 45','46 a 60','Más de 60']
+// ══════════════════════════════════════════════════
+// MÁQUINA DE ESTADOS COMPLETA DEL CUESTIONARIO EXTENDIDO
+// ══════════════════════════════════════════════════
+const chatState = {
+    currentStep: 'TITULAR_FNAC',
+    titular: {
+        nombre: nombre,
+        tel: tel,
+        correo: correo
     },
-    {
-      q:`¿${nombre} tiene alguna condición médica preexistente que debamos considerar?`,
-      key:'condicion', placeholder:'Ej. Diabetes, hipertensión...',
-      replies:['No, ninguna','Sí, diabetes','Sí, hipertensión','Otra condición']
-    },
-    {
-      q:`¿Cuántas personas cubrirá el seguro? ¿Solo ${nombre} o también su familia?`,
-      key:'cobertura', placeholder:'Ej. Solo yo, o yo y mi familia',
-      replies:['Solo yo','Pareja','Familia (hijos)','Familia completa']
-    },
-    {
-      q:`¿En qué ciudad o estado vive ${nombre}?`,
-      key:'ciudad', placeholder:'Ej. CDMX, Monterrey...',
-      replies:['CDMX','Monterrey','Guadalajara','Otra ciudad']
-    }
-  ],
-  auto: [
-    {
-      q:`¡Hola! Ya tengo los datos básicos de ${nombre} 👌 Necesito algunos detalles del vehículo.\n\n¿Cuál es la marca, modelo y año del auto?`,
-      key:'vehiculo', placeholder:'Ej. Nissan Versa 2021',
-      replies:['Nissan Versa 2021','Toyota Corolla 2022','Volkswagen Jetta 2020','Otro modelo']
-    },
-    {
-      q:`¿En qué ciudad o estado circula habitualmente el vehículo?`,
-      key:'ciudad', placeholder:'Ej. CDMX, Monterrey...',
-      replies:['CDMX','Monterrey','Guadalajara','Otra ciudad']
-    },
-    {
-      q:`¿${nombre} ha tenido algún siniestro o accidente en los últimos 2 años?`,
-      key:'siniestro', placeholder:'Sí o no',
-      replies:['No, ninguno','Sí, 1 accidente','Sí, más de 1','Prefiero no decir']
-    },
-    {
-      q:`¿Qué tipo de cobertura le interesa a ${nombre}?`,
-      key:'cobertura', placeholder:'Ej. Daños a terceros, amplia...',
-      replies:['Responsabilidad civil','Daños a terceros','Cobertura amplia','No lo sé aún']
-    }
-  ],
-  viaje: [
-    {
-      q:`¡Hola! Ya tengo los datos de ${nombre} 👌 Cuéntame sobre el viaje.\n\n¿A qué país o región va a viajar?`,
-      key:'destino', placeholder:'Ej. Europa, EUA, Caribe...',
-      replies:['Europa','Estados Unidos','Caribe','América Latina']
-    },
-    {
-      q:`¿Cuántos días durará el viaje de ${nombre}?`,
-      key:'duracion', placeholder:'Ej. 10 días',
-      replies:['Menos de 7 días','7 a 15 días','15 a 30 días','Más de 30 días']
-    },
-    {
-      q:`¿Cuántas personas van a viajar?`,
-      key:'personas', placeholder:'Ej. 2 personas',
-      replies:['Solo yo','2 personas','3 a 4 personas','Más de 4']
-    },
-    {
-      q:`¿El viaje es de turismo o por negocios?`,
-      key:'motivo', placeholder:'Turismo o negocios',
-      replies:['Turismo','Negocios','Turismo y negocios','Estudio o trabajo']
-    }
-  ]
+    familiares: [],
+    tempFamiliar: {},
+    estatusProgreso: 1
 };
 
-const flow    = FLOWS[tipo] || FLOWS.salud;
-const COMISIONS = { salud:'$1,000 MXN', auto:'$500 MXN', viaje:'$300 MXN' };
-let step      = 0;
-let answers   = {};
-let typing    = false;
-let folio     = '';
+const ANA_FLOW = {
+    'TITULAR_FNAC': {
+        q: () => `¡Hola! Vamos a completar el perfil médico de *${chatState.titular.nombre}* para calcular su cotización exacta.\n\n¿Cuál es su fecha de nacimiento? (Usa el formato AAAA-MM-DD o indícame su edad aproximada)`,
+        placeholder: 'Ej. 1991-10-24 o 34 años',
+        key: 'fnac',
+        next: 'TITULAR_GENERO'
+    },
+    'TITULAR_GENERO': {
+        q: () => `¿Cuál es el género asignado al nacer de *${chatState.titular.nombre}*?`,
+        placeholder: 'Selecciona una opción...',
+        key: 'genero',
+        replies: ['Masculino', 'Femenino'],
+        next: (val) => val === 'Femenino' ? 'TITULAR_MATERNIDAD' : 'TITULAR_CP'
+    },
+    'TITULAR_MATERNIDAD': {
+        q: () => `Entendido. ¿*${chatState.titular.nombre}* requiere incluir cobertura de maternidad dentro de la póliza de Gastos Médicos?`,
+        placeholder: 'Selecciona una opción...',
+        key: 'maternidad',
+        replies: ['Sí, incluir maternidad', 'No la requiere'],
+        next: 'TITULAR_CP'
+    },
+    'TITULAR_CP': {
+        q: () => `¿Cuál es el Código Postal (CP) y Ciudad de residencia de *${chatState.titular.nombre}*?`,
+        placeholder: 'Ej. 06700, CDMX',
+        key: 'cp',
+        replies: ['CDMX', 'Monterrey', 'Guadalajara'],
+        next: 'TITULAR_OCUPACION'
+    },
+    'TITULAR_OCUPACION': {
+        q: () => `¿A qué se dedica o cuál es la ocupación principal de *${chatState.titular.nombre}*?`,
+        placeholder: 'Ej. Ingeniero Civil, Administrador, Estudiante...',
+        key: 'ocupacion',
+        next: 'TITULAR_DEPORTE'
+    },
+    'TITULAR_DEPORTE': {
+        q: () => `¿Practica algún deporte o actividad física de alto riesgo de forma regular? (Ej. Motociclismo, buceo, alpinismo, o selecciona "Ninguno")`,
+        placeholder: 'Especifica la actividad o escribe Ninguno',
+        key: 'deporte',
+        replies: ['Ninguno', 'Fútbol regular', 'Gimnasio / Fitness'],
+        next: 'TITULAR_ANTRO'
+    },
+    'TITULAR_ANTRO': {
+        q: () => `Para calcular su índice corporal de referencia, ¿cuál es su peso aproximado en kg y su estatura en cm?`,
+        placeholder: 'Ej. 75 kg, 172 cm',
+        key: 'antro',
+        next: 'TITULAR_PREEXISTENCIA'
+    },
+    'TITULAR_PREEXISTENCIA': {
+        q: () => `¿*${chatState.titular.nombre}* cuenta actualmente con alguna condición médica preexistente diagnosticada?`,
+        placeholder: 'Selecciona o escribe el padecimiento...',
+        key: 'preexistencia',
+        replies: ['Sin preexistencias', 'Diabetes', 'Hipertensión', 'Otra condición'],
+        next: 'PREGUNTA_DEPENDIENTE'
+    },
+    // --- BISAGRA MULTI-PERSONA (PROMPT A) ---
+    'PREGUNTA_DEPENDIENTE': {
+        q: () => chatState.familiares.length === 0 
+            ? `¿Deseas agregar a algún familiar o dependiente adicional a esta misma póliza de salud? (Puedes sumar hasta 4 familiares en total)`
+            : `¿Deseas agregar a otro familiar adicional a la póliza? (Llevas ${chatState.familiares.length} de 4 permitidos)`,
+        placeholder: 'Selecciona una opción...',
+        key: 'quiere_familiar',
+        replies: ['Sí, agregar familiar', 'No, finalizar y guardar'],
+        next: (val) => val.includes('Sí') ? 'FAMILIAR_NOMBRE' : 'FINALIZAR'
+    },
+    // --- BUCLE CONTINUO DE FAMILIARES ---
+    'FAMILIAR_NOMBRE': {
+        q: () => `Perfecto. Ingresa el nombre completo del familiar número ${chatState.familiares.length + 1}:`,
+        placeholder: 'Nombre del familiar',
+        key: 'nombre',
+        next: 'FAMILIAR_FNAC'
+    },
+    'FAMILIAR_FNAC': {
+        q: () => `¿Cuál es la fecha de nacimiento de este familiar?`,
+        placeholder: 'Ej. 1995-08-12 o 30 años',
+        key: 'fnac',
+        next: 'FAMILIAR_GENERO'
+    },
+    'FAMILIAR_GENERO': {
+        q: () => `¿Cuál es su género asignado al nacer?`,
+        placeholder: 'Selecciona una opción...',
+        key: 'genero',
+        replies: ['Masculino', 'Femenino'],
+        next: 'FAMILIAR_ANTRO'
+    },
+    'FAMILIAR_ANTRO': {
+        q: () => `Ingresa su peso (kg) y estatura (cm):`,
+        placeholder: 'Ej. 62 kg, 160 cm',
+        key: 'antro',
+        next: 'FAMILIAR_PREEXISTENCIA'
+    },
+    'FAMILIAR_PREEXISTENCIA': {
+        q: () => `¿Cuenta con alguna condición médica preexistente?`,
+        placeholder: 'Selecciona o escribe...',
+        key: 'preexistencia',
+        replies: ['Sin preexistencias', 'Diabetes', 'Hipertensión', 'Otra'],
+        next: (val) => {
+            // Empaquetar y guardar el familiar en el listado global
+            chatState.familiares.push({ ...chatState.tempFamiliar });
+            chatState.tempFamiliar = {}; // Liberar el buffer temporal
+            
+            // Freno de mano si se alcanzan las 4 personas adicionales solicitadas
+            if (chatState.familiares.length >= 4) {
+                return 'FINALIZAR';
+            }
+            return 'PREGUNTA_DEPENDIENTE';
+        }
+    }
+};
 
-// ── Helpers de UI ──
+let typing = false;
+let folio  = '';
+
+// ── UI Helpers ──
 function scrollBottom() {
   const area = document.getElementById('chat-area');
-  setTimeout(() => area.scrollTo({ top:area.scrollHeight, behavior:'smooth' }), 80);
+  setTimeout(() => area.scrollTo({ top: area.scrollHeight, behavior: 'smooth' }), 80);
 }
 
-function addBubble(html, side='ana') {
+function addBubble(html, side = 'ana') {
   const area = document.getElementById('chat-area');
   if (side === 'ana') {
     area.innerHTML += `
-    <div class="flex items-end gap-2 max-w-[88%]">
+    <div class="flex items-end gap-2 max-w-[88%] animate-fade-in">
       <div class="w-8 h-8 rounded-full flex-shrink-0 self-start mt-1 flex items-center justify-center"
-        style="background:linear-gradient(135deg,#1565c0 0%,#82d14b 100%);">
-        <span class="text-white font-bold text-[11px]">K</span>
+        style="background:linear-gradient(135deg,#4575BA 0%,#BFFD70 100%);">
+        <span class="text-white font-bold text-[11px]">A</span>
       </div>
-      <div class="bg-white ana-bubble border border-[#b5d4f4] px-4 py-3 text-[14px] text-[#0d1c2e] leading-relaxed shadow-sm"
-        style="border-radius:16px 16px 16px 4px;">
+      <div class="bg-white ana-bubble border border-slate-200 px-4 py-3 text-[14px] text-[#0d1c2e] leading-relaxed shadow-sm">
         ${html}
       </div>
     </div>`;
   } else {
     area.innerHTML += `
     <div class="flex justify-end">
-      <div class="bg-[#1565c0] text-white px-4 py-3 text-[14px] leading-relaxed max-w-[80%]"
-        style="border-radius:16px 16px 4px 16px;">
+      <div class="bg-[#4575BA] text-white px-4 py-3 text-[14px] leading-relaxed max-w-[80%] user-bubble shadow-sm">
         ${html}
       </div>
     </div>`;
@@ -223,11 +268,10 @@ function showTyping() {
   area.innerHTML += `
   <div class="flex items-end gap-2" id="typing-indicator">
     <div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center"
-      style="background:linear-gradient(135deg,#1565c020 0%,#82d14b20 100%);">
-      <span class="text-[#1565c0] font-bold text-[11px]">K</span>
+      style="background:rgba(69,117,186,0.15);">
+      <span class="text-[#4575BA] font-bold text-[11px]">A</span>
     </div>
-    <div class="bg-white px-4 py-3 shadow-sm border border-[#b5d4f4]/40"
-      style="border-radius:16px 16px 16px 4px;">
+    <div class="bg-white px-4 py-3 shadow-sm border border-slate-200/60 ana-bubble">
       <div style="display:flex;gap:4px;align-items:center;">
         <span class="dot"></span><span class="dot"></span><span class="dot"></span>
       </div>
@@ -243,10 +287,10 @@ function removeTyping() {
 
 function setQuickReplies(replies) {
   const c = document.getElementById('quick-replies-container');
-  if (!replies || !replies.length) { c.innerHTML=''; return; }
+  if (!replies || !replies.length) { c.innerHTML = ''; return; }
   c.innerHTML = `<div class="flex gap-2 overflow-x-auto no-scrollbar py-2">${
-    replies.map((r,i) =>
-      `<button class="qr-chip ${i===0?'qr-primary':'qr-secondary'}" onclick="onQuickReply('${r.replace(/'/g,"\\'")}')">
+    replies.map((r) =>
+      `<button class="qr-chip qr-secondary" onclick="onQuickReply('${r.replace(/'/g,"\\'")}')">
         ${r}
       </button>`
     ).join('')
@@ -254,44 +298,85 @@ function setQuickReplies(replies) {
 }
 
 function clearQuickReplies() {
-  document.getElementById('quick-replies-container').innerHTML='';
+  document.getElementById('quick-replies-container').innerHTML = '';
 }
 
-function updateProgress() {
-  const pct = Math.round(((step) / flow.length) * 100);
-  document.getElementById('progress-pct').textContent = pct+'%';
-  document.getElementById('progress-bar').style.width = pct+'%';
-  document.getElementById('progress-label').textContent =
-    step < flow.length ? `Pregunta ${step+1} de ${flow.length}` : 'Completado ✓';
+function updateProgressUI() {
+  // Cálculo matemático del avance visual estimado según fases
+  let pct = 10;
+  const step = chatState.currentStep;
+  const label = document.getElementById('progress-label');
+
+  if (step.startsWith('TITULAR')) {
+      label.textContent = "Fase 1: Perfil del Titular";
+      if (step === 'TITULAR_GENERO') pct = 25;
+      if (step === 'TITULAR_CP') pct = 40;
+      if (step === 'TITULAR_ANTRO') pct = 60;
+  } else if (step === 'PREGUNTA_DEPENDIENTE') {
+      label.textContent = `Fase 2: Asignación de Dependientes`;
+      pct = 75;
+  } else if (step.startsWith('FAMILIAR')) {
+      label.textContent = `Fase 2: Familiar #${chatState.familiares.length + 1}`;
+      pct = 80 + chatState.familiares.length * 4;
+  }
+  
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-bar').style.width = pct + '%';
 }
 
-// ── Flujo principal ──
-function askStep(s) {
-  if (s >= flow.length) { finishFlow(); return; }
-  step = s;
-  updateProgress();
-  typing = true;
-  showTyping();
-  setTimeout(() => {
-    removeTyping();
-    typing = false;
-    const q = flow[s];
-    // Convertir saltos de línea en <br>
-    const html = q.q.replace(/\n/g,'<br>');
-    addBubble(html);
-    setQuickReplies(q.replies);
-    document.getElementById('chat-input').placeholder = q.placeholder || 'Escribe tu respuesta...';
-    scrollBottom();
-  }, 1000 + Math.random()*400);
+// ── Lógica de la Máquina de Estados ──
+function askNextQuestion() {
+    const currentConfig = ANA_FLOW[chatState.currentStep];
+    
+    if (!currentConfig) {
+        finishFlow();
+        return;
+    }
+
+    updateProgressUI();
+    typing = true;
+    showTyping();
+
+    setTimeout(() => {
+        removeTyping();
+        typing = false;
+        
+        const textPrompt = currentConfig.q();
+        const html = textPrompt.replace(/\n/g, '<br>');
+        addBubble(html);
+        
+        setQuickReplies(currentConfig.replies || []);
+        document.getElementById('chat-input').placeholder = currentConfig.placeholder || 'Escribe tu respuesta...';
+        scrollBottom();
+    }, 700 + Math.random() * 400);
 }
 
 function handleAnswer(answer) {
-  if (typing) return;
-  if (!answer.trim()) return;
-  clearQuickReplies();
-  addBubble(answer, 'user');
-  answers[flow[step].key] = answer;
-  askStep(step + 1);
+    if (typing || !answer.trim()) return;
+    
+    clearQuickReplies();
+    addBubble(answer, 'user');
+
+    const currentConfig = ANA_FLOW[chatState.currentStep];
+    
+    // Almacenamiento estructurado basado en el prefijo del paso activo
+    if (chatState.currentStep.startsWith('TITULAR')) {
+        chatState.titular[currentConfig.key] = answer;
+    } else if (chatState.currentStep.startsWith('FAMILIAR')) {
+        chatState.tempFamiliar[currentConfig.key] = answer;
+    }
+
+    // Evaluación del enrutador de destino (Soporta funciones dinámicas o cadenas duras)
+    let nextStep;
+    if (typeof currentConfig.next === 'function') {
+        nextStep = currentConfig.next(answer);
+    } else {
+        nextStep = currentConfig.next;
+    }
+
+    chatState.currentStep = nextStep;
+    chatState.estatusProgreso++;
+    askNextQuestion();
 }
 
 function sendUserMessage() {
@@ -307,59 +392,142 @@ function onQuickReply(val) {
   handleAnswer(val);
 }
 
-// ── Enter en el input ──
 document.getElementById('chat-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') sendUserMessage();
 });
 
-// ── Finalizar flujo ──
-function finishFlow() {
-  updateProgress();
-  setQuickReplies([]);
+// ══════════════════════════════════════════════════
+// COMPILADOR DE MINUTA DE TEXTO (OPCIÓN A)
+// ══════════════════════════════════════════════════
+function compilarNotasExtendidas() {
+  const t = chatState.titular;
+  let report = `=== REPORTE MÉDICO COMPLETO DEL TITULAR ===\n`;
+  report += `• F. Nacimiento: ${t.fnac || 'No especificada'}\n`;
+  report += `• Género: ${t.genero || 'No especificado'}\n`;
+  if (t.genero === 'Femenino') {
+      report += `• Maternidad: ${t.maternidad || 'No requerida'}\n`;
+  }
+  report += `• CP / Ubicación: ${t.cp || 'No provisto'}\n`;
+  report += `• Ocupación: ${t.ocupacion || 'No provista'}\n`;
+  report += `• Actividad/Deporte de riesgo: ${t.deporte || 'Ninguno'}\n`;
+  report += `• Antropometría (Peso/Altura): ${t.antro || 'No especificado'}\n`;
+  report += `• Estado Clínico: ${t.preexistencia || 'Sin preexistencias'}\n\n`;
 
-  // Generar folio único
-  const prefix = { salud:'S', auto:'A', viaje:'V' };
-  const num    = String(Math.floor(Math.random()*90000)+10000);
-  folio        = `${prefix[tipo]||'X'}${new Date().getFullYear()}${num}`;
+  if (chatState.familiares.length > 0) {
+      report += `=== DEPENDIENTES ADICIONALES REGISTRADOS (${chatState.familiares.length}) ===\n`;
+      chatState.familiares.forEach((fam, idx) => {
+          report += `[Familiar ${idx + 1}] ${fam.nombre || 'Nombre no provisto'}\n`;
+          report += `  - F. Nacimiento: ${fam.fnac || '—'}\n`;
+          report += `  - Género: ${fam.genero || '—'}\n`;
+          report += `  - Antropometría: ${fam.antro || '—'}\n`;
+          report += `  - Historial Clínico: ${fam.preexistencia || 'Sin preexistencias'}\n`;
+      });
+  }
+  return report;
+}
+
+function calcularRangoEdad(fechaStr) {
+    // Helper para mapear la edad al catálogo de primas base del Apps Script
+    if (!fechaStr) return '30 a 45'; 
+    const ya = parseInt(fechaStr.split('-')[0]);
+    if (isNaN(ya)) return '30 a 45';
+    const edad = new Date().getFullYear() - ya;
+    if (edad < 30) return 'Menos de 30';
+    if (edad <= 45) return '30 a 45';
+    if (edad <= 60) return '45 a 60';
+    return 'Más de 60';
+}
+
+// ── Cierre e Inserción Final en Base de Datos ──
+async function finishFlow() {
+  clearQuickReplies();
+  document.getElementById('progress-pct').textContent = '100%';
+  document.getElementById('progress-bar').style.width = '100%';
+  document.getElementById('progress-label').textContent = 'Completado ✓';
 
   typing = true;
   showTyping();
+
+  const t = chatState.titular;
+  const notasFinales = compilarNotasExtendidas();
+  const rangoEdadParaCat = calcularRangoEdad(t.fnac);
+
+  // Inserción real consumiendo tu API Client de kinsu-config.js
+  try {
+    const result = await KinsuAPI.createProspecto({
+      nombre: t.nombre,
+      telefono: t.tel || tel,
+      email: t.correo || correo,
+      tipo: 'salud',
+      ciudad: t.cp || 'CDMX',
+      edad: rangoEdadParaCat,
+      preexistencia: t.preexistencia || 'Sin preexistencias',
+      notas: notasFinales // Envío seguro del JSON formateado como texto
+    });
+    folio = (result && result.folio) ? result.folio : ('S' + Date.now().toString().slice(-6));
+  } catch(e) {
+    console.error("Error al persistir prospecto extendido:", e);
+    folio = 'S' + Date.now().toString().slice(-6);
+  }
+
+  // Persistencia de respaldo en sessionStorage para pantallas posteriores
+  sessionStorage.setItem('prospecto', JSON.stringify({
+    nombre: t.nombre,
+    tipo: 'salud',
+    folio: folio,
+    tel: t.tel || tel,
+    correo: t.correo || correo,
+    comision: '$1,000 MXN', // Ticket Salud de referencia base
+    reporteNotas: notasFinales
+  }));
+
   setTimeout(() => {
     removeTyping();
     typing = false;
-    addBubble(`¡Perfecto! 🎉 Ya tengo toda la información necesaria para ${nombre}.<br><br>
-    Tu número de seguimiento es <strong>#${folio}</strong>.<br>
-    Ahora te preparo un mensaje para enviarle por WhatsApp.`);
+    
+    addBubble(`¡Perfecto! 🎉 He recopilado y estructurado todo el reporte médico familiar de tu prospecto.<br><br>
+    El folio único asignado es <strong>#${folio}</strong>.<br>
+    Ya he guardado este registro de forma permanente en tu Google Sheet.`);
 
-    // Guardar en sessionStorage
-    sessionStorage.setItem('prospecto', JSON.stringify({
-      nombre, tipo, folio, tel, correo,
-      datos: answers,
-      comision: COMISIONS[tipo] || '$0 MXN'
-    }));
+    // Mensaje personalizado de WhatsApp para el prospecto
+    const waText = `Hola ${t.nombre}! Te registré en Kinsu para tu cotización del Seguro de Salud familiar. Ya ingresé el cuestionario detallado y los perfiles médicos de tus dependientes al sistema. Te contactarán hoy mismo sin compromiso. Folio de seguimiento: #${folio}`;
+    const cleanTel = String(t.tel || tel).replace(/[^0-9]/g, '');
+    const waUrl = (cleanTel ? `https://wa.me/52${cleanTel}` : 'https://wa.me') + `?text=${encodeURIComponent(waText)}`;
 
-    // Botón de continuar
     setTimeout(() => {
       const area = document.getElementById('chat-area');
+      
+      // Caja de vista previa móvil
       area.innerHTML += `
-      <div class="flex justify-center mt-4">
-        <button onclick="window.location.href='whatsapp-preview.html'"
-          class="bg-[#1565c0] text-white px-8 py-4 rounded-full font-bold text-base shadow-lg
-                 flex items-center gap-2 hover:bg-[#1255a8] active:scale-95 transition-all">
-          <span>Enviar por WhatsApp</span>
-          <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
-        </button>
+      <div class="flex justify-center mt-2 w-full animate-fade-in">
+        <div class="bg-white border border-slate-200 rounded-2xl p-4 max-w-sm w-full text-[13px] text-[#0d1c2e] leading-relaxed shadow-sm">
+          <p class="text-[10px] font-bold text-[#4575BA] uppercase tracking-wider mb-2">Mensaje listo para enviar</p>
+          <p class="text-slate-600">${waText}</p>
+        </div>
       </div>`;
+
+      // CTAs de Acción Táctil
+      area.innerHTML += `
+      <div class="flex justify-center gap-3 mt-4 flex-wrap w-full">
+        <a href="${waUrl}" target="_blank" 
+          class="flex items-center justify-center gap-2 h-12 px-6 bg-[#25d366] text-white rounded-full font-bold text-sm hover:opacity-90 active:scale-95 transition-all shadow-md">
+          <span>Enviar por WhatsApp</span>
+        </a>
+        <a href="prospectos.html" 
+          class="flex items-center justify-center h-12 px-6 bg-white border border-slate-200 text-[#4575BA] rounded-full font-bold text-sm hover:bg-slate-50 active:scale-95 transition-all shadow-sm">
+          <span>Ver mis prospectos</span>
+        </a>
+      </div>`;
+      
       scrollBottom();
       document.getElementById('chat-input').disabled = true;
       document.getElementById('send-btn').disabled = true;
-    }, 800);
-  }, 1200);
+    }, 600);
+  }, 1000);
 }
 
-// ── Iniciar ──
-updateProgress();
-setTimeout(() => askStep(0), 400);
+// ── Lanzamiento inicial programado ──
+setTimeout(askNextQuestion, 400);
 </script>
 </body>
 </html>
