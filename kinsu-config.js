@@ -1,26 +1,15 @@
 /**
  * KINSU — Configuración de conexión con Google Sheets
- * * INSTRUCCIONES:
- * 1. Después de instalar el Apps Script, copia la URL de implementación
- * 2. Pégala en APPS_SCRIPT_URL abajo
- * 3. Sube este archivo a GitHub junto con los demás HTMLs
- * 4. Todos los HTMLs lo cargan automáticamente
  */
 
 const KINSU_CONFIG = {
-  // URL de Apps Script después de implementar
+  // ⚠️ TU URL ACTUALIZADA DE APPS SCRIPT (Mantenemos la tuya)
   APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbyEQcXcLxCbNXWTBiDTL0K-cd4KjPK0WcC-HyDDAHKa_p6d9M3jyUdsre7AfVBbb3h5_g/exec',
-
-  // ID del Kinsurer demo (se reemplaza con el login real)
   DEFAULT_KINSURER_ID: 'KIN-0001',
 };
 
-// ═══════════════════════════════════════════════════
-// API CLIENT — funciones que usan todos los HTMLs
-// ═══════════════════════════════════════════════════
 const KinsuAPI = {
 
-  // Obtiene el kinsurerID del usuario logueado
   getKinsurerID() {
     const user = JSON.parse(sessionStorage.getItem('user') || '{}');
     return user.kinsurerID || KINSU_CONFIG.DEFAULT_KINSURER_ID;
@@ -34,37 +23,61 @@ const KinsuAPI = {
   },
 
   async sendOTP(email, nombre) {
-    return this._post({
-      action: 'sendOTP',
-      data: { email, nombre }
-    });
+    return this._post({ action: 'sendOTP', email, nombre });
   },
 
   async verifyOTP(email, otp) {
-    return this._post({
-      action: 'verifyOTP',
-      data: { email, otp }
-    });
+    const url = `${KINSU_CONFIG.APPS_SCRIPT_URL}?action=verifyOTP&email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`;
+    return this._get(url);
+  },
+
+  async createKinsurer(data) {
+    return this._post({ action: 'createKinsurer', data });
   },
 
   async login(email, password) {
-    return this._post({
-      action: 'login',
-      data: { email, password }
-    });
+    const url = `${KINSU_CONFIG.APPS_SCRIPT_URL}?action=login&email=${encodeURIComponent(email)}&pwd=${encodeURIComponent(password)}`;
+    return this._get(url);
   },
 
-  // ── PROSPECTOS ───────────────────────────────────
+  // ── GET ──────────────────────────────────────────
+
+  async getDashboard() {
+    const id  = this.getKinsurerID();
+    const url = `${KINSU_CONFIG.APPS_SCRIPT_URL}?action=getDashboard&id=${id}`;
+    return this._get(url);
+  },
 
   async getProspectos() {
-    const url = `${KINSU_CONFIG.APPS_SCRIPT_URL}?action=getProspectos&kinsurerID=${this.getKinsurerID()}`;
+    const id  = this.getKinsurerID();
+    const url = `${KINSU_CONFIG.APPS_SCRIPT_URL}?action=getProspectos&id=${id}`;
     return this._get(url);
   },
 
   async getProspecto(folio) {
-    const url = `${KINSU_CONFIG.APPS_SCRIPT_URL}?action=getProspecto&folio=${folio}`;
+    const url = `${KINSU_CONFIG.APPS_SCRIPT_URL}?action=getProspecto&id=${folio}`;
     return this._get(url);
   },
+
+  async getGanancias() {
+    const id  = this.getKinsurerID();
+    const url = `${KINSU_CONFIG.APPS_SCRIPT_URL}?action=getGanancias&id=${id}`;
+    return this._get(url);
+  },
+
+  async getPerfil() {
+    const id  = this.getKinsurerID();
+    const url = `${KINSU_CONFIG.APPS_SCRIPT_URL}?action=getPerfil&id=${id}`;
+    return this._get(url);
+  },
+
+  async getFormacion() {
+    const id  = this.getKinsurerID();
+    const url = `${KINSU_CONFIG.APPS_SCRIPT_URL}?action=getFormacion&id=${id}`;
+    return this._get(url);
+  },
+
+  // ── POST ─────────────────────────────────────────
 
   async createProspecto(data) {
     return this._post({
@@ -73,28 +86,20 @@ const KinsuAPI = {
     });
   },
 
-  async updateProspectoEstatus(folio, estatus) {
+  async updateEstatus(folio, estatus) {
     return this._post({
       action: 'updateEstatus',
       data: { folio, estatus }
     });
   },
 
-  /**
-   * ACTUALIZA LAS NOTAS / PLAN DE SEGUIMIENTO EN LA BD PIVOTE
-   * Envía de forma segura el folio y el string concatenado al Apps Script.
-   */
+  // 🔥 SOLUCIÓN DEFINITIVA DE CONEXIÓN DEL EXPEDIENTE COMERCIAL:
   async updateProspectoNotes(folio, nuevasNotas) {
     return this._post({
       action: 'updateProspectoNotes',
-      data: { 
-        folio: folio, 
-        notas: nuevasNotas 
-      }
+      data: { folio: folio, notas: nuevasNotas }
     });
   },
-
-  // ── OTROS ────────────────────────────────────────
 
   async createTransaccion(data) {
     return this._post({
@@ -133,18 +138,18 @@ const KinsuAPI = {
 
   async _post(body) {
     try {
-      // Usamos text/plain para evitar el preflight CORS de Apps Script
-      // Apps Script no maneja OPTIONS requests con application/json
       const res  = await fetch(KINSU_CONFIG.APPS_SCRIPT_URL, {
         method:  'POST',
         headers: { 'Content-Type': 'text/plain' },
         body:    JSON.stringify(body),
       });
-      const data = await res.json();
+      const text = await res.text();
+      const data = JSON.parse(text);
+      if (data.error) throw new Error(data.error);
       return data;
     } catch (err) {
       console.warn('[KinsuAPI] Error POST:', err.message);
-      return { error: err.message };
+      return null;
     }
-  }
+  },
 };
